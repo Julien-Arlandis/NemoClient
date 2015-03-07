@@ -5,7 +5,7 @@
 
 var JNTP = {
 
-UserAgent: 'Nemo/0.996c',
+UserAgent: 'Nemo/0.996d',
 url: '',
 log: '',
 outputLog: '',

@@ -262,33 +262,35 @@
 	  <div id="select_newsgroups"></div>
 	</div>
 
-	<div id="barre_boutons">
-	<button class="button" id="insert_b" value="b" data-info="Mettre en gras <strong>le texte sélectionné</strong>"><b style="font-weight:900">b</b></button>
-	<button class="button" id="insert_i" value="i" data-info="Mettre en italique <i>le texte sélectionné</i>"><i>i</i></button>
-	<button class="button" id="insert_u" value="u" data-info="Souligner <u>le texte sélectionné</u>"><u>u</u></button>
-	<button class="button" id="insert_s" value="s" data-info="Barrer le <strike>texte sélectionné<strike>"><s>s</s></button>
-	<button class="button" id="insert_a" value="a" data-info="Insérer un lien">a</button>
-	<button class="button" id="insert_img" value="img" data-info="Insérer des images">img</button>
-	<button class="button" id="insert_file" value="file" data-info="Insérer des fichiers" >file</button>
-	<button class="button" id="insert_pdf" value="pdf" data-info="Insérer des document PDF">pdf</button> 
-	<button class="button" id="insert_spoil" value="spoil" data-info="Cacher le texte sélectionné">spoil</button>
-	<button class="button" id="insert_tex" value="tex" data-info="Insérer des formules scientifiques">tex</button>
-	<button class="button" id="insert_code" value="code" data-info="Insérer du code source">code</button>
-	<button class="button" id="insert_cite" value="cite" data-info="Insérer des citations">cite</button>
-	<button class="button" id="insert_signature" value="signature" data-info="Insérer une signature">signature</button>
-	<button class="button" id="insert_c" value="c" data-info="Table des caractères">c</button>
 
-	<select class="button" id="insert_other">
-	<option id="insert_default" value="">Autres</option>
-	<option id="insert_abc" value="abc" data-info="Insérer des partitions musicales">abc</option>
-	<option id="insert_map" value="map" data-info="Insérer des cartes google map">map</option>
-	<option id="insert_audio" value="audio" data-info="Insérer des fichiers audio">audio</option>
-	<option id="insert_youtube" value="youtube" data-info="Insérer des vidéos youtube">youtube</option>
-	<option id="insert_dailymotion" value="dailymotion" data-info="Insérer des vidéos dailymotion">dailymotion</option>
-	<option id="insert_table" value="table" data-info="Insérer des tables">table</option>
-	<option id="insert_td" value="td" data-info="Insérer des colonnes">td</option>
-	<option id="insert_tr" value="tr" data-info="Insérer des lignes">tr</option>
-	<option id="no_balise" value="[ => [c=91], ] => [c=93]" data-info="Neutraliser les balises">[c]</option>
+	<div id="barre_boutons">
+		<button class="icon" id="insert_b" value="b" data-info="Mettre en gras &lt;strong&gt;le texte sélectionné&lt;/strong&gt;"><img src="/skins/classic/icones/gras.png" alt=""></button>
+		<button class="icon" id="insert_i" value="i"  data-info="Mettre en italique &lt;i&gt;le texte sélectionné&lt;/i&gt;"><img src="/skins/classic/icones/italique.png" alt=""></button>	
+		<button class="icon" id="insert_u" value="u" data-info="Souligner &lt;u&gt;le texte sélectionné&lt;/u&gt;"><img src="/skins/classic/icones/souligne.png" alt=""></button>
+		<button class="icon" id="insert_s" value="s" data-info="Barrer le &lt;strike&gt;texte sélectionné&lt;strike&gt;"><img src="/skins/classic/icones/barre.png" alt=""></button>	
+		<button class="icon" id="insert_spoil" value="spoil" data-info="Cacher le texte sélectionné"><img src="/skins/classic/icones/spoil.png" alt=""></button>
+		<button class="icon" id="insert_a" value="a" data-info="Insérer une adresse url"><img src="/skins/classic/icones/url.png" alt=""></button>
+		<button class="icon" id="insert_img" value="img" data-info="Insérer une image"><img src="/skins/classic/icones/img.png" alt=""></button>
+		<button class="icon" id="insert_youtube" value="youtube" data-info="Insérer une vidéo YouTube"><img src="/skins/classic/icones/youtube.png" alt=""></button>
+		<button class="icon" id="insert_dailymotion" value="dailymotion" data-info="Insérer une vidéo Dailymotion"><img src="/skins/classic/icones/dailymotion.png" alt=""></button>
+		<button class="icon" id="insert_audio" value="audio" data-info="Insérer un fichier audio"><img src="/skins/classic/icones/audio.png" alt=""></button>
+		<button class="icon" id="insert_file" value="file" data-info="Insérer un fichier"><img src="/skins/classic/icones/file.png" alt=""></button>
+		<button class="icon" id="insert_pdf" value="pdf" data-info="Insérer un fichier pdf"><img src="/skins/classic/icones/pdf.png" alt=""></button>
+		<button class="icon" id="insert_tex" value="tex" data-info="Insérer des formules scientifiques"><img src="/skins/classic/icones/tex.png" alt=""></button>
+		<button class="icon" id="insert_code" value="code" data-info="Insérer du code informatique"><img src="/skins/classic/icones/code.png" alt=""></button>
+		<button class="icon" id="insert_cite" value="cite" data-info="Insérer une citation"><img src="/skins/classic/icones/cite.png" alt=""></button>
+		<button class="icon" id="insert_abc" value="abc" data-info="Insérer une partition musicale"><img src="/skins/classic/icones/abc.png" alt=""></button>
+		<button class="icon" id="insert_map" value="map" data-info="Insérer une carte Google Maps"><img src="/skins/classic/icones/map.png" alt=""></button>
+		<button class="icon" id="insert_c" value="c" data-info="Table des caractères"><img src="/skins/classic/icones/char.png" alt=""></button>
+		<button class="icon" id="insert_signature" value="signature" data-info="Insérer une signature"><img src="/skins/classic/icones/signature.png" alt=""></button>
+		
+	<select id="insert_other" class="button">
+		<option id="insert_default" value="">Plus ...</option>
+		<option id="insert_table" title="Insérer une table" value="table">table</option>
+		<option id="insert_td" title="Insérer une colonne" value="td">td</option>
+		<option id="insert_tr" title="Insérer une ligne" value="tr">tr</option>
+		<option id="insert_size" title="Taille de police" value="size=">size=</option>
+		<option id="insert_font" title="Type de police" value="font=">font=</option>
 	</select>
 
 	<button id="mode_html" data-info="Édition en mode texte ou en mode ergonomique">&lt;/&gt;</button>

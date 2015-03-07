@@ -1,0 +1,498 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Nemo : Accès aux Newsgroups <!--Nemo::title--></title>
+<meta charset="UTF-8">
+<!--Nemo::base-->
+<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="stylesheet" data-theme="general" href="skins/classic/style.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" href="core/colorbox/colorbox.css" media="screen" />
+<meta property="og:image" content="http://news.nemoweb.net/nemo.png" />
+<meta name="Description" lang="fr" content="Nemo est une application web qui permet de navigueur sur un réseau de groupe de discussions" />
+<meta name="Keywords" lang="fr" content="forums, usenet, newsgroups, protocole JNTP, NNTP" />
+<script src="core/jquery/jquery-2.1.1.min.js"></script>
+<script src="core/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+<script src="core/colorbox/jquery.colorbox-min.js"></script>
+
+<script src="core/lib.jntp.js"></script>
+<script src="core/nemo.js"></script>
+</head>
+
+<body>
+
+<div id="chargement2" style="display:none">&nbsp;</div>
+<div id="img_top_left"></div>
+
+<div id="leftnav">
+	<div id="img_left"></div>
+
+	<div id="authentification">
+		<div class="title">Authentification</div>
+		<div class="content">
+			<form id="form_authentification" name="form_authentification">
+				<input id="user" type="text" placeholder="Entrez votre email"  autocomplete="on" required>
+				<input id="password" type="password" placeholder="Entrez votre mot de passe" required>
+				<input class="button" id="auth" type="submit" value="Go">
+			</form>
+			<div class="link forget_password">Mot de passe oublié?</div>
+		</div>
+	</div>
+
+	<div id="historique" style="display:none;">
+		<div class="title">Historique</div>
+		<div class="content">
+			<div id="articles_send">Articles envoyés</div>
+			<div id="articles_response">Réponses reçues</div>
+			<div id="articles_draft">Brouillon</div>
+		</div>
+	</div>
+
+	<div>
+		<div class="title">Groupes de discussion</div>
+		<div class="content">
+			<input id="search_newsgroup" type="text" size="20" placeholder="Rechercher des groupes">
+			<button class="button" id="voir_hierarchies">Voir les hiérarchies</button>
+			<hr>
+			<div class="categorie_groups">Favoris personnels</div>
+			<div id="favoris"><!--Nemo::favoris--><noscript><a href="/nemo.*/"><div class="newsgroup h" data-rwm="h">nemo.*</div></a></noscript></div>
+			<hr>
+			<div id="newsgroups"><!--Nemo::newsgroups--></div>
+		</div>
+	</div>
+
+	<div id="liste_hierarchies" style="display:none">
+		<div id="newsgroupsL1"></div>
+		<hr>
+		<div class="categorie_groups">NemoTags</div>
+		<div id="nemotags" >
+			<div class="icon_favori" data-name="#*" data-rwm="h"></div><div class="tri_favoris newsgroup h" data-name="#*" data-rwm="h">#*</div>
+		</div>
+	</div>
+
+</div> <!--/leftnav-->
+
+<div id="rightnav">
+
+	<noscript>
+	Votre navigateur ne supporte pas JavaScript. Le fonctionnement de Nemo requiert JavaScript. Veuillez activer cette option ou contacter votre administrateur.
+	</noscript>
+
+	<div id="top">
+		<a href="http://news.nemoweb.net" target="_blank"><div id="logo">&nbsp;</div></a>
+		<span data-info="Afficher la console" id="active_console">&nbsp;</span>
+		<div id="deconnexion" style="display:none">
+			<div data-info="Se déconnecter" id="deconnect">&nbsp;</div>
+		</div>
+
+		<div id="menu_bouton_top">
+		<button class="button" id="new_sujet">Nouveau sujet</button>
+		<button class="button" id="recherche_article">Rechercher</button>
+		<button class="button" id="parametres">Préférences</button>
+		<button class="button faq_nemo">FAQ</button>
+		<button class="button" id="accueil_nemo" style="display:none">Accueil</button>
+		<div id="chargement" class="button" style="display:none">&nbsp;</div>
+		</div>
+	</div> <!--/top-->
+
+	<div id="panneau_principal">
+
+		<table id="header_table">
+			<thead>
+				<tr>
+					<th id="tree" class="liste"></th>
+					<th id="Subject">Sujet</th>
+					<th id="FromName">Expéditeur</th>
+					<th id="InjectionDate">Date</th>
+					<th id="taille">			
+						<div id="eye" class="all"></div>
+					</th>
+				</tr>
+			</thead>
+		</table>
+	
+		<div id="scrollFil"><div id="fil_info" style="display:none"></div><table id="fil"><!--Nemo::fil--></table></div>
+
+		<div class="separateur">&nbsp;</div>
+
+		<div id="article">
+			<div id="article_header">
+				<button class="button" id="ban_article" style="display:none">Del</button>
+				<button class="button" id="supprimer_article">Annuler</button>
+				<button class="button" id="modifier_article">Modifier</button>
+				<button class="button" id="repondre">Répondre</button>
+				<button class="button" id="view_source">Voir source</button>
+				<button class="button" id="hide_source" style="display:none">Cacher la source</button>
+				<div><span class="champ_article">De </span><span class="champ_value" id="article_from"><!--Nemo::from--></span></div>
+				<div><span class="champ_article">Sujet </span><span class="champ_value" id="article_subject"><!--Nemo::subject--></span></div>
+				<div id="champ_article_replyto" style="display:none"><span class="champ_article">Réponse à </span><span class="champ_value" id="article_replyto"></span></div>
+				<div><span class="champ_article">Date </span><span class="champ_value" id="article_date"><!--Nemo::date--></span></div>
+				<div><span class="champ_article">Groupes </span><span class="champ_value" id="article_newsgroup"><!--Nemo::articlenewsgroups--></span></div>
+				<div id="article_header_fu2" style="display:none"><span class="champ_article">Faire suivre </span><span class="champ_value" id="article_fu2"></span></div>
+				<div>
+				<span id="voir_allThread">Voir tout le fil</span>&nbsp;
+				<span id="retour" style="display:none">Retour</span>&nbsp;
+				<span id="voir_references">Voir les références</span>&nbsp;
+				<span id="delete_citations" style="display:none">Voir moins de citations</span>&nbsp;
+				<span id="revoir_citations" style="display:none">Voir toutes les citations</span>&nbsp;
+				</div>
+				<div id="voir_supersede" class="supersede" style="display:none">Cet article a été modifié</div>
+				<div id="article_deleted" style="display:none">Article supprimé</div>
+				<div id="article_certification" data-info="" class="jntp_valid"></div>
+				<div id="like"><span id="compteur_like"></span></div>
+				<div id="references"></div>
+
+				<pre id="article_source" style="display:none"></pre>
+			</div>
+			<div id="article_body"><!--Nemo::article--></div>
+		</div>
+	</div><!--/panneau_principal-->
+
+	<div id="accueil">
+
+		<div class="content">
+
+		<h1>Qu'est-ce que Nemo ?</h1>
+
+		<p>Le projet Nemo est un moyen d’échange standardisé et décentralisé, pour publier des articles sur les groupes de discussion. Nemo propose une interface opérationnelle pour assurer l’interopérabilité des différents réseaux et logiciels de discussion, dans toute leur diversité : webforums, newsgroups, réseaux sociaux, groupes JNTP, etc…</p>
+		<p>L'application Nemo vous permet d'accéder aux groupes de discussions usenet, et diverses hiérarchies en cours de construction dont <span class="newsgroup link" data-name="nemo.*" data-rwm="h">nemo.*.</span></p>	
+		<p>Les articles rédigés et consultés avec Nemo, peuvent afficher divers types de contenus, tels que : images, fichiers au format PDF, formules mathématiques ou chimiques, partitions musicales, jeux d'échecs, cartes Google Maps, codes de programmes, fichiers audio, vidéos, tableaux formatés, dessins.</p>
+		<p>Il est également possible de joindre à un article des fichiers de toutes sortes : documents d'un traitement de texte ou d'un tableur, fichiers compressés de type ZIP et autres.</p>
+		<p>Vous trouverez plus d'informations sur le projet Nemo sur cette page : <a class="link" href="http://www.nemoweb.net/?p=811">http://www.nemoweb.net/?p=811</a></p>
+		<hr>
+
+		<h1>Inscription</h1>
+		<div id="box_inscription" title="Inscription sur Nemo">
+
+			<form id="form_inscription">
+
+			<fieldset>
+			<label for="inscription_email">Email</label>
+			<input name="inscription_email" type="email" id="inscription_email" placeholder="Entrez votre email" value="" required tabindex="2" maxlength="50">
+			</fieldset>
+
+			<fieldset>
+			<label for="inscription_password">Mot de passe</label>
+			<input name="inscription_password" type="password" id="inscription_password" placeholder="Entrez votre mot de passe" value="" required tabindex="3" maxlength="20">
+			<input class="button" id="inscription_send" type="submit" value="S'inscrire">
+			</fieldset>
+			</form>
+		</div><!--/box_inscription-->
+<hr>
+		<h1>Aide en ligne</h1>
+		<p>Si vous rencontrez un problème dans l'utilisation de l'interface, vous pouvez consulter la <button class="button faq_nemo">FAQ</button> ou poser votre question sur le forum <span class="newsgroup link" data-name="nemo.aide" data-rwm="h">nemo.aide.</span></p>
+<hr>
+
+		<h1>Soutenez le projet Nemo</h1>
+		<div>		
+		Nemo est un service entièrement gratuit, géré par des bénévoles. Pour nous aider à maintenir et à améliorer ce service, notamment par la puissance des serveurs, vous pouvez nous soutenir avec un don à votre convenance.
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="text-align:center">
+		<input type="hidden" name="cmd" value="_s-xclick">
+		<input type="hidden" name="hosted_button_id" value="X2RBCJH6G6GBQ">
+		<input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donate_SM.gif" name="submit" alt="PayPal - la solution de paiement en ligne la plus simple et la plus sécurisée !">
+		</form>
+		</div>
+
+<hr>
+		<h1>Abus et refus d'accès</h1>
+		<p>Tout abus dans l'utilisation de ce service, entraînera la suppression définitive du compte. Pour éviter les abus, nous vous suggérons de vous informer sur les usages de Usenet à l'adresse suivante : <a class="link" href="http://www.usenet-fr.net/fr-chartes/index.html">http://www.usenet-fr.net/fr-chartes/index.html</a>.</p>
+		</div>
+
+	</div><!--/accueil-->
+
+	<div id="footer">
+		<div>
+			<span id="jntp_server"></span>
+			<div id="nemo_licence">
+				<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.fr" target="_blank">Nemo est distribué sous Licence Creative Commons 
+				<img alt="Licence Creative Commons" style="border-width:0" src="skins/classic/img/by-nc-sa-3.0.png" /></a>
+			</div>
+
+		</div>
+	</div><!--/footer-->
+
+	<div class="logo_footer">
+		<div><a target="blank" href="http://news.nemoweb.net"><img height="40" src="nemo.png"></a></div>
+		<div><span id="nemo_version"></span></div>
+		Développé par <a id="mailAuthor">Julien Arlandis</a> 
+	</div>
+
+</div> <!--/rightnav-->
+
+
+<div id="send_form" style="display:none">
+
+	<div class="onglets">
+		&nbsp;
+		<div id="view_redaction" class="onglet selected" data-div="redaction">Rédaction</div>
+		<div id="view_rendu" class="onglet" data-div="rendu">Aperçu</div>
+		<div id="view_paint" class="onglet" data-div="paint_window">Dessin</div>
+	</div>
+
+	<div id="redaction">
+	<form id="form_post">
+
+	<fieldset>
+	<label for="formulaire_from">Expéditeur</label>
+	<input name="formulaire_from" id="formulaire_from" pattern=".*[^ \t\n].*" type="text" placeholder="Entrez votre nom" value="" required tabindex="1">
+	<input name="formulaire_email" type="email" title="email" id="formulaire_email" placeholder="Entrez votre email" value="" required tabindex="2">
+	</fieldset>
+
+	<fieldset>
+	<label for="formulaire_subject">Sujet</label>
+	<input name="formulaire_subject" id="formulaire_subject" pattern=".*[^ \t\n].*" type="text" placeholder="Entrez le sujet de votre article" required tabindex="3">
+	</fieldset>
+
+	<fieldset>
+	<label for="formulaire_newsgroup">Newsgroups</label>
+	<input name="formulaire_newsgroup" id="formulaire_newsgroup" type="text" value="" placeholder="Saisissez les groupes séparés par une virgule" required tabindex="4">
+	</fieldset>
+
+	<fieldset>
+	<label for="formulaire_fu2">Faire suivre</label>
+	<input name="formulaire_fu2" id="formulaire_fu2" type="text" value="" placeholder="Newsgroup de redirection" tabindex="5">
+	<input name="formulaire_xpostmail" id="formulaire_xpostmail" type="text" value="" placeholder="Saisissez une adresse email" tabindex="5">
+
+	<input class="button" id="formulaire_send" type="submit" value="Envoyer">
+	<input class="button" id="formulaire_update" type="submit" value="Modifier" style="display:none">
+	<input id="formulaire_supersede" type="hidden">
+	</fieldset>
+	</form>
+
+	<div class="ui-widget">
+	  <div id="select_newsgroups"></div>
+	</div>
+
+	<div id="barre_boutons">
+	<button class="button" id="insert_b" value="b" data-info="Mettre en gras <strong>le texte sélectionné</strong>"><b style="font-weight:900">b</b></button>
+	<button class="button" id="insert_i" value="i" data-info="Mettre en italique <i>le texte sélectionné</i>"><i>i</i></button>
+	<button class="button" id="insert_u" value="u" data-info="Souligner <u>le texte sélectionné</u>"><u>u</u></button>
+	<button class="button" id="insert_s" value="s" data-info="Barrer le <strike>texte sélectionné<strike>"><s>s</s></button>
+	<button class="button" id="insert_a" value="a" data-info="Insérer un lien">a</button>
+	<button class="button" id="insert_img" value="img" data-info="Insérer des images">img</button>
+	<button class="button" id="insert_file" value="file" data-info="Insérer des fichiers" >file</button>
+	<button class="button" id="insert_pdf" value="pdf" data-info="Insérer des document PDF">pdf</button> 
+	<button class="button" id="insert_spoil" value="spoil" data-info="Cacher le texte sélectionné">spoil</button>
+	<button class="button" id="insert_tex" value="tex" data-info="Insérer des formules scientifiques">tex</button>
+	<button class="button" id="insert_code" value="code" data-info="Insérer du code source">code</button>
+	<button class="button" id="insert_cite" value="cite" data-info="Insérer des citations">cite</button>
+	<button class="button" id="insert_signature" value="signature" data-info="Insérer une signature">signature</button>
+	<button class="button" id="insert_c" value="c" data-info="Table des caractères">c</button>
+
+	<select class="button" id="insert_other">
+	<option id="insert_default" value="">Autres</option>
+	<option id="insert_abc" value="abc" data-info="Insérer des partitions musicales">abc</option>
+	<option id="insert_map" value="map" data-info="Insérer des cartes google map">map</option>
+	<option id="insert_audio" value="audio" data-info="Insérer des fichiers audio">audio</option>
+	<option id="insert_youtube" value="youtube" data-info="Insérer des vidéos youtube">youtube</option>
+	<option id="insert_dailymotion" value="dailymotion" data-info="Insérer des vidéos dailymotion">dailymotion</option>
+	<option id="insert_table" value="table" data-info="Insérer des tables">table</option>
+	<option id="insert_td" value="td" data-info="Insérer des colonnes">td</option>
+	<option id="insert_tr" value="tr" data-info="Insérer des lignes">tr</option>
+	<option id="no_balise" value="[ => [c=91], ] => [c=93]" data-info="Neutraliser les balises">[c]</option>
+	</select>
+
+	<button id="mode_html" data-info="Édition en mode texte ou en mode ergonomique">&lt;/&gt;</button>
+
+	<div class="insert_c insert_media" style="display:none">
+		<div id="typeChar">
+			<div data-value="reserved">Caractères réservés</div>
+			<div data-value="math">Symboles mathématiques</div>
+			<div data-value="money">Symboles monétaires</div>
+			<div data-value="grec">Alphabet Grec</div>
+			<div data-value="ponctuation">Caractères de ponctuation</div>
+			<div data-value="smiley">Smileys</div>
+		</div>
+		<div id="listeChar"></div>
+	</div>
+
+	<div class="insert_img insert_media" style="display:none">
+	<p>
+	Ajouter une image depuis votre ordinateur<br>
+	Types de fichiers autorisés: jpg, jpeg, png, gif<br>
+	Taille limite autorisée : <span class="limit_size_file"></span><br>
+	<input class="button" id="add_img" type="file" accept="image/png, image/gif, image/jpeg">
+	<p>
+	Depuis une URL :
+	<input id="add_img_url" type="text" size="50">
+	<button class="button" id="submit_img_url">Ok</button>
+	</div>
+
+	<div class="insert_pdf insert_media" style="display:none">
+	<p>
+	Ajouter un fichier pdf depuis votre ordinateur<br>
+	Taille limite autorisée : <span class="limit_size_file"> </span><br>
+	<input class="button" id="add_pdf" type="file" accept="application/pdf">
+	<p>
+	Depuis une URL :
+	<input id="add_pdf_url" type="text" size="50">
+	<button class="button" id="submit_pdf_url">Ok</button>
+	</div>
+
+	<div class="insert_file insert_media" style="display:none">
+	<p>
+	Ajouter un fichier depuis votre ordinateur<br>
+	Taille limite autorisée : <span class="limit_size_file"> </span><br>
+	<input class="button" id="add_file" type="file">
+	</div>
+
+	<div id="list_file"></div>
+
+	<div id="medias_info"></div>
+	</div>
+
+	<textarea name="formulaire_body" id="formulaire_body" style="word-wrap:normal" tabindex="6" contentEditable></textarea>
+	<div id="formulaire_body_html" style="display:none" contentEditable> </div>
+
+	</div><!--/redaction-->
+
+	<div id="rendu"></div><!--/rendu-->
+
+	<div id="paint_window">
+		<div style="margin:0 0 0 0; cursor:crosshair; position:relative; width:640px; height:450px; background-color: #FFFFFF; border-style: solid; border-width: 2px;">
+			<canvas id="paint" width="640" height="450" style="z-index: 2; opacity:1; position:absolute; left:0px; top:0px; margin:0 0 0 0; cursor:crosshair;">
+			</canvas>
+			<canvas id="effect" width="640" height="450" style="z-index: 1; opacity:1; position:absolute; left:0px; top:0px; margin:0 0 0 0; cursor:crosshair;">
+			</canvas>
+		</div>
+		<input type="color" id="mycolor" value="#000000">
+		noirceur : <input type="range" id="noirceur" min="0" max="1" step="0.002" value="0.25" style="width: 100px">
+		épaisseur : <input type="range" id="thickness" min="0" max="130" step="2" value="40" style="width: 100px">
+		<button class="button" id="clear_dessin">Effacer</button>
+		<button class="button" id="capture_dessin">Joindre le dessin</button>
+	</div><!--/paint_window-->
+
+</div><!--/send_form-->
+
+
+<div id="content_console" style="display:none" title="Console">
+	<pre id="log"></pre>
+	<input id="console" type="text">
+	<div class="console_options"> 
+	<input id="req_client" type="checkbox" checked> Client &nbsp;&nbsp;&nbsp;
+	<input id="req_serveur" type="checkbox" checked> Serveur &nbsp;&nbsp;&nbsp;
+	</div>
+</div><!--/content_console-->
+
+<div id="config_nemo" style="display:none" title="Préférences">
+
+<div class="accordeon">
+	<h3>Paramètres serveur</h3>
+	<div>
+
+	<div><span>Serveur JNTP : </span> <input type="text" id="host_jntp" style="width:300px;" value="" ></div>
+	<hr>
+	<div><span>Expéditeur : </span> <input type="text" id="fromname" style="width:300px;"></div>
+	<div><span>Email visible : </span> <input type="text" id="frommail" style="width:300px;"></div>
+	<div><span>Email de réponse : </span> <input type="text" id="replyto" style="width:300px"></div>
+	<div><span>Signature : </span> <br><textarea id="signature" style="width:500px"></textarea></div>
+
+	</div>
+	<h3>Configuration du client</h3>
+	<div>
+
+	<div>
+	<button class="button" style="float:right" id="generate_secret_key">Générer une nouvelle clé</button>
+	<span>Cette clé permet de générer une empreinte sur vos articles pour authentifier les suppressions et les modifications futures.</span>
+	<br>
+	<span id="secret_key"></span>
+	</div>
+
+	<hr>
+
+	<p><p>
+	<div><input type="checkbox" id="confirm_send_article" value="1" checked><span>Confirmer l'envoi d'un message </span></div>
+	<p><p>
+	<div><input type="checkbox" id="active_popup" value="1"><span> Fenêtre rédaction dans une popup </span></div>
+	<p><p>
+	<hr>
+	<div><span>Nombre d'articles maximum à charger : </span> <input id="total_article" type="range" value="250" max="1000" min="50" step="10">&nbsp;<output for="total_article"></output></div>
+	<br>
+
+	<div>
+	<span> Choix du thème : </span>
+	<select class="button" id="styleName">
+	</select>
+	</div>
+	</div>
+	<h3>Mon compte</h3>
+	<div>
+
+		<div>
+		<input type="text" id="email" style="width:320px">&nbsp;<button class="button" id="change_email">Modifier l'email</button>
+		</div>
+		<p><p>
+		<hr>
+		<div>
+			<div>
+			<span>Ancien mot de passe : </span> <input type="password" id="oldPassword" style="width:150px">
+			</div>
+			<div>
+			<span>Nouveau mot de passe : </span> <input type="password" id="newPassword" style="width:150px">
+		</div>
+		<button class="button" id="change_password">Modifier le mot de passe</button>
+		</div>
+	</div>
+
+	<h3>Liste noire</h3>
+	<div>
+		<div>
+		<textarea id="blacklist" style="width:500px; height:180px;"></textarea>
+		</div>
+	</div>
+</div>
+<button class="button" id="delete_localStorage">Effacer le local storage</button>
+<button class="button" id="valid_config">Quitter</button>
+</div><!--/config_nemo-->
+
+
+<div id="config_recherche" style="display:none" title="Recherche d'articles">
+
+	Jid : <input id="jid_value" type="text" size="70" value="">
+	<p>
+	<button class="button" id="recherche_article_jid">Rechercher cet article</button>
+	<hr>
+	<p>
+	Newsgroups : <input id="newsgroups_value" type="text" size="70" value="">
+	<p>
+	<select class="button" id="article_filter1">
+		<option selected value="Data.UserAgent">UserAgent</option>
+		<option value="Data.Subject">Subject</option>
+		<option value="Data.FromName">FromName</option>
+		<option value="Data.FromMail">FromMail</option>
+	</select>
+	<input id="article_value1" type="text" size="70" value="Nemo">
+	<p>
+	<button class="button" id="recherche_article_go">Rechercher les articles</button>
+	<p>
+
+</div><!--/config_recherche-->
+
+<div id="recup_password" style="display:none" title="Récupérer le mot de passe">
+Inscrivez votre email : <input id="email_recup_password" type="text" size="50" value="">
+<button class="button" id="valid_recup_password">Go</button>
+<div id="info_recup_password"></div>
+</div><!--/recup_password-->
+
+
+<div id="contextMenu" data-ID="" style="display:none">
+	<hr>
+	<div data-menu="mark_lu"> <span style="font-style: italic; text-decoration:underline; ">article(s)</span> : marquer <span style="font-style: italic; text-decoration:underline; "> lu</span> </div>
+	<div data-menu="mark_nonlu"> <span style="font-style: italic; text-decoration:underline; ">article(s)</span> : marquer <span style="font-style: italic; text-decoration:underline; "> non lu</span> </div>
+	<div data-menu="mark_nonlu_tous"> Toute la <span style="font-style: italic; text-decoration:underline; ">hiérarchie</span> : marquer <span style="font-style: italic; text-decoration:underline; ">non‌ lue</span> </div>
+	<div data-menu="mark_lu_tous"> Toute la <span style="font-style: italic; text-decoration:underline; ">hiérarchie</span> : marquer <span style="font-style: italic; text-decoration:underline; ">lue</span> </div>
+	<div data-menu="mark_nonlu_branche"> Tout le <span style="font-style: italic; text-decoration:underline; ">fil</span> : marquer <span style="font-style: italic; text-decoration:underline; ">non‌ lu</span></div>
+	<div data-menu="mark_lu_branche"> Tout le <span style="font-style: italic; text-decoration:underline; ">fil</span> : marquer <span style="font-style: italic; text-decoration:underline; ">lu</span></div>
+	<hr>
+	<div data-menu="open_window"> Ouvrir dans une nouvelle fenêtre </div>
+	<hr>
+	<div data-menu="blacklist"> Blacklister cet utilisateur</div>
+	<hr>
+	<div data-menu="load_more"> Voir plus d'articles </div>
+</div><!--/contextMenu-->
+
+<div id="infobulle" style="display:none"></div>
+<div id="faq" title="Foire Aux Questions" style="display:none"></div>
+<div id="dialog-alert" title="Alerte" style="display:none"></div>
+<!--Nemo::ID-->
+</body>
+</html>

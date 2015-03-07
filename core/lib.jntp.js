@@ -376,7 +376,10 @@ uniqueJSON: function(json, isrecursiv) {
 
 		var new_value = {};
 		for (var i in tmp_array) {
-			if (typeof json[tmp_array[i]] == 'string' && json[tmp_array[i]].length > 27) {
+
+			var re = /([\u0080-\u07FF\uD800-\uDFFF])|([\u0800-\uFFFF])/g;
+
+			if (typeof json[tmp_array[i]] == 'string' && json[tmp_array[i]].replace(re, "$1$1$2$2$2").length > 27) {
 				new_value['#'+tmp_array[i]] = hashString(json[tmp_array[i]]);
 			}else{
 				new_value[tmp_array[i]] = JNTP.uniqueJSON(json[tmp_array[i]], true);

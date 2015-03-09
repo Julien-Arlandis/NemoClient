@@ -2168,7 +2168,7 @@ $(document).ready(function() {
 	Nemo.plugins.balise.code = {
 		load: function(params) {
 			var div = 'code' + Math.floor(Math.random()*1e10);
-			$.getScript("plugins/code/run_prettify.js").done(function(script, textStatus) {
+			$.getScript(JNTP.url+"/plugins/code/run_prettify.js").done(function(script, textStatus) {
 				var reg = '(\\[code\\])([\\s\\S]*?)(\\[\\/code\\])';
 				var reg = new RegExp(reg, 'g');
 				$('#'+params.div).html( $('#'+params.div).html().replace(reg,'<div id="'+div+'" class="code"><code class="prettyprint linenums">$2</code></div>') );
@@ -2235,7 +2235,7 @@ $(document).ready(function() {
 
 	Nemo.plugins.module.painting = {
 		load: function(params) {
-			$.getScript("plugins/painting/painting.js").done(function(script, textStatus) {
+			$.getScript(JNTP.url+"/plugins/painting/painting.js").done(function(script, textStatus) {
 				painting();
 			})
 		}

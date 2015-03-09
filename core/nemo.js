@@ -2285,7 +2285,7 @@ $(document).ready(function() {
 	};
 
 	if(window.location.host.length == 0) {
-		JNTP.url = 'http://news2.nemoweb.net';
+		JNTP.url = 'http://devnews.nemoweb.net';
 	}else{
 		if ($('#host_jntp').val().length == 0) {
 			JNTP.url = 'http://'+window.location.host;

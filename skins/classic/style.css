@@ -1117,7 +1117,9 @@ label {
 	display: inline-flex;
 	display: -webkit-inline-flex;
 	margin-right: -3px;
-	padding: 2px 0;
+	padding: 2px 3px 2px 3px;			/*Chrome & IE11*/
+	height: 34px;						/*FF*/
+	width: 34px;						/*FF*/
 }
  
 .icon:hover {

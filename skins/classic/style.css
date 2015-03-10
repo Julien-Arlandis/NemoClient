@@ -1104,7 +1104,7 @@ label {
 	border-right: 1px solid gray;
 	border-top: 1px solid gray;
 	margin-top: 5px;
-	padding: 2px 3px 2px 3px;			/*Chrome & IE11*/
+	padding: 2px 0 2px 2px;
 	background: #c4c4c4; /* Old browsers */
 	background: linear-gradient(to bottom,  #c4c4c4 0%,#eaeaea 100%); /* W3C */
 }

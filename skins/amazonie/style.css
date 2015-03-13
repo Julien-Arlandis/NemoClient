@@ -1,7 +1,7 @@
 @import url(ui-lightness/jquery-ui-1.10.2.custom.min.css);
 
 /*-----------------------------------------------------------------------------------
-	Interface Amazonie - Mise à jour Nemo/0.993x - 2015-03-07
+	Interface Amazonie - Mise à jour Nemo/0.996e - 2015-03-10
 ---------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -993,7 +993,7 @@ label {												/*Titres champs Rédaction*/
 	white-space: nowrap;
 	margin-right: 8px;									/*MOD pour thèmes*/
 	text-align: right;
-	color: #673500;										/*MOD pour thèmes*/
+	color: #472e00;										/*MOD pour thèmes*/
  }
 
 #send_form {
@@ -1057,9 +1057,33 @@ label {												/*Titres champs Rédaction*/
 	border-right: 1px solid #472E00;						/*MOD pour thèmes*/
 	border-top: 1px solid #472E00;							/*MOD pour thèmes*/
 	margin-top: 5px;
-	padding: 2px 0 2px 5px;
+	padding: 2px 3px 2px 2px;		/*IE OK*/
 	background: #ffffbb;
-	background: linear-gradient(to bottom, #ffffbb 0%,#ffffee 100%);
+	background: linear-gradient(to bottom, #edc890 0%,#f3e2c7 100%); /* W3C */
+}
+
+.icon {
+	background: #f2f2f2; /* Old browsers */
+	background: linear-gradient(to bottom, #fff8e8 5%,#f4d786 100%); /* W3C */
+	border: 1px solid #a88146;
+	border-radius:5px;
+	display: inline-flex;
+	display: -webkit-inline-flex;
+	margin-right: -3px;
+	padding: 2px 3px 2px 3px;			/*Chrome & IE11*/
+	height: 34px;						/*FF*/
+	width: 34px;						/*FF*/
+}
+
+.icon:hover {
+	background: #e5e5e5; /* Old browsers */
+	background: linear-gradient(to bottom, #f4d786 0%,#fff8e8 95%); /* W3C */
+	cursor: pointer;
+}
+
+#insert_other {
+    height: 34px;
+    vertical-align: top;
 }
 
 #rendu {
@@ -1153,6 +1177,43 @@ label {												/*Titres champs Rédaction*/
 
 #mode_html.actif {
 	opacity: 1;
+}
+
+.insert_c {										/*Table de caractères*/
+    display: inline-flex;
+    width: 98%;
+}
+#typeChar {
+	border-right: 1px solid #472e00;
+	cursor: pointer;
+	float: left;
+	min-width: 200px;
+	padding-left: 2px;							/*MOD*/
+	padding-top: 10px;
+}
+#typeChar div[data-value]:hover {
+    background: #EEFF86;
+}
+#listeChar {
+    font-family: "DejaVu Sans Mono";
+    font-weight: normal;
+    margin-left: 10px;
+    padding-top: 10px;
+}
+.oneChar {
+    cursor: pointer;
+    display: inline-block;
+    font-size: 20px;
+    height: 25px;
+    margin-right: 10px;
+    text-align: center;
+    vertical-align: bottom;
+    width: 20px;
+}
+.oneChar:hover {
+    color: green;
+    font-size: 160%;
+    font-weight: bold;
 }
 
 /* -----------------------

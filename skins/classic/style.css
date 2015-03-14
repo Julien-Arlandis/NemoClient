@@ -1,7 +1,7 @@
 @import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.996e - 2015-03-13
+	Interface Classic - Mise à jour Nemo/0.996e - 2015-03-14
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -1307,12 +1307,12 @@ label {
 	border-bottom: 1px solid gray;
 	border-left: 1px solid gray;
 	border-right: 1px solid gray;
-	border-radius: 10px 10px 6px 10px;
+	border-radius: 10px 10px 10px 10px;				/*MOD*/
 	margin-top: 10px;
 	overflow-x: hidden;
 }
 
-#leftnav .title{
+#leftnav .title {
 	text-align: center;
 	font-weight:bold;
 	line-height: 22px;

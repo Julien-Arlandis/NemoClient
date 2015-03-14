@@ -1,8 +1,8 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
-/* -----------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.996e - 2015-03-14
--------------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------------
+	Interface Classic - Mise à jour Nemo/0.996e - 2015-03-15
+--------------------------------------------------------------------------------- */
 
 /* -----------------------
 	Positionnement
@@ -116,7 +116,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	background: linear-gradient(to bottom, #ededed 5%,#dfdfdf 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#dfdfdf',GradientType=0 ); /* IE6-9 */
 	border: 1px solid gray;
-	border-radius: 0px 0px 10px 10px;
+	border-radius: 0px 0px 4px 4px;
 }
 
 #contextMenu {
@@ -205,7 +205,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	background: -ms-linear-gradient(top, #dfdfdf 5%,#ededed 100%); /* IE10+ */
 	background: linear-gradient(to bottom, #dfdfdf 5%,#ededed 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dfdfdf', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
-	border-radius: 10px 10px 0px 0px;
+	border-radius: 4px 4px 0px 0px;
 	border-top: 1px solid gray;
 	border-left: 1px solid gray;
 	border-right: 1px solid gray;
@@ -668,7 +668,7 @@ tr.color{
 	color: green;
 }
 
-#voir_references:hover, #delete_citations:hover, #revoir_citations:hover, #voir_allThread:hover, #retour:hover, a:hover {
+#voir_references:hover, #delete_citations:hover, #revoir_citations:hover, #voir_allThread:hover, a:hover {
 	background-color: #FFFFFF;
 }
 
@@ -730,10 +730,11 @@ tr.color{
 }
 
 .icon_favori {
-	margin-right:3px;
-	float: left;
-	width: 8px;
-	height: 12px;
+    float: left;
+    height: 12px;
+    margin-left: 2px;
+    margin-right: 3px;
+    width: 8px;
 }
 
 .add_favori {
@@ -1104,7 +1105,7 @@ label {
 	border-right: 1px solid gray;
 	border-top: 1px solid gray;
 	margin-top: 5px;
-	padding: 2px 3px 2px 2px;
+	padding: 1px 4px 1px 1px;
 	background: #c4c4c4; /* Old browsers */
 	background: linear-gradient(to bottom,  #c4c4c4 0%,#eaeaea 100%); /* W3C */
 }
@@ -1116,10 +1117,10 @@ label {
 	border-radius:5px;
 	display: inline-flex;
 	display: -webkit-inline-flex;
-	margin-right: -3px;
+	margin-right: -1.5px;				/*Modifier en fonction du nb d'icônes*/
 	padding: 2px 3px 2px 3px;			/*Chrome & IE11*/
-	height: 34px;						/*FF*/
-	width: 34px;						/*FF*/
+	height: 28px;						/*FF*/
+	width: 28px;						/*FF*/
 }
  
 .icon:hover {
@@ -1128,9 +1129,24 @@ label {
 	cursor: pointer;
 }
 
+.icon_img {
+	height: 20px;
+	width: 20px;
+}
+
 #insert_other {
-    height: 34px;
-    vertical-align: top;
+	background: #e5e5e5; /* Old browsers */
+	background: linear-gradient(to bottom,  #e5e5e5 0%,#f2f2f2 100%); /* W3C */
+	border: 1px solid grey;
+	box-shadow: none;
+	height: 28px;
+	text-shadow: 1px 1px 1px white;
+	vertical-align: top;
+}
+
+#insert_other:hover {
+	background: #f2f2f2; /* Old browsers */
+	background: linear-gradient(to bottom,  #f2f2f2 0%,#e5e5e5 100%);
 }
 
 #rendu {
@@ -1307,7 +1323,7 @@ label {
 	border-bottom: 1px solid gray;
 	border-left: 1px solid gray;
 	border-right: 1px solid gray;
-	border-radius: 10px 10px 10px 10px;				/*MOD*/
+	border-radius: 4px;							/*MOD*/
 	margin-top: 10px;
 	overflow-x: hidden;
 }
@@ -1329,7 +1345,7 @@ f	ilter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dfdfdf', en
 }
 
 input {
-	border-radius: 10px 10px 10px 10px;
+	border-radius: 4px;
 }
 
 #voir_hierarchies {
@@ -1357,21 +1373,24 @@ input {
 }
 
 #articles_send, #articles_draft, #articles_response {
-	margin-left: 12px;
-	margin-top: 10px;
-	margin-right:15px;
-	font-weight:bold;
-	cursor: pointer;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-top: 10px;
+    padding-left: 5px;
 }
 
-
 #articles_send.actif, #articles_draft.actif, #articles_response.actif {
-	background-color: #E0FFFF;
+	background-color: #ddffdd;
+	border-radius: 4px;
+	box-shadow: 2px 2px 2px #888888;
+	padding-left: 5px;
 }
 
 #articles_send:hover, #articles_draft:hover,  #articles_response:hover {
-	font-weight:bold;
 	background-color: #fcecda;
+	border-radius: 4px;
 }
 
 hr {
@@ -1393,6 +1412,7 @@ hr {
 
 .w:hover, .r:hover, .h:hover, .newsgroup:hover {
 	background-color: #fcecda;
+	border-radius: 4px;
 }
 
 .newsgroup:hover {
@@ -1443,7 +1463,9 @@ hr {
 }
 
 .newsgroup.actif{
-	background-color: #E0FFFF;
+	background-color: #ddffdd;
+	border-radius: 4px;
+    box-shadow: 2px 2px 2px #888888;
 }
 
 /*

@@ -668,7 +668,7 @@ tr.color{
 	color: green;
 }
 
-#voir_references:hover, #delete_citations:hover, #revoir_citations:hover, #voir_allThread:hover, a:hover {
+#voir_references:hover, #delete_citations:hover, #revoir_citations:hover, #voir_allThread:hover, #retour:hover, a:hover {
 	background-color: #FFFFFF;
 }
 

@@ -162,9 +162,9 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	position: absolute;
 	z-index: 500;
 	border: 1px solid gray;
-	-moz-border-radius: 5px;								/*MOD*/
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
+	-moz-border-radius: 4px;								/*MOD*/
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
 	padding: 1px 4px 1px 4px;								/*MOD*/
 	margin-left: -80px;
 }
@@ -313,6 +313,72 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	font-weight: bold;
 	line-height: 35px;										/*MOD - New*/
 	height: 35px;											/*MOD - New*/
+}
+
+#recup_password {									/*NEW - Pop-in MDP*/
+    font-weight: bold;
+    text-align: center;
+}
+
+#email_recup_password {								/*NEW - Aligner input*/
+    margin: 10px 0px;
+    position: relative;
+}
+
+#config_recherche, #recup_password {					/*NEW - Pop-in Recherche + MDP*/
+	border: 1px solid gray;
+	border-radius: 4px;
+	font-weight: bold;
+	padding-top: 10px;
+}
+
+#jid_value, #newsgroups_value, #article_value1 {		/*NEW - Aligner input*/
+	float: right;
+}
+
+#article_filter1 {									/*NEW - Bouton liste déroulante*/
+	background: linear-gradient(to bottom, #e5e5e5 0%, #f2f2f2 100%);
+	border: 1px solid grey;
+	box-shadow: 0 1px 0 0 lightgray inset;
+	text-shadow: 1px 1px 1px white;
+}
+
+#recherche_article_jid, #recherche_article_go, #change_email, #change_password, #valid_recup_password {								/*NEW - Centrer boutons*/
+    display: block;
+    margin: auto;
+}
+
+#article_filter1:hover {								/*NEW - Bouton liste déroulante*/
+    background: linear-gradient(to bottom, #f2f2f2 0%, #e5e5e5 100%);
+}
+
+#config_nemo {										/*NEW - Pop-in Préférences*/
+	border: 1px solid gray;
+	border-radius: 4px;
+}
+
+#ui-accordion-1-panel-0 {							/*NEW - Paramètres serveur*/
+	font-weight: bold;
+}
+
+#host_jntp, #fromname, #frommail, #replyto {			/*NEW - Aligner input*/
+	left: 5px;
+	margin-bottom: 5px;
+	position: relative;
+}
+
+#ui-accordion-1-panel-1 {							/*NEW - Configuration du client*/
+    font-weight: bold;
+}
+
+#ui-accordion-1-panel-2 {							/*NEW - Mon compte*/
+    font-weight: bold;
+}
+
+#oldPassword, newPassword {							/*NEW - Aligner input*/
+	left: 11px;
+	margin-bottom: 5px;
+	position: relative;
 }
 
 /* -----------------------
@@ -668,7 +734,7 @@ tr.color{
 	color: green;
 }
 
-#voir_references:hover, #delete_citations:hover, #revoir_citations:hover, #voir_allThread:hover, a:hover {
+#voir_references:hover, #delete_citations:hover, #revoir_citations:hover, #voir_allThread:hover, #retour:hover, a:hover {
 	background-color: #FFFFFF;
 }
 
@@ -710,23 +776,23 @@ tr.color{
     background-image: url("img/like_bouton.png");
     background-position: left center;
     background-repeat: no-repeat;
-    background-size: 21px 21px;
+    background-size: 29px 29px;
     cursor: pointer;
     display: inline;
-    height: 22px;
+    height: 29px;
     position: absolute;
-    right: 52px;
-    top: 70px;
-    width: 28px;
+    right: 60px;
+    top: 45px;
+    width: 29px;
 }
 
 #compteur_like {
     color: black;
     font-family: arial;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: normal;
-    margin-left: 26px;
-    vertical-align: sub;
+    margin-left: 33px;
+    vertical-align: -7px;
 }
 
 .icon_favori {
@@ -754,15 +820,15 @@ tr.color{
 }
 
 #article_certification.jntp_valid {
-	position: absolute;
-	top:38px;
-	right:10px;
-	height:30px;
-	width:70px;
-	background-image:url(img/jntp_logo.png);
-	background-size: 70px;
-	background-repeat:no-repeat;
-	background-position:center center;
+    background-image: url("img/jntp_logo.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 29px auto;
+    height: 29px;
+    position: absolute;
+    right: 95px;
+    top: 45px;
+    width: 28px;
 }
 
 #article_certification.jntp_invalid {
@@ -1034,12 +1100,13 @@ fieldset {
 }
 
 label {
-	line-height: 22px;
-	float: left;
-	width: 110px;
-	white-space: nowrap;
-	margin-right: 3px;
-	text-align: right;
+    float: left;
+    font-weight: bold;									/*MOD*/
+    line-height: 22px;
+    margin-right: 8px;
+    text-align: right;
+    white-space: nowrap;
+    width: 110px;
 }
 
 #send_form {
@@ -1451,8 +1518,9 @@ hr {
 }
 
 #liste_hierarchies {
-	font-size: 13px;
-	margin-top: 10px;
+	border: 1px solid grey;
+	border-radius: 4px;
+	font-size: 13px
 }
 
 .categorie_groups {
@@ -1465,7 +1533,7 @@ hr {
 .newsgroup.actif{
 	background-color: #ddffdd;
 	border-radius: 4px;
-    box-shadow: 2px 2px 2px #888888;
+    box-shadow: 2px 1px 1px #888888;
 }
 
 /*
@@ -1513,7 +1581,8 @@ h1>img {
 	background-image:url(../../faq_img/faq_moins.png); 
 } 
 
-.question:hover {background-color:#F9F9F9;} {
+.question:hover {
+	background-color:#F9F9F9;
 	margin-left:0px;
 	clear:both;  
 }

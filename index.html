@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html>
 <head>
 <title>Nemo : Accès aux Newsgroups <!--Nemo::title--></title>
@@ -211,7 +211,7 @@
 	</div><!--/footer-->
 
 	<div class="logo_footer">
-		<div><a target="blank" href="http://news.nemoweb.net"><img height="40" src="nemo.png"></a></div>
+		<div><a target="blank" href="http://news.nemoweb.net"><img alt="" height="40" src="nemo.png"></a></div>
 		<div><span id="nemo_version"></span></div>
 		Développé par <a id="mailAuthor">Julien Arlandis</a> 
 	</div>
@@ -399,12 +399,13 @@
 	<h3>Paramètres serveur</h3>
 	<div>
 
-	<div><span>Serveur JNTP : </span> <input type="text" id="host_jntp" style="width:300px;" value="" ></div>
-	<hr>
-	<div><span>Expéditeur : </span> <input type="text" id="fromname" style="width:300px;"></div>
-	<div><span>Email visible : </span> <input type="text" id="frommail" style="width:300px;"></div>
-	<div><span>Email de réponse : </span> <input type="text" id="replyto" style="width:300px"></div>
-	<div><span>Signature : </span> <br><textarea id="signature" style="width:500px"></textarea></div>
+	<div><label for="host_jntp">Serveur JNTP </label> <input type="text" value="" style="width:300px;" id="host_jntp"></div>
+	<p> </p>
+	<div><label for="fromname">Expéditeur </label> <input type="text" style="width:300px;" id="fromname"></div>
+	<div><label for="frommail">Email visible </label> <input type="text" style="width:300px;" id="frommail"></div>
+	<div><label for="replyto">Email de réponse </label> <input type="text" style="width:300px" id="replyto"></div>
+	<p> </p>
+	<div><span>Signature </span> <br><textarea id="signature" style="width:500px"></textarea></div>
 
 	</div>
 	<h3>Configuration du client</h3>
@@ -420,16 +421,16 @@
 	<hr>
 
 	<p><p>
-	<div><input type="checkbox" id="confirm_send_article" value="1" checked><span>Confirmer l'envoi d'un message </span></div>
+	<div><input type="checkbox" id="confirm_send_article" value="1" checked><span>&nbsp;Confirmer l'envoi d'un message </span></div>
 	<p><p>
-	<div><input type="checkbox" id="active_popup" value="1"><span> Fenêtre rédaction dans une popup </span></div>
+	<div><input type="checkbox" id="active_popup" value="1"><span>&nbsp;Fenêtre rédaction dans une fenêtre pop-up </span></div>
 	<p><p>
 	<hr>
-	<div><span>Nombre d'articles maximum à charger : </span> <input id="total_article" type="range" value="250" max="1000" min="50" step="10">&nbsp;<output for="total_article"></output></div>
+	<div><span>Nombre d'articles maximum à charger </span> <input id="total_article" type="range" value="250" max="1000" min="50" step="10">&nbsp;<output for="total_article"></output></div>
 	<br>
 
 	<div>
-	<span> Choix du thème : </span>
+	<span> Choix du thème&nbsp;&nbsp;</span>
 	<select class="button" id="styleName">
 	</select>
 	</div>
@@ -438,16 +439,17 @@
 	<div>
 
 		<div>
-		<input type="text" id="email" style="width:320px">&nbsp;<button class="button" id="change_email">Modifier l'email</button>
-		</div>
-		<p><p>
+		<span>Modifier votre email d'authentification&nbsp;&nbsp;</span>
+		<input type="text" id="email" style="width:320px"><p></p><button class="button" id="change_email">Modifier l'email</button>
+		</div><p><p>
 		<hr>
+		<p><p>
 		<div>
 			<div>
-			<span>Ancien mot de passe : </span> <input type="password" id="oldPassword" style="width:150px">
+			<span>Ancien mot de passe&nbsp;&nbsp;</span> <input type="password" id="oldPassword" style="width:150px">
 			</div>
 			<div>
-			<span>Nouveau mot de passe : </span> <input type="password" id="newPassword" style="width:150px">
+			<span>Nouveau mot de passe&nbsp;&nbsp;</span> <input type="password" id="newPassword" style="width:150px"><p></p>
 		</div>
 		<button class="button" id="change_password">Modifier le mot de passe</button>
 		</div>
@@ -467,12 +469,12 @@
 
 <div id="config_recherche" style="display:none" title="Recherche d'articles">
 
-	Jid : <input id="jid_value" type="text" size="70" value="">
+	Article "Jid" <input id="jid_value" type="text" size="70" value="">
 	<p>
 	<button class="button" id="recherche_article_jid">Rechercher cet article</button>
 	<hr>
 	<p>
-	Newsgroups : <input id="newsgroups_value" type="text" size="70" value="">
+	Newsgroups <input id="newsgroups_value" type="text" size="70" value="">
 	<p>
 	<select class="button" id="article_filter1">
 		<option selected value="Data.UserAgent">UserAgent</option>
@@ -488,8 +490,8 @@
 </div><!--/config_recherche-->
 
 <div id="recup_password" style="display:none" title="Récupérer le mot de passe">
-Inscrivez votre email : <input id="email_recup_password" type="text" size="50" value="">
-<button class="button" id="valid_recup_password">Go</button>
+Inscrivez votre email<input id="email_recup_password" type="text" size="50" value="">
+<button class="button" id="valid_recup_password">Valider</button>
 <div id="info_recup_password"></div>
 </div><!--/recup_password-->
 

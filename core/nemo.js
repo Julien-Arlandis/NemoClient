@@ -1812,11 +1812,11 @@ initInterface: function( ) {
 	});
 
 	$('#recherche_article').click(function() {
-		$("#config_recherche").dialog({ minHeight: 400, minWidth:750 });
+		$("#config_recherche").dialog({ minHeight: 250, minWidth:660 });
 	});
 
 	$('.forget_password').click(function() {
-		$("#recup_password").dialog({ minHeight: 250, minWidth:500 });
+		$("#recup_password").dialog({ minHeight: 200, minWidth:410 });
 	});
 
 	$('#valid_config').click(function() {

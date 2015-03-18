@@ -1,7 +1,7 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.996e - 2015-03-15
+	Interface Classic - Mise à jour Nemo/0.996e - 2015-03-17
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -333,7 +333,8 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 }
 
 #jid_value, #newsgroups_value, #article_value1 {		/*NEW - Aligner input*/
-	float: right;
+	left: 130px;
+	position: absolute;
 }
 
 #article_filter1 {									/*NEW - Bouton liste déroulante*/
@@ -1309,7 +1310,7 @@ label {
 	opacity: 1;
 }
 
-.insert_c {
+.insert_c {										/*NEW - Table de caractères*/
     background: linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
     display: inline-flex;
     width: 98%;
@@ -1320,12 +1321,15 @@ label {
     color: black;
     cursor: pointer;
     float: left;
+    margin-left: 5px;
     min-width: 200px;
     padding-top: 10px;
 }
 
 #typeChar div[data-value]:hover {
-    	background: yellow;
+	background-color: #ffffdd;
+	border-radius: 4px;
+	margin-right: 5px;
 }
 
 #listeChar {

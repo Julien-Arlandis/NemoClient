@@ -1812,7 +1812,7 @@ initInterface: function( ) {
 	});
 
 	$('#recherche_article').click(function() {
-		$("#config_recherche").dialog({ minHeight: 250, minWidth:660 });
+		$("#config_recherche").dialog({ minHeight: 250, minWidth:680 });
 	});
 
 	$('.forget_password').click(function() {

@@ -335,6 +335,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 #jid_value, #newsgroups_value, #article_value1 {		/*NEW - Aligner input*/
 	left: 130px;
 	position: absolute;
+	width: 520px;
 }
 
 #article_filter1 {									/*NEW - Bouton liste déroulante*/

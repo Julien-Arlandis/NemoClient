@@ -377,7 +377,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
     font-weight: bold;
 }
 
-#oldPassword, newPassword {							/*NEW - Aligner input*/
+#oldPassword {										/*NEW - Aligner input*/
 	left: 11px;
 	margin-bottom: 5px;
 	position: relative;

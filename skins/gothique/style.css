@@ -147,7 +147,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	position: absolute;
 	z-index: 500;
 	border: 1px solid #000000;									/*MOD*/
-	border-radius: 5px;
+	border-radius: 4px;
 	padding: 1px 4px 1px 4px;
 	margin-left: -80px;
 }
@@ -188,7 +188,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	padding-left: 10px;
 	padding-right: 10px;
 	background-image: url(img/Gothique_chauve_souris.png);	/*MOD - Remplace gradient*/
-	border-radius: 10px 10px 0px 0px;
+	border-radius: 4px 4px 0px 0px;
 	background-color: #da708e;			/*MOD pour thèmes - Pour image transparente*/
 }
 
@@ -1345,7 +1345,7 @@ label {												/*Titres champs Rédaction*/
 	border-bottom: 1px solid #000000;						/*MOD pour thèmes*/
 	border-left: 1px solid  #000000;						/*MOD pour thèmes*/
 	border-right: 1px solid  #000000;						/*MOD pour thèmes*/
-	border-radius: 10px 10px 6px 10px;
+	border-radius: 4px 4px 4px 4px;
 	margin-top: 10px;
 	overflow-x: hidden;
 }
@@ -1373,7 +1373,7 @@ label {												/*Titres champs Rédaction*/
 }
 
 input {
-	border-radius: 10px 10px 10px 10px;
+	border-radius: 4px 4px 4px 4px;
 }
 
 #voir_hierarchies {									/*NEW*/
@@ -1502,7 +1502,7 @@ FAQ - Start
 	border-style: none solid solid solid;
 	border-width: 1px;
 	border-color: #000000;								/*Bordure*/
-	border-radius: 5px;
+	border-radius: 4px;
 	color: #000000;								/*Couleur police si pas héritée de body*/
 }
 

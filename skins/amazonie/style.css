@@ -43,7 +43,7 @@ a.link, .newsgroup.link, div.link {
 }
 
 a.link:hover, .newsgroup.link:hover, div.link:hover {
-	background: #dbff93										/*MOD*/;
+	background: #dbff93;										/*MOD*/
 	color: #009900 !important;
 	cursor: pointer;
 	background-image: url(img/link.png);
@@ -1132,6 +1132,11 @@ label {												/*Titres champs Rédaction*/
 	cursor: pointer;
 }
 
+.icon_img {
+	height: 26px;
+	width: 26px;
+}
+
 #insert_other {
 	background: linear-gradient(to bottom, #fff8e8 5%, #f4d786 100%);
 	border: 1px solid #a88146;
@@ -1208,6 +1213,7 @@ label {												/*Titres champs Rédaction*/
 }
 
 .insert_media {													/*MOD*/
+	padding-left: 5px;
 	width: 98%;
 }
 
@@ -1247,7 +1253,6 @@ label {												/*Titres champs Rédaction*/
 	border-right: 1px solid #472e00;
 	cursor: pointer;
 	float: left;
-	margin-left: 5px;
 	min-width: 200px;
 	padding-top: 10px;
 }
@@ -1364,7 +1369,7 @@ input {
     background-position: left center;
     background-repeat: no-repeat;
     background-size: 20px auto;
-        margin: 5px;
+	margin: 5px;
     padding-left: 20px;
     width: 85%;
 }
@@ -1392,9 +1397,9 @@ input {
 }
 
 #articles_send:hover, #articles_draft:hover, #articles_response:hover {
-	background-color: #dbff93;
-	border-radius: 4px;	/*MOD*/
-}
+	background-color: #dbff93;							/*MOD*/
+	border-radius: 4px;
+}	
 
 hr {														/*Favoris & Accueil*/
 	width:50%;

@@ -663,7 +663,6 @@ tr.color{
 	background-color: #E6E6E6;
 }
 
-
 #article_header {
     background: linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
     border-bottom: 1px solid gray;
@@ -1041,7 +1040,7 @@ label {
 
 #redaction {
 	overflow-x: hidden;
-    	overflow-y: auto;
+	overflow-y: auto;
 	background-color: #ffe;
 	height: -moz-calc(100% - 40px);
 	height: -webkit-calc(100% - 40px);
@@ -1168,7 +1167,7 @@ label {
 	width: -moz-calc(100% - 55px);					/*MOD - Was calc(100% - 60px)*/
 	width: -webkit-calc(100% - 55px);
 	width: calc(100% - 55px);
-	height: -moz-calc(100% - 180px);						/*MOD - Was calc(100% - 160px)*/
+	height: -moz-calc(100% - 180px);				/*MOD - Was calc(100% - 160px)*/
 	height: -webkit-calc(100% - 180px);
 	height: calc(100% - 180px);
 	resize: none;
@@ -1190,6 +1189,7 @@ label {
 	width: 98%;
 	background: #ededed; /* Old browsers */
 	background: linear-gradient(to bottom, #ededed 5%,#dfdfdf 100%); /* W3C */
+	padding-left: 5px;
 }
 
 .delete_media {
@@ -1230,7 +1230,6 @@ label {
     color: black;
     cursor: pointer;
     float: left;
-    margin-left: 5px;
     min-width: 200px;
     padding-top: 10px;
 }
@@ -1330,7 +1329,6 @@ input {
 	background-position:left center;
 	padding-left: 20px;
 }
-
 
 #newsgroups {
 	height: 400px;

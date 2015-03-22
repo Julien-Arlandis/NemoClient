@@ -1470,7 +1470,7 @@ hr {														/*Favoris & Accueil*/
 }
 
 #liste_hierarchies {												/*MOD*/
-	background: linear-gradient(to right, #dbff93 0%, #acd300 100%);
+	background: linear-gradient(to right, #e7dcef 1%,#efab83 100%); /* W3C */
 	border-radius: 4px;
 	border: 1px solid #472e00;
 	font-size: 13px;

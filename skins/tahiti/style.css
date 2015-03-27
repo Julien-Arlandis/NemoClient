@@ -1,13 +1,12 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.2.custom.min.css);
 
-/* ---------------------------------------------------------------------------------------
-	Interface Tahiti - Mise à jour Nemo/0.99z99a - 2014-07-04
----------------------------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------------------
+	Interface Tahiti - Mise à jour Nemo/0.996e - 2015-03-25
+----------------------------------------------------------------------------------- */
 
 /* -----------------------
 	Positionnement
 -------------------------- */
-
 html {
 	height: 100%;
 }
@@ -18,16 +17,22 @@ body {
 	margin: 0px auto;
 	color: #00252B;										/*Couleur polices globale*/
 	font-size: 13px;
-	background: url("img/Tahiti_fond.png");				/*Fond de l'interface*/
-	z-index: 0;
-	height :100%;											/*MOD pour thèmes*/
+	background-color: #eafaff;
+	height :100%;												/*MOD*/
+}
+
+#rightnav noscript {
+	color: red;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
 }
 
 a {
 	text-decoration:none !important;
 }
 
-a.link, .newsgroup.link{ 
+a.link, .newsgroup.link, div.link { 
 	background-image: url(img/link.png);
 	background-size: 12px;
 	background-position: left center;
@@ -37,9 +42,9 @@ a.link, .newsgroup.link{
 	color: blue;
 }
 
-a.link:hover, .newsgroup.link:hover {
-	background: #fff0f2;
-	color: #009900 !important; #vert nemo
+a.link:hover, .newsgroup.link:hover, div.link:hover {
+	background: #fce4a9;										/*MOD*/
+	color: #009900 !important;
 	cursor: pointer;
 	background-image: url(img/link.png);
 	background-size: 12px;
@@ -62,6 +67,7 @@ a.link:hover, .newsgroup.link:hover {
 	color: grey;
 	font-size: 13px;
 	font-style:italic;
+	margin-top:15px;
 }
 
 .cite {
@@ -74,11 +80,13 @@ a.link:hover, .newsgroup.link:hover {
 }
 
 .code {
-	background-color: #FFFFF5;
+	line-height:16px;
+	font-size: 13px;
 	padding: 10px;
 	border-style: solid;
-	border-width: 2px;
+	border-width: 1px;
 	overflow-x: auto;
+	background-color: white;
 }
 
 .table, .table td {
@@ -89,56 +97,44 @@ a.link:hover, .newsgroup.link:hover {
 
 #rightnav {
 	float: left;
-	width: 57%;
+	/*width: 57%;*/
 	width: -moz-calc(100% - 276px);
 	width: -webkit-calc(100% - 276px);
 	width: calc(100% - 276px);
 	margin-left: 8px;
 }
 
-#footer {													/*MOD pour thèmes*/
+#footer {															/*MOD*/
 	clear: both;
 	margin: 0;
-	color: black;	
+	/*color: black;*/
 	background: #009600; /* Old browsers */
-	background: -moz-linear-gradient(top, #009600 0%, #9ddb9d 83%, #9ddb9d 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#009600), color-stop(83%,#9ddb9d), color-stop(100%,#9ddb9d)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #009600 0%,#9ddb9d 83%,#9ddb9d 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #009600 0%,#9ddb9d 83%,#9ddb9d 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #009600 0%,#9ddb9d 83%,#9ddb9d 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #009600 0%,#9ddb9d 83%,#9ddb9d 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#009600', endColorstr='#9ddb9d',GradientType=0 ); /* IE6-9 */
-	line-height:25px;
-	height: 25px;
-	border: 1px solid #00505E;										/*MOD pour thèmes*/
-	border-radius: 0px 0px 10px 10px;
+	background: linear-gradient(to bottom, #009600 0%,#9ddb9d 83%,#9ddb9d 100%);
+	border: 1px solid #00505E;										/*MOD*/
+	border-radius: 0px 0px 4px 4px;
 }
 
-#contextMenu, #contextMenuNewsgroup {
+#contextMenu {
+	cursor: pointer;
 	background-color: #FFFFEE;
-	width: 270px;												/*MOD pour thèmes*/
+	width: 270px;													/*MOD*/
 	position: absolute;
 	z-index: 600;
-	border: 1px solid #00505E;									/*MOD pour thèmes*/
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
-	padding: 4px 0px 4px 0px;									/*MOD pour thèmes*/
+	border: 1px solid #00505E;										/*MOD*/
+	border-radius:4px;
+	padding: 4px 0px 4px 0px;										/*MOD*/
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 #contextMenu div{
-	color: #808080;													/*NEW*/
+	color: #808080;
 	font-weight: bold;
-	padding: 2px 10px 2px 10px;									/*MOD pour thèmes*/
+	padding: 2px 10px 2px 10px;										/*MOD*/
 }
 
-#contextMenuNewsgroup div {											/*NEW*/
-	font-weight: bold;
-	cursor: pointer;
-	padding: 2px 10px 2px 10px;									/*MOD pour thèmes*/
-}
-
-#contextMenu .select {												/*NEW*/
+#contextMenu .select {												/*MOD*/
 	color: #00252b;
 }
 
@@ -151,16 +147,14 @@ a.link:hover, .newsgroup.link:hover {
 	background-color: #ffe;
 	position: absolute;
 	z-index: 500;
-	border: 1px solid #00505E;									/*MOD pour thèmes*/
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
+	border: 1px solid #00505E;										/*MOD*/
+	border-radius: 4px;
 	padding: 1px 4px 1px 4px;
 	margin-left: -80px;
 }
 
-#dialog-alert {												/*MOD pour thèmes*/
-	color: #00505E;
+#dialog-alert {														/*MOD*/
+	color: #00252b;
 	font-weight: bold;
 	text-align: center;
 }
@@ -169,20 +163,18 @@ a.link:hover, .newsgroup.link:hover {
 	Panneau accueil
 -------------------------- */
 #accueil {
-	background-color: #E1ECEF;									/*MOD pour thèmes*/
-	height:600px;
+	background-color: #E1ECEF;										/*MOD*/
 	margin-top: 0px;
 	font-family: Verdana;
 	font-size: 100%;
 	padding: 0px 10px 0px 10px;
-	border-left: 1px solid #472E00;
-	border-right: 1px solid #472E00;
+	border-left: 1px solid #00505e;
+	border-right: 1px solid #00505e;
 	overflow-y: scroll;
 }
 
 #accueil .content {
 	padding-top:40px;
-	padding-bottom:auto;
 }
 
 /* -----------------------
@@ -191,14 +183,14 @@ a.link:hover, .newsgroup.link:hover {
 
 #top {
 	margin-top: 10px;
-	border: 1px solid #00505E;									/*MOD pour thèmes*/
+	border: 1px solid #00505E;										/*MOD*/
 	height: 35px;
 	line-height:35px;
 	padding-left: 10px;
 	padding-right: 10px;
-	background-image: url(img/Tahiti_palmiers.png);				/*MOD - Remplace le gradient*/
-	border-radius: 10px 10px 0px 0px;
-	background-color: #E1ECEF;				/*MOD pour thèmes - Pour image transparente*/
+	background-image: url(img/Tahiti_palmiers.png);		/*MOD - Remplace le gradient*/
+	border-radius: 4px 4px 0px 0px;
+	background-color: #E1ECEF;				/*MOD - Pour image transparente*/
 }
 
 #menu_bouton_top {
@@ -248,25 +240,27 @@ a.link:hover, .newsgroup.link:hover {
 
 #nemo_version {
 	font-weight: bold;
-	float: right;
-	margin-right:20px;
 }
 
-#logo {											/*MOD pour thèmes - Dimensions*/
+.logo_footer {											/*NEW*/
+	text-align: center;
+}
+
+#logo {														/*MOD - Dimensions*/
 	width:85px;
 	float:right;
-	background-image: url(img/Tahiti_nemo.png);				/*MOD pour thèmes*/
+	background-image: url(img/Tahiti_nemo.png);				/*MOD*/
 	background-repeat:no-repeat;
 	background-size: 80px;
-	background-position: right;
-	background-color: #E1ECEF;							/*Arrière-plan du logo Nemo*/
+	background-position: center;
+	background-color: #e1ecef;							/*Arrière-plan du logo Nemo*/
 	border-radius: 3px;
-	height: 25px;
+	height: 24px;
 	margin-top: 5px;
 }					
 
 #active_console {
-	background-image: url(img/Tahiti_terminal.png);				/*Icône console Gothique*/
+	background-image: url(img/Tahiti_terminal.png);			/*Icône console Tahiti*/
 	background-repeat:no-repeat;
 	background-size: 25px;
 	background-position: left;
@@ -301,25 +295,86 @@ a.link:hover, .newsgroup.link:hover {
 	height: 35px;
 }
 
-#config_nemo {									/*MOD pour thèmes - Pop-in Préférences*/
-	background-color: #E1ECEF;					/*Fond*/
-	padding: 10px 5px 5px 15px;
-	border-style: none solid solid solid;
-	border-width: 1px;
-	border-color: #00505E;							/*Bordure*/
-	border-radius: 4px;
-	color: #00505E;								/*Couleur police*/
-	padding: 0.5em 1em;
+#recup_password {									/*NEW - Pop-in MDP*/
+    font-weight: bold;
+    text-align: center;
 }
 
-#config_recherche {								/*MOD pour thèmes - Pop-in Recherche*/
-	background-color: #E1ECEF;					/* Fond */
-	padding: 10px 5px 5px 15px;
-	border-style: none solid solid solid;
-	border-width: 1px;
-	border-color: #00505E;							/*Bordure*/
+#email_recup_password {								/*NEW - Aligner input*/
+    margin: 10px 0px;
+    position: relative;
+}
+
+#config_recherche, #recup_password {					/*NEW - Pop-in Recherche + MDP*/
+	background-color: #e1ecef;
+	border: 1px solid #00505e;
 	border-radius: 4px;
-	color: #00505E								/*Couleur police*/
+	font-weight: bold;
+	padding-top: 10px;
+}
+
+#jid_value, #newsgroups_value, #article_value1 {		/*NEW - Aligner input*/
+	left: 130px;
+	position: absolute;
+	width: 520px;
+}
+
+#article_filter1 {									/*NEW - Bouton liste déroulante*/
+	background: linear-gradient(to bottom, #c6f3ff 5%, #59e0ff 100%);
+    border: 1px solid gray;
+    box-shadow: none;
+	color: #00252b;
+	text-shadow: 1px 1px 1px white;
+}
+
+#recherche_article_jid, #recherche_article_go, #change_email, #change_password, #valid_recup_password {								/*NEW - Centrer boutons*/
+    display: block;
+    margin: auto;
+}
+
+#article_filter1:hover {								/*NEW - Bouton liste déroulante*/
+    background: linear-gradient(to bottom, #00d0ff 0%, #aaeeff 95%);
+}
+
+#config_nemo {										/*MOD - Pop-in Préférences*/
+	background-color: #E1ECEF;						/*Fond*/
+	border: 1px solid #00505E;
+	border-radius: 4px;
+	/*color: #00252b;*/
+}
+
+#ui-accordion-1-panel-0 {							/*NEW - Paramètres serveur*/
+	font-weight: bold;
+}
+
+#host_jntp, #fromname, #frommail, #replyto {			/*NEW - Aligner input*/
+	left: 5px;
+	margin-bottom: 5px;
+	position: relative;
+}
+
+#signature {
+    color: #00252b;
+}
+
+#ui-accordion-1-panel-1 {							/*NEW - Configuration du client*/
+    font-weight: bold;
+}
+
+#ui-accordion-1-panel-2 {							/*NEW - Mon compte*/
+    font-weight: bold;
+}
+
+#oldPassword {										/*NEW - Aligner input*/
+	left: 11px;
+	margin-bottom: 5px;
+	position: relative;
+}
+
+#blacklist {
+    border-color: #00505E;
+    border-radius: 4px;
+	color: #00252b;
 }
 
 /* -----------------------
@@ -370,111 +425,87 @@ a.link:hover, .newsgroup.link:hover {
 /* -----------------------
 	Propriétés du fil
 -------------------------- */
-						
+
+#fil_info {											/*NEW*/
+	margin-top: 40px;
+	text-align: center;
+	font-weight: bold;
+}
+
 table {
 	table-layout: fixed;
 	border-collapse: collapse;
-	background-color: #FFFBEA;									/*MOD pour thèmes*/
+	background-color: #fafafa;									/*MOD*/
 	width: 100%;
+	webkit-touch-callout: none;					/*NEW*/
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 #scrollFil {
-	background-color: #FFFBEA !important;						/*MOD pour thèmes*/
-	border-left: 1px solid #00505E;								/*MOD pour thèmes*/
-	border-right: 1px solid #00505E;								/*MOD pour thèmes*/
+	background-color: #fafafa !important;						/*MOD*/
+	border-left: 1px solid #00505E;								/*MOD*/
+	border-right: 1px solid #00505E;							/*MOD*/
 	cursor: pointer;
 	overflow-y: scroll;
 	height: 323px;
 	resize: vertical;
 }
 
-thead th.asc {										/*MOD pour thèmes - Gradient*/
+thead th.asc {
 	background-size: 15px, auto !important;
-	background: #12cc1e; /* Old browsers */
-	background: url(img/sort_asc.png) no-repeat,  -moz-linear-gradient(top, #12cc1e 0%, #12cc1e 31%,  #12cc1e 70%, #00ff11 100%); /* FF3.6+ */
-	background: url(img/sort_asc.png) no-repeat,  -webkit-gradient(linear, left top, left bottom, color-stop (0%,#12cc1e), color-stop(31%,#12cc1e), color-stop(70%,#12cc1e), color- stop(100%,#00ff11)); /* Chrome,Safari4+ */
-	background: url(img/sort_asc.png) no-repeat,  -webkit-linear-gradient(top, #12cc1e 0%,#12cc1e  31%,#12cc1e 70%,#00ff11 100%); /* Chrome10+,Safari5.1+ */
-	background: url(img/sort_asc.png) no-repeat,  -o-linear-gradient(top, #12cc1e 0%,#12cc1e 31%,#12cc1e  70%,#00ff11 100%); /* Opera 11.10+ */
-	background: url(img/sort_asc.png) no-repeat,  -ms-linear-gradient(top, #12cc1e 0%,#12cc1e 31%,#12cc1e  70%,#00ff11 100%); /* IE10+ */
-	background: url(img/sort_asc.png) no-repeat,  linear-gradient(to bottom, #12cc1e 0%,#12cc1e 31%,#12cc1e  70%,#00ff11 100%); /* W3C */
-	filter: url(img/sort_asc.png) no-repeat,  progid:DXImageTransform.Microsoft.gradient(  startColorstr='#12cc1e', endColorstr='#00ff11',GradientType=0 ); /* IE6-9 */
+	background: #00FFE5; /* Old browsers */
+	background: url("img/sort_asc.png") no-repeat, linear-gradient(to bottom, #10bc16 0%, #16ff22 100%);
 	background-position: left center;
 }
 
-thead th.asc:hover {									/*MOD pour thèmes - Gradient*/
+thead th.asc:hover {
 	background-size: 15px, auto !important;	
-	background: #00ff11; /* Old browsers */
-	background: url(img/sort_asc.png) no-repeat,  -moz-linear-gradient(top, #00ff11 0%, #12cc1e 30%, #12cc1e 69%, #12cc1e 100%); /* FF3.6+ */
-	background: url(img/sort_asc.png) no-repeat,  -webkit-gradient(linear, left top, left bottom, color-stop(0%,#00ff11), color-stop(30%,#12cc1e), color-stop(69%,#12cc1e), color-stop(100%,#12cc1e)); /* Chrome,Safari4+ */
-	background: url(img/sort_asc.png) no-repeat,  -webkit-linear-gradient(top, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* Chrome10+,Safari5.1+ */
-	background: url(img/sort_asc.png) no-repeat,  -o-linear-gradient(top, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* Opera 11.10+ */
-	background: url(img/sort_asc.png) no-repeat,  -ms-linear-gradient(top, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* IE10+ */
-	background: url(img/sort_asc.png) no-repeat,  linear-gradient(to bottom, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* W3C */
-	filter: url(img/sort_asc.png) no-repeat,  progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ff11', endColorstr='#12cc1e',GradientType=0 ); /* IE6-9 */ 
+	background: #00FFE5; /* Old browsers */
+	background: url(img/sort_asc.png) no-repeat, linear-gradient(to bottom, #16ff22 0%,#10bc16 100%);
 	background-position: left center;
 }
 
-thead th.desc {										/*MOD pour thèmes - Gradient*/
+thead th.desc {
 	background-size: 15px, auto !important;
-	background: #12cc1e; /* Old browsers */
-	background: url(img/sort_desc.png) no-repeat,  -moz-linear-gradient(top, #12cc1e 0%, #12cc1e 31%,  #12cc1e 70%, #00ff11 100%); /* FF3.6+ */
-	background: url(img/sort_desc.png) no-repeat,  -webkit-gradient(linear, left top, left bottom, color-stop (0%,#12cc1e), color-stop(31%,#12cc1e), color-stop(70%,#12cc1e), color- stop(100%,#00ff11)); /* Chrome,Safari4+ */
-	background: url(img/sort_desc.png) no-repeat,  -webkit-linear-gradient(top, #12cc1e 0%,#12cc1e  31%,#12cc1e 70%,#00ff11 100%); /* Chrome10+,Safari5.1+ */
-	background: url(img/sort_desc.png) no-repeat,  -o-linear-gradient(top, #12cc1e 0%,#12cc1e 31%,#12cc1e  70%,#00ff11 100%); /* Opera 11.10+ */
-	background: url(img/sort_desc.png) no-repeat,  -ms-linear-gradient(top, #12cc1e 0%,#12cc1e 31%,#12cc1e  70%,#00ff11 100%); /* IE10+ */
-	background: url(img/sort_desc.png) no-repeat,  linear-gradient(to bottom, #12cc1e 0%,#12cc1e 31%,#12cc1e  70%,#00ff11 100%); /* W3C */
-	filter: url(img/sort_desc.png) no-repeat,  progid:DXImageTransform.Microsoft.gradient(  startColorstr='#12cc1e', endColorstr='#00ff11',GradientType=0 ); /* IE6-9 */
+	background: #00FFE5; /* Old browsers */
+	background: url("img/sort_desc.png") no-repeat, linear-gradient(to bottom, #10bc16 0%, #16ff22 100%);
 	background-position: left center;
 }
 
-thead th.desc:hover {									/*MOD pour thèmes - Gradient*/
+thead th.desc:hover {
 	background-size: 15px, auto !important;
-	background: #00ff11; /* Old browsers */
-	background: url(img/sort_desc.png) no-repeat,  -moz-linear-gradient(top, #00ff11 0%, #12cc1e 30%, #12cc1e 69%, #12cc1e 100%); /* FF3.6+ */
-	background: url(img/sort_desc.png) no-repeat,  -webkit-gradient(linear, left top, left bottom, color-stop(0%,#00ff11), color-stop(30%,#12cc1e), color-stop(69%,#12cc1e), color-stop(100%,#12cc1e)); /* Chrome,Safari4+ */
-	background: url(img/sort_desc.png) no-repeat,  -webkit-linear-gradient(top, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* Chrome10+,Safari5.1+ */
-	background: url(img/sort_desc.png) no-repeat,  -o-linear-gradient(top, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* Opera 11.10+ */
-	background: url(img/sort_desc.png) no-repeat,  -ms-linear-gradient(top, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* IE10+ */
-	background: url(img/sort_desc.png) no-repeat,  linear-gradient(to bottom, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* W3C */
-	filter: url(img/sort_desc.png) no-repeat,  progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ff11', endColorstr='#12cc1e',GradientType=0 ); /* IE6-9 */ 
+	background: #00FFE5; /* Old browsers */
+	background: url("img/sort_desc.png") no-repeat, linear-gradient(to bottom, #16ff22 0%,#10bc16 100%);
 	background-position: left center;
 }
 
-thead th {												/*MOD pour thèmes - Gradient*/
-	border-left: 1px solid #00505E;							/*MOD pour thèmes*/
-	border-right: 1px solid #00505E;							/*MOD pour thèmes*/
-	border-bottom: 1px solid #00505E;							/*MOD pour thèmes*/
+thead th {	
+	border-left: 1px solid #00505E;								/*MOD*/
+	border-right: 1px solid #00505E;							/*MOD*/
+	border-bottom: 1px solid #00505E;							/*MOD*/
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	background: #12cc1e; /* Old browsers */
-	background: -moz-linear-gradient(top, #12cc1e 0%, #12cc1e 31%,  #12cc1e 70%, #00ff11 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop (0%,#12cc1e), color-stop(31%,#12cc1e), color-stop(70%,#12cc1e), color- stop(100%,#00ff11)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #12cc1e 0%,#12cc1e  31%,#12cc1e 70%,#00ff11 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #12cc1e 0%,#12cc1e 31%,#12cc1e  70%,#00ff11 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #12cc1e 0%,#12cc1e 31%,#12cc1e  70%,#00ff11 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #12cc1e 0%,#12cc1e 31%,#12cc1e  70%,#00ff11 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient(  startColorstr='#12cc1e', endColorstr='#00ff11',GradientType=0 ); /* IE6-9 */
+	background: linear-gradient(to bottom, #10bc16 0%, #16ff22 100%);
 	font-size: 1em;
 	text-align: left;
 	padding-left: 15px;
-	/*color: #F0C300;*/								/*MOD pour thèmes si pas hérité de body*/
+	/*color: #F0C300;*/								/*MOD si pas hérité de body*/
 }
 
-th:hover {											/*MOD pour thèmes - Gradient*/
+th:hover {
 	background: #00ff11; /* Old browsers */
-	background: -moz-linear-gradient(top, #00ff11 0%, #12cc1e 30%, #12cc1e 69%, #12cc1e 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#00ff11), color-stop(30%,#12cc1e), color-stop(69%,#12cc1e), color-stop(100%,#12cc1e)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #00ff11 0%,#12cc1e 30%,#12cc1e 69%,#12cc1e 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ff11', endColorstr='#12cc1e',GradientType=0 ); /* IE6-9 */ 
+	background: linear-gradient(to bottom, #16ff22 0%,#10bc16 100%);
 }
 
 #tree.arbo{
-	background-color: #3BDB40;									/*MOD pour thèmes*/
-	background-image: url("img/tree.gif");						/*MOD pour thèmes*/
+	background-color: #16ff22;									/*MOD*/
+	background-image: url("img/tree.gif");						/*MOD*/
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 20px auto;
@@ -482,8 +513,8 @@ th:hover {											/*MOD pour thèmes - Gradient*/
 }
 
 #tree.liste{
-	background-color: #3BDB40;									/*MOD pour thèmes*/
-	background-image: url("img/liste.gif");						/*MOD pour thèmes*/
+	background-color: #16ff22;									/*MOD*/
+	background-image: url("img/liste.gif");						/*MOD*/
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 20px auto;
@@ -491,7 +522,7 @@ th:hover {											/*MOD pour thèmes - Gradient*/
 }
 
 #tree:hover {
-	background-color: #68FF6D;									/*MOD pour thèmes*/
+	background-color: #10BC16;									/*MOD*/
 }
 
 #taille {
@@ -529,8 +560,8 @@ th:hover {											/*MOD pour thèmes - Gradient*/
 }
 
 #fil tr {
-	border-right: 1px solid #00505E;								/*MOD pour thèmes*/
-	/*color: #FF4500;*/			/*MOD pour thèmes - Couleur police "non lu" si pas hérité de body*/
+	border-right: 1px solid #00505E;								/*MOD*/
+	/*color: #FF4500;*/			/*MOD - Couleur police "non lu" si pas hérité de body*/
 	font-size: 1em;
 	font-weight: bold;
 	resize: none;
@@ -538,11 +569,11 @@ th:hover {											/*MOD pour thèmes - Gradient*/
 }
 
 #fil tr:hover {
-	background-color: #DAFFC6;								/*MOD pour thèmes*/
+	background-color: #DAFFC6;										/*MOD*/
 }
 
 tr.color{
-	background-color: #EDFCFF;				/*MOD pour thème - Fond lignes paires*/
+	background-color: #DBF9FF;						/*MOD - Fond lignes paires*/
 }
 
 
@@ -580,18 +611,18 @@ tr.color{
 }
 
 .visible:hover {
-	background-color: #fff0e3;									/*MOD pour thèmes ???*/
+	background-color: #fff0e3;									/*MOD ???*/
 }
 
 .visible.lu {
 	font-size: 1em;
 	font-weight: normal !important;
-	color: #0092A5 !important;					/*MOD pour thèmes - Couleur police "lu"*/
+	color: #007582 !important;						/*MOD - Couleur police "lu"*/
 }
 
 .visible.selected, .visible.selected .taille{
-	background-color: #007784 !important;						/*MOD pour thèmes*/
-	color: white !important;										/*MOD pour thèmes*/
+	background-color: #007784 !important;						/*MOD*/
+	color: white !important;									/*MOD*/
 }
 
 .invisible {
@@ -629,8 +660,8 @@ tr.color{
 
 .separateur {
 	height: 2px;
-	background-color: #F2F2F2;									/*MOD pour thèmes*/
-	border: 1px solid #000000;									/*MOD pour thèmes*/
+	background-color: #F2F2F2;									/*MOD*/
+	border: 1px solid #000000;									/*MOD*/
 }
 
 /* -----------------------
@@ -639,60 +670,63 @@ tr.color{
 
 #article {
 	height: 30%;
-	border-left: 1px solid #00505E;								/*MOD pour thèmes*/
-	border-right: 1px solid #00505E;								/*MOD pour thèmes*/
-	background-color: #FFFFFF;									/*MOD pour thèmes*/
+	border-left: 1px solid #00505E;								/*MOD*/
+	border-right: 1px solid #00505E;							/*MOD*/
+	background-color: #FFFFFF;									/*MOD*/
 }
 
-#article_header {												/*Image en-tête article*/
+#article_header {											/*Image en-tête article*/
 	position: relative;
 	background:url(img/Tahiti_sunset.jpg);
 	background-size:100% 100%;
 	background-repeat:no-repeat;
-	border-bottom: 1px solid 00505E;								/*MOD pour thèmes*/
+	border-bottom: 1px solid 00505E;								/*MOD*/
+	line-height: 18px;
 	padding-bottom: 3px;
 	padding-top: 3px;
 }
 
-#voir_references, #delete_citations, #revoir_citations, #voir_allThread {			/*NEW*/
-	display: inline;
-	text-align : right;
-	margin-left: 10px;
-	margin-right: 15px;
+#voir_references, #delete_citations, #revoir_citations, #voir_allThread, #retour {	
+	color: #00FF08;												/*MOD*/
 	cursor: pointer;
 	font-weight: bold;
-	color: #15FD21;												/*MOD pour thèmes*/
+	margin-left: 10px;
+	margin-right: 15px;
+	padding: 0px 5px 0px 5px;												/*MOD*/
+	text-align: right;
+	text-shadow: 0 0 5px black;
 }
 
-#voir_references:hover, #delete_citations:hover, #revoir_citations:hover, #voir_allThread:hover, a:hover {		/*NEW*/
-	background-color: #184B70;									/*MOD pour thèmes*/
-	color: #15FD21;												/*MOD pour thèmes*/
+#voir_references:hover, #delete_citations:hover, #revoir_citations:hover, #voir_allThread:hover, #retour:hover, a:hover {
+	background-color: #184B70;									/*MOD*/
+	border-radius: 4px;
+	color: #15fd21;												/*MOD*/
 }
 
 #references {
 	margin-top: 10px;
 	cursor: pointer;
 	margin-left: 30px;
-	color: #FFECC4;												/*MOD pour thèmes*/
+	color: yellow;												/*MOD*/
 }
 
 #references div span:hover{
-	background-color: #184B70;									/*MOD pour thèmes*/
+	background-color: #184B70;									/*MOD*/
 }
 
 #article_header .supersede {
-	width:135px;									/*Adaptation "Cet article a été modifié"*/
-	background-color: #00505E;									/*MOD pour thèmes*/
-	color: #F793FF;												/*MOD pour thèmes*/
+	color: red;
+	font-family: "Times New Roman",serif;
+	font-size: 14px;
+	font-weight: bold;
 	padding-left: 10px;
 	padding-right: 10px;
-	font-family: "Times New Roman", serif;
-	font-size: 14px;
+	text-shadow: 0 0 5px black;
 }
 
 #article_header .champ_article {
 	width: 100px;
-	color: #FCD25F;											/*MOD pour thèmes*/
+	color: #FCD25F;												/*MOD*/
 	padding-left: 10px;
 	padding-right: 10px;
 	font-family: "Times New Roman", serif;
@@ -701,30 +735,80 @@ tr.color{
 
 #article_header .champ_value {
 	font-weight: bold;
-	color: #FCD25F !important;									/*MOD pour thèmes*/
+	color: #FCD25F !important;									/*MOD*/
 	font-family: "Times New Roman", serif;
 	font-size: 14px;
 }
 
-.newsgroup:hover {											/*NEW*/
-	background-color: #184B70;									/*MOD pour thèmes*/
+#article_header .newsgroup {									/*NEW*/
+	color: yellow;
+	text-shadow: 0 0 5px black;
+}
+
+#article_header .newsgroup:hover {							/*NEW*/
+	background-color: #f0c300;
+	color: black;
+	padding: 0px 5px 0px 5px;
+	text-shadow: none;
+}
+
+#like {														/*NEW*/
+    background-image: url("img/like_bouton.png");
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 29px 29px;
+    cursor: pointer;
+    display: inline;
+    height: 29px;
+    position: absolute;
+    right: 60px;
+    top: 45px;
+    width: 29px;
+}
+
+#compteur_like {												/*NEW*/
+    color: yellow;
+    font-family: arial;
+    font-size: 16px;
+    font-weight: normal;
+    margin-left: 33px;
+    vertical-align: -7px;
+}
+
+.icon_favori {												/*NEW*/
+	float: left;
+    height: 12px;
+    margin-left: 2px;
+    margin-right: 3px;
+    width: 8px;
+}
+
+.add_favori {												/*NEW*/
+	background-image: url(img/add_button.png);
+	background-repeat: no-repeat;
+	background-size: 8px;
+	background-position: left bottom;
 	cursor: pointer;
 }
 
-.newsgroup {													/*NEW*/
-	margin-right: 15px;
+.del_favori {												/*NEW*/
+	background-image: url(img/del_button.png);
+	background-repeat: no-repeat;
+	background-size: 10px;
+	background-position: left bottom;
+	cursor: pointer;
 }
 
 #article_certification.jntp_valid {
+	background-image: url("img/jntp_logo.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 29px auto;
+	height: 29px;
 	position: absolute;
-	top:38px;
-	right:10px;
-	height:30px;
-	width:70px;
-	background-image:url(img/jntp_logo.png);					/*MOD pour thèmes*/
-	background-size: 70px;
-	background-repeat:no-repeat;
-	background-position:center center;
+	right: 95px;
+	top: 45px;
+	width: 28px;
 }
 
 #article_certification.jntp_invalid {
@@ -733,7 +817,7 @@ tr.color{
 	right:10px;
 	height:30px;
 	width:70px;
-	background-image:url(img/not_jntp.gif);						/*MOD pour thèmes*/
+	background-image:url(img/not_jntp.gif);						/*MOD*/
 	background-size: 70px;
 	background-repeat:no-repeat;
 	background-position:center center;
@@ -741,10 +825,10 @@ tr.color{
 
 #article_body {
 	min-height: 300px;
-	background: url(img/Tahiti_art_bkgrnd.jpg);						/*MOD pour thèmes*/
+	background: url(img/Tahiti_art_bkgrnd.jpg);					/*MOD*/
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
-	color: #00252B;											/*MOD pour thèmes*/
+	color: #00252B;												/*MOD*/
 }
 
 #article_body, #rendu, #formulaire_body_html {
@@ -762,12 +846,13 @@ tr.color{
 }
 
 #article_deleted {
-	color: red;												/*MOD pour thèmes*/
+	color: red;													/*MOD*/
 	font-weight:bold;
 	text-align:center;
+	text-shadow: 0 0 5px black;
 }
 
-#repondre, #view_source, #hide_source, #check_jid, #supprimer_article, #modifier_article, #ban_article {
+#repondre, #repondre_popup, #view_source, #hide_source, #check_jid, #supprimer_article, #modifier_article, #ban_article {
 	float:right;
 	margin-top: 8px;
 	margin-right: 8px;
@@ -797,54 +882,34 @@ tr.color{
 
 #supprimer_article, #ban_article {
 	background: #ffec64; /* Old browsers */
-	background: -moz-linear-gradient(top, #ffec64 5%, #ff0000 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#ffec64), color-stop(100%,#ff0000)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #ffec64 5%,#ff0000 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #ffec64 5%,#ff0000 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #ffec64 5%,#ff0000 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #ffec64 5%,#ff0000 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffec64', endColorstr='#ff0000',GradientType=0 ); /* IE6-9 */
+	background: linear-gradient(to bottom, #ffec64 5%, #ff0000 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 1px solid #ffaa22;
+    box-shadow: 0 1px 0 0 #fff6af inset;
+    color: yellow;
+    text-shadow: 1px 1px 0 maroon;
 }
 
 #supprimer_article:hover, #ban_article:hover {
 	cursor: pointer;
 	background: #ffab23; /* Old browsers */
-	background: -moz-linear-gradient(top, #ffab23 5%, #ffec64 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#ffab23), color-stop(100%,#ffec64)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #ffab23 5%,#ffec64 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #ffab23 5%,#ffec64 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #ffab23 5%,#ffec64 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #ffab23 5%,#ffec64 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffab23', endColorstr='#ffec64',GradientType=0 ); /* IE6-9 */
-	background-color:#ffab23;
+	background: linear-gradient(to bottom, #ff0000 0%, #ffec64 95%); /* W3C */
 }
 
 .button {
-	-moz-box-shadow:inset 0px 1px 0px 0px #fff6af;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #fff6af;
-	box-shadow:inset 0px 1px 0px 0px #fff6af;
 	background: #ffec64; /* Old browsers */
-	background: -moz-linear-gradient(top, #ffec64 5%, #ffab23 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#ffec64), color-stop(100%,#ffab23)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #ffec64 5%,#ffab23 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #ffec64 5%,#ffab23 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #ffec64 5%,#ffab23 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #ffec64 5%,#ffab23 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffec64', endColorstr='#ffab23',GradientType=0 ); /* IE6-9 */
-	background-color:#ffec64;
-	-moz-border-radius:1px;
-	-webkit-border-radius:5px;
-	border-radius:5px;
-	border:1px solid #ffaa22;
-	margin: 0;
-	display:inline-block;
-	color: #00505E;											/*MOD pour thèmes*/
-	font-family:arial;
-	font-size:13px !important;
+	background: linear-gradient(to bottom, #00d0ff 5%, #00869e 100%);
+	border: 1px solid #00505e;
+	border-radius: 5px;
+	box-shadow: 0 1px 0 0 #00d0ff inset;
+	color: yellow;
+	display: inline-block;
+	font-family: arial;
+	font-size: 13px !important;
 	font-weight: bold;
-	padding:2px 5px !important;
-	text-decoration:none;
-	text-shadow:1px 1px 0px #ffee66;
+	margin: 0;
+	padding: 2px 5px !important;
+	text-decoration: none;
+	text-shadow: 1px 1px 0 olive;
 }
 
 .button:disabled {
@@ -852,21 +917,20 @@ tr.color{
 }
 
 .button:hover {
-	cursor: pointer;
 	background: #ffab23; /* Old browsers */
-	background: -moz-linear-gradient(top, #ffab23 5%, #ffec64 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#ffab23), color-stop(100%,#ffec64)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #ffab23 5%,#ffec64 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #ffab23 5%,#ffec64 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #ffab23 5%,#ffec64 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #ffab23 5%,#ffec64 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffab23', endColorstr='#ffec64',GradientType=0 ); /* IE6-9 */
-	background-color: #ffab23;
+	background: linear-gradient(to bottom, #00869e 0%, #00d0ff 95%);
+	cursor: pointer;
+}
+
+#new_sujet:disabled, #repondre:disabled, #modifier_article:disabled {
+    color: #a4d9de;
+    text-shadow: none;
 }
 
 option {
-	text-shadow: none;								/*Listes déroulantes - Supprime le brouillage*/
-	background-color: #E1ECEF;									/*MOD pour thèmes*/								
+	text-shadow: none;					/*Listes déroulantes - Supprime le brouillage*/
+	background-color: #f4ffff;									/*MOD*/
+	color: #00252b;
 }
 
 /* -----------------------
@@ -880,7 +944,7 @@ input[type="text"], input[type="email"], input[type="password"] {
 	border: 1px solid gray;
 	font: 14px monospace;
 	padding-left: 5px;
-	background-color: #F9FFFA;						/*MOD pour thèmes - Fond des champs*/
+	background-color: #F9FFFA;						/*MOD - Fond des champs*/
 }
 
 input[type="range"] {
@@ -968,6 +1032,10 @@ input[type="range"]:after {
   Formulaire d'inscription
 -------------------------- */
 
+#box_inscription .link{
+	margin-left: 210px;
+}
+
 #box_inscription label {
 	line-height: 22px;
 	float: left;
@@ -1000,36 +1068,35 @@ fieldset {
 
 label {												/*Titres champs Rédaction*/
 	line-height: 22px;
+	font-weight: bold;									/*NEW*/
 	float: left;
-	width: 105px;										/*MOD pour thèmes*/
+	width: 110px;										/*MOD*/
 	white-space: nowrap;
-	margin-right: 8px;									/*MOD pour thèmes*/
+	margin-right: 8px;									/*MOD*/
 	text-align: right;
-	color: #00505E;									/*MOD pour thèmes*/
+	color: #00252b;										/*MOD*/
  }
 
 #send_form {
-	background-color: #E1ECEF;						/*MOD pour thèmes*/
+	background-color: #E1ECEF;							/*MOD*/
 	padding: 0px 0px 0px 10px;
-	border-style: none solid solid solid;
-	border-width:1px;
-	border-color: #00505E;								/*MOD pour thèmes*/
-	border-radius: 5px;
-	color: #00505E;									/*MOD pour thèmes*/
-	height: 100%;										/*MOD pour thèmes*/
+	border: 1px solid #00505E;
+	border-radius: 4px;
+	color: #00252b;										/*MOD*/
+	height: 100%;										/*MOD*/
 }
 
 #redaction {
 	overflow-x: hidden;
-    	overflow-y: auto;
-	background-color: #E1ECEF;						/*MOD pour thèmes*/
+    overflow-y: auto;
+	background-color: #E1ECEF;							/*MOD*/
 	height: -moz-calc(100% - 40px);
 	height: -webkit-calc(100% - 40px);
 	height: calc(100% - 40px);
 }
 
 .onglets{
-	top:0;
+	top: 0;
 	margin-top: 0;
 	padding-top:0;
 	margin-bottom: 15px;
@@ -1041,49 +1108,84 @@ label {												/*Titres champs Rédaction*/
 	margin-left: 10px;
 	padding-left: 10px;
 	padding-right: 10px;
-	border: 1px solid #000000;
+	border: 1px solid #00505e;
 	border-top:0;
 	line-height:23px;
 	font-weight: bold;
 	background-color: #ededed;
 	border-radius: 0px 0px 10px 10px;
-	color: #0033CC;									/*MOD pour thèmes*/
+	color: #0033CC;										/*MOD*/
 }
 
 .onglets div.selected{
-	background-color: #A4D9DE;								/*MOD pour thèmes*/
+	background-color: #A4D9DE;							/*MOD*/
 }
 
 .onglets div:not(.selected):hover{
 	cursor: pointer;
 	background: #ededed; /* Old browsers */
-	background: -moz-linear-gradient(top, #ededed 5%, #dfdfdf 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#ededed), color-stop(100%,#dfdfdf)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #ededed 5%,#dfdfdf 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #ededed 5%,#dfdfdf 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #ededed 5%,#dfdfdf 100%); /* IE10+ */
 	background: linear-gradient(to bottom, #ededed 5%,#dfdfdf 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#dfdfdf',GradientType=0 ); /* IE6-9 */
-	color: red;											/*MOD pour thèmes*/
+	color: green;											/*MOD*/
 }
 
 #barre_boutons {
-	width: -moz-calc(100% - 40px);		
+	width: -moz-calc(100% - 40px);
 	width: -webkit-calc(100% - 40px);
 	width: calc(100% - 40px);
-	border-left: 1px solid #00505E;							/*MOD pour thèmes*/
-	border-right: 1px solid #00505E;							/*MOD pour thèmes*/
-	border-top: 1px solid #00505E;							/*MOD pour thèmes*/
+	border-left: 1px solid #000000;							/*MOD*/
+	border-right: 1px solid #000000;						/*MOD*/
+	border-top: 1px solid #000000;							/*MOD*/
 	margin-top: 5px;
-	padding: 2px 0 2px 5px;
-	background: #ededed; /* Old browsers */
-	background: -moz-linear-gradient(top, #ededed 5%, #dfdfdf 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#ededed), color-stop(100%,#dfdfdf)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #ededed 5%,#dfdfdf 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #ededed 5%,#dfdfdf 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #ededed 5%,#dfdfdf 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #ededed 5%,#dfdfdf 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#dfdfdf',GradientType=0 ); /* IE6-9 */
+	padding: 2px 3px 2px 2px;		/*IE OK*/
+	background: #ffde93; /* Old browsers */
+	background: linear-gradient(to bottom, #b9e8e0 0%, #f2fffc 100%);
+}
+
+.icon {
+	background: #f4ffff; /* Old browsers */
+	background: linear-gradient(to bottom, #f4ffff 7%,#b4e1ea 100%); /* W3C */
+	border: 1px solid gray;
+	border-radius:5px;
+	display: inline-flex;
+	display: -webkit-inline-flex;
+	margin-right: -3px;				/*Modifier en fonction du nb d'icônes*/
+	padding: 2px 3px 2px 3px;			/*Chrome & IE11*/
+	height: 34px;						/*FF*/
+	width: 34px;						/*FF*/
+}
+
+.icon:hover {
+	background: #c4f5ff; /* Old browsers */
+	background: linear-gradient(to bottom, #c4f5ff 0%,#f4ffff 93%); /* W3C */
+	cursor: pointer;
+}
+
+.icon_img {
+	height: 26px;
+	width: 26px;
+}
+
+/*#insert_b {
+    background-image: url("icones/cafe.png"), linear-gradient(to bottom, #f4ffff 7%, #b4e1ea 100%);
+    background-position: center center;
+    background-repeat: no-repeat;
+    vertical-align: top;
+}*/
+
+#insert_other {
+	background: #e5e5e5; /* Old browsers */
+	background: linear-gradient(to bottom, #f4ffff 7%,#b4e1ea 100%); /* W3C */
+	border: 1px solid grey;
+	box-shadow: none;
+	color: #00252b;
+	height: 34px;
+	text-shadow: 1px 1px 1px white;
+	vertical-align: top;
+}
+
+#insert_other:hover {
+	background: #f2f2f2; /* Old browsers */
+	background: linear-gradient(to bottom, #c4f5ff 0%,#f4ffff 93%); /* W3C */
 }
 
 #rendu {
@@ -1095,11 +1197,11 @@ label {												/*Titres champs Rédaction*/
 	width: -webkit-calc(100% - 30px);
 	width: calc(100% - 30px);
 	overflow: auto;
-	border: 1px solid #472E00;
-	background:url(img/Tahiti_art_bkgrnd.jpg);				/*MOD pour thèmes*/
+	border: 1px solid #00505e;
+	background:url(img/Tahiti_art_bkgrnd.jpg);				/*MOD*/
 	background-size:100% 100%;
 	background-repeat:no-repeat;
-	color: #00252B;										/*MOD pour thèmes*/
+	color: #00252B;											/*MOD*/
 }
 
 #formulaire_from {
@@ -1117,11 +1219,12 @@ label {												/*Titres champs Rédaction*/
 }
 
 #formulaire_body, #formulaire_body_html {
+	display: block;									/*NEW*/
 	padding: 10px;
-	border: 1px solid #00505E;								/*MOD pour thèmes*/
+	border: 1px solid #00505E;								/*MOD*/
 	background-color: white;
 	font: 14px monospace;
-	margin: 0 auto;
+	margin: 0;
 	width: -moz-calc(100% - 55px);
 	width: -webkit-calc(100% - 55px);
 	width: calc(100% - 55px);
@@ -1129,10 +1232,10 @@ label {												/*Titres champs Rédaction*/
 	height: -webkit-calc(100% - 180px);
 	height: calc(100% - 180px);
 	resize: none;
-	background-image:url(img/Tahiti_art_bkgrnd.jpg)!important;		/*MOD pour thèmes*/
+	background-image:url(img/Tahiti_art_bkgrnd.jpg)!important;	/*MOD*/
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
-	color: #00252B;											/*MOD pour thèmes*/
+	color: #00252B;											/*MOD*/
 }
 
 #formulaire_subject, #formulaire_newsgroup {
@@ -1147,7 +1250,8 @@ label {												/*Titres champs Rédaction*/
 	width: 265px;
 }
 
-.insert_media {												/*MOD pour thèmes*/
+.insert_media {												/*MOD*/
+	padding-left: 5px;
 	width: 98%;
 }
 
@@ -1178,6 +1282,49 @@ label {												/*Titres champs Rédaction*/
 	opacity: 1;
 }
 
+.insert_c {										/*Table de caractères*/
+    display: inline-flex;
+    width: 98%;
+}
+
+#typeChar {
+	border-right: 1px solid #00505e;
+	cursor: pointer;
+	float: left;
+	min-width: 200px;
+	padding-top: 10px;
+}
+
+#typeChar div[data-value]:hover {
+    background-color: #a3d9e0;
+	border-radius: 4px;
+	margin-right: 5px;
+}
+
+#listeChar {
+    font-family: "DejaVu Sans Mono";
+    font-weight: normal;
+    margin-left: 10px;
+    padding-top: 10px;
+}
+
+.oneChar {
+    cursor: pointer;
+    display: inline-block;
+    font-size: 20px;
+    height: 25px;
+    margin-right: 10px;
+    text-align: center;
+    vertical-align: bottom;
+    width: 20px;
+}
+
+.oneChar:hover {
+    color: blue;
+    font-size: 160%;
+    font-weight: bold;
+}
+
 /* -----------------------
   Left Nav
 -------------------------- */
@@ -1190,21 +1337,25 @@ label {												/*Titres champs Rédaction*/
 	left: 0px;
 	height: 64px;
 	width: 38px;
-	z-index: 2;										/*Pour ne pas l'afficher sur les pop-in*/
+	z-index: 2;								/*Pour ne pas l'afficher sur les pop-in*/
 }
 
 #user {
-	width: 195px;										/*MOD pour thèmes = f(taille image)*/
+	width: 195px;										/*MOD = f(taille image)*/
 	margin-left: 10px;
 }
 
 #password {
-	width: 195px;										/*MOD pour thèmes = f(taille image)*/
+	width: 195px;										/*MOD = f(taille image)*/
 	margin-left: 10px;
 }
 
 #leftnav .content {
 	margin: 10px 0px 10px 10px;
+}
+
+#forget_password {									/*NEW*/
+	margin: 10px 0px 10px 0px;
 }
 
 #leftnav {												/*Gradient cadre gauche*/
@@ -1213,18 +1364,12 @@ label {												/*Titres champs Rédaction*/
 	margin: 0;
 	overflow: auto;	
 	background: #a3d9e0; /* Old browsers */
-	background: -moz-linear-gradient(left, #a3d9e0 0%, #ffdf87 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#a3d9e0), color-stop(100%,#ffdf87)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left, #a3d9e0 0%,#ffdf87 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left, #a3d9e0 0%,#ffdf87 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(left, #a3d9e0 0%,#ffdf87 100%); /* IE10+ */
 	background: linear-gradient(to right, #a3d9e0 0%,#ffdf87 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a3d9e0', endColorstr='#ffdf87',GradientType=1 ); /* IE6-9 */
 	background-position: top left;
-	border-bottom: 1px solid #00505E;							/*MOD pour thèmes*/
-	border-left: 1px solid  #00505E;								/*MOD pour thèmes*/
-	border-right: 1px solid  #00505E;								/*MOD pour thèmes*/
-	border-radius: 10px 10px 6px 10px;
+	border-bottom: 1px solid #00505E;							/*MOD*/
+	border-left: 1px solid  #00505E;							/*MOD*/
+	border-right: 1px solid  #00505E;							/*MOD*/
+	border-radius: 4px 4px 4px 4px;
 	margin-top: 10px;
 	overflow-x: hidden;
 }
@@ -1233,124 +1378,140 @@ label {												/*Titres champs Rédaction*/
 	background: url("img/Tahiti_guirlande.png");
 	background-repeat: no-repeat;
 	position: absolute;
-	top: 180px;
-	left: 225px;									/*MOD - position de l'image*/
-	height: 240px;									/*MOD - hauteur réelle de l'image*/
-	width: 45px;									/*MOD - largeur réelle de l'image*/
-	z-index: 2;									/*Pour ne pas l'afficher dans la console*/
+	top: 230px;
+	left: 240px;									/*MOD - position de l'image*/
+	height: 240px;								/*MOD - hauteur réelle de l'image*/
+	width: 45px;								/*MOD - largeur réelle de l'image*/
+	z-index: 2;							/*Pour ne pas l'afficher dans la console*/
 }
 
 #leftnav .title{									/*Gradient titres cadre gauche*/
 	text-align: center;
 	font-weight:bold;
 	line-height: 22px;
-	border-top: 1px solid #00505E;								/*MOD pour thèmes*/
-	border-bottom: 1px solid #00505E;							/*MOD pour thèmes*/
-	/*color: #F0C300;*/											/*MOD pour thèmes*/
+	border-top: 1px solid #00505E;								/*MOD*/
+	border-bottom: 1px solid #00505E;							/*MOD*/
+	/*color: #F0C300;*/											/*MOD*/
 	background: #16ff22; /* Old browsers */
-	background: -moz-linear-gradient(left, #16ff22 0%, #10bc16 40%, #10bc16 61%, #16ff22 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#16ff22), color-stop(40%,#10bc16), color-stop(61%,#10bc16), color-stop(100%,#16ff22)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left, #16ff22 0%,#10bc16 40%,#10bc16 61%,#16ff22 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left, #16ff22 0%,#10bc16 40%,#10bc16 61%,#16ff22 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(left, #16ff22 0%,#10bc16 40%,#10bc16 61%,#16ff22 100%); /* IE10+ */
-	background: linear-gradient(to right, #16ff22 0%,#10bc16 40%,#10bc16 61%,#16ff22 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#16ff22', endColorstr='#16ff22',GradientType=1 ); /* IE6-9 */
+	background: linear-gradient(to right, #10bc16 0%,#16ff22 25%,#16ff22 75%,#10bc16 100%);
 }
 
 input {
-	border-radius: 10px 10px 10px 10px;
+	border-radius: 4px 4px 4px 4px;
+}
+
+#voir_hierarchies {									/*NEW*/
+	display: block;
+	margin : auto;
 }
 
 #search_newsgroup {
-	margin:5px;
-	width: 85%;
-	-moz-border-radius:10px;
-	-webkit-border-radius:10px;
-	background-image: url(img/loupe.png);
-	background-size: 20px;
-	background-repeat:no-repeat;
-	background-position:left center;
+	background-image: url("img/loupe.png");
+	background-position: left center;
+	background-repeat: no-repeat;
+	background-size: 20px auto;
+	margin: 5px;
 	padding-left: 20px;
+	width: 85%;
 }
 
-#mynewsgroups, #mynewsgroups_more {
-	margin-left:5px;
-	margin-right:0px;
-}
-
-#mynewsgroups_more {
+#newsgroups {
 	height: 400px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
 
-#historique {
-	margin-bottom: 10px;
+#articles_send, #articles_draft, #articles_response {
+	cursor: pointer;
+	font-weight: bold;
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: 10px;
+	padding-left: 5px;
 }
 
-#articles_send, #articles_draft, #articles_response {
-	margin-top: 10px;
-	margin-left: 20px;								/*MOD pour thèmes = f(taille image)*/
-	margin-right:15px;
-	font-weight:bold;
-	cursor: pointer;
+#articles_send.actif, #articles_draft.actif, #articles_response.actif {		/*NEW*/
+	background-color: #bbe8ea;							/*MOD*/
+	border-radius: 4px;
+	box-shadow: 2px 1px 1px #888888;
+	padding-left: 5px;
 }
 
 #articles_send:hover, #articles_draft:hover, #articles_response:hover {
-	margin-left: 20px;								/*MOD pour thèmes = f(taille image)*/
-	font-weight: bold;
-	background-color: #a3d9e0;								/*MOD pour thèmes*/
+	background-color: #bbe8ea;							/*MOD*/
+	border-radius: 4px;	
 }
 
 hr {														/*Favoris & Accueil*/
 	width:50%;
 	border: 0;
 	height: 1px;    
-	background: -moz-linear-gradient(left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,0,0,0)), color-stop(50%,rgba(0,0,0,0.75)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left, rgba(0,0,0,0) 0%,rgba(0,0,0,0.75) 50%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left, rgba(0,0,0,0) 0%,rgba(0,0,0,0.75) 50%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(left, rgba(0,0,0,0) 0%,rgba(0,0,0,0.75) 50%,rgba(0,0,0,0) 100%); /* IE10+ */
 	background: linear-gradient(to right, rgba(0,0,0,0) 0%,rgba(0,0,0,0.75) 50%,rgba(0,0,0,0) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#00000000',GradientType=1 ); /* IE6-9 */
 }
 
-#favoris .groupe:active{						/*Keskecé ?*/
-	background-color: #EEAC85;
+.groupe:active {										/*NEW*/
+	background-color: #e1ecef;
 }
 
-#favoris .w:hover, #favoris .r:hover, #favoris .h:hover {
-	background-color: #A3D9E0;								/*MOD pour thèmes*/
+.w:hover, .r:hover, .h:hover, .newsgroup:hover {		/*NEW*/
+	background-color: #bbe8ea;								/*MOD*/
+	border-radius: 4px;
 }
 
-#favoris .h {
+.newsgroup:hover {
+	cursor: pointer;
+}
+
+.newsgroup {
+	margin-right: 15px;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 	cursor: pointer;
 	font-style:italic;
 	font-weight:bold;
+	color: black;
+	line-height: 18px;
 }
 
-#favoris .w {
+.newsgroup.w {
 	user-select: none;
 	cursor: pointer;
 	font-style:normal;
 	font-weight:normal;
-	color: #007733;									/*Couleur groupes en vert*/
+	color: #007733;
 }
 
-#favoris .r {
+.newsgroup.r {
 	user-select: none;
 	cursor: pointer;
 	font-style:normal;
 	font-weight:normal;
-	color: #cc0000;									/*Couleur groupes en rouge*/
+	color: red;
 }
 
-#navigation_newsgroups {
-	margin-top: 20px;
+#liste_hierarchies {												/*MOD*/
+	background: linear-gradient(to right, #a3d9e0 0%,#ffdf87 100%); /* W3C */
+	border-radius: 4px;
+	border: 1px solid #472e00;
+	font-size: 13px;
 }
 
-#mynewsgroups .newsgroup.actif, #mynewsgroups_more .newsgroup.actif{
-	background-color: #FEDE87;							/*MOD pour thèmes*/
+.categorie_groups {
+	text-align: left;
+	font-style:normal;
+	font-weight:bold;
+	color: blue;
+}
+
+.newsgroup.actif {
+	background-color: #bbe8ea;									/*MOD*/
+	border-radius: 4px;
+    box-shadow: 2px 1px 1px #888888;				/*NEW*/
+	margin: 2px 15px 2px 0px;
 }
 
 /*
@@ -1359,14 +1520,14 @@ FAQ - Start
 --------------------------
 */
 
-#faq {												/*MOD pour thèmes - Pop-in FAQ*/
-	background-color: #E1ECEF;						/* Fond*/
+#faq {													/*MOD - Pop-in FAQ*/
+	background-color: #E1ECEF;							/* Fond*/
 	padding: 0px 10px 10px 10px;
 	border-style: none solid solid solid;
 	border-width: 1px;
 	border-color: #00505E;								/*Bordure*/
-	border-radius: 5px;
-	/*color: #000000;*/								/*Couleur police si pas héritée de body*/
+	border-radius: 4px;
+	/*color: #000000;*/						/*Couleur police si pas héritée de body*/
 }
 
 .flotte {
@@ -1377,7 +1538,7 @@ FAQ - Start
 h1 {
 	text-align: center;
 	font-size: 110%;
-	color: maroon;
+	color: #00252b;
 }
 
 h1>img {
@@ -1409,13 +1570,13 @@ h1>img {
 } 
 
 .question:hover { 
-	background-color: #F4F4F4;								/*MOD pour thèmes*/
+	background-color: #F4F4F4;								/*MOD*/
 	margin-left: 0px;
 	clear: both;
 }
 
 .reponse {
-	color: maroon;
+	color: #00252b;
 	margin-left: 25px;
 }
 
@@ -1429,7 +1590,7 @@ h1>img {
 }
 
 #faq a:hover {
-	background-color: #FCF1D4;								/*MOD pour thèmes*/
+	background-color: #FCF1D4;								/*MOD*/
 	color: #009900 !important;
 	cursor: pointer;
 	background-image: url(img/link.png);

@@ -609,8 +609,8 @@ tr.color{
 }
 
 .visible.selected, .visible.selected .taille{
-	background-color: #0060ff !important;
-	color: white;
+	background-color: #00aaff !important;
+	color: #ffffcc;
 }
 
 .invisible {

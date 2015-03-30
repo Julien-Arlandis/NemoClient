@@ -1,7 +1,7 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.2.custom.min.css);
 
 /* ----------------------------------------------------------------------------------
-	Interface Gothique - Mise à jour Nemo/0.996e - 2015-03-20
+	Interface Gothique - Mise à jour Nemo/0.996e - 2015-03-30
 ---------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -675,7 +675,7 @@ tr.color{
 
 #article_header {								/*Gradient + image en-tête article*/
 	background: #0e0e0e; /* Old browsers */
-	background: url("img/Gothique_crane_flamme.png") no-repeat, linear-gradient(to bottom, #303030 0%,#7d7e7d 86%); /* W3C */
+	background: url("img/Gothique_crane_flamme.png") no-repeat, linear-gradient(to bottom, #000000 0%,#660066 100%); /* W3C */
 	background-position: 60% 0px, top left;
 	border-bottom: 1px solid #000000;								/*MOD pour thèmes*/
 	line-height: 18px;
@@ -701,13 +701,16 @@ tr.color{
 }
 
 #references {
-	margin-top: 10px;
+	color: #ffbf00;
 	cursor: pointer;
 	margin-left: 30px;
+	margin-top: 10px;
 }
 
 #references div span:hover{
 	background-color: #D6D6D6;								/*MOD*/
+	border-radius: 4px;
+	color: #8300c0;
 }
 
 #article_header .supersede {									/*MOD*/
@@ -730,7 +733,7 @@ tr.color{
 
 #article_header .champ_value {
 	font-weight: bold;
-	color: #ffbf00 !important;								/*MOD*/
+	color: #ffbf00;											/*MOD*/
 	font-family: "Times New Roman", serif;
 	font-size: 14px;
 }
@@ -739,10 +742,10 @@ tr.color{
 	color: #ffbf00;
 }
 
-#article_header .newsgroup:hover {							/*NEW*/
+#article_header .newsgroup:hover, #article_header .replyto:hover {	/*NEW*/
 	background-color: #f0c300;
 	color: black;
-	padding: 0px 5px 0px 5px;
+	padding: 0px 5px 1px 5px;
 }
 
 #like {														/*NEW*/

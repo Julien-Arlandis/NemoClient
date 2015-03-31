@@ -1,7 +1,7 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.2.custom.min.css);
 
 /* ----------------------------------------------------------------------------------
-	Interface Gothique - Mise à jour Nemo/0.996e - 2015-03-30
+	Interface Gothique - Mise à jour Nemo/0.996e - 2015-03-31
 ---------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -717,9 +717,9 @@ tr.color{
 	color: red;
 	font-family: "Times New Roman",serif;
 	font-size: 14px;
+	font-weight: bold;
 	padding-left: 10px;
 	padding-right: 10px;
-	text-shadow: 0 0 1px yellow;
 }
 
 #article_header .champ_article {

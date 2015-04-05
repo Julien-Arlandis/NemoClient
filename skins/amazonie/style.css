@@ -1,7 +1,7 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.2.custom.min.css);
 
 /*---------------------------------------------------------------------------------
-	Interface Amazonie - Mise à jour Nemo/0.996e - 2015-03-19
+	Interface Amazonie - Mise à jour Nemo/0.996e - 2015-04-05
 ---------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -1469,7 +1469,7 @@ hr {														/*Favoris & Accueil*/
 	background-color: #dbff93;									/*MOD*/
 	border-radius: 4px;
     box-shadow: 2px 1px 1px #888888;				/*NEW*/
-	margin: 5px 15px 5px 0;
+	margin: 2px 15px 2px 0;
 }
 
 /*

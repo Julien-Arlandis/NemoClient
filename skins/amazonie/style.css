@@ -1,7 +1,7 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.2.custom.min.css);
 
 /*---------------------------------------------------------------------------------
-	Interface Amazonie - Mise à jour Nemo/0.996e - 2015-04-05
+	Interface Amazonie - Mise à jour Nemo/0.996e - 2015-04-11
 ---------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -1391,7 +1391,7 @@ input {
 #articles_send.actif, #articles_draft.actif, #articles_response.actif {		/*NEW*/
 	background-color: #dbff93;
 	border-radius: 4px;
-	box-shadow: 2px 1px 1px #888888;
+	box-shadow: 2px 1px 1px #77aa99;
 	padding-left: 5px;
 }
 
@@ -1468,7 +1468,7 @@ hr {														/*Favoris & Accueil*/
 .newsgroup.actif {
 	background-color: #dbff93;									/*MOD*/
 	border-radius: 4px;
-    box-shadow: 2px 1px 1px #888888;				/*NEW*/
+    box-shadow: 2px 1px 1px #77aa99;				/*NEW*/
 	margin: 2px 15px 2px 0;
 }
 

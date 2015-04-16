@@ -1,7 +1,7 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.996e - 2015-03-18
+	Interface Classic - Mise à jour Nemo/0.996e - 2015-04-16
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -1348,7 +1348,7 @@ input {
 #articles_send.actif, #articles_draft.actif, #articles_response.actif {
 	background-color: #ddffdd;
 	border-radius: 4px;
-	box-shadow: 2px 2px 2px #888888;
+	box-shadow: 2px 1px 2px #88bb88;
 	padding-left: 5px;
 }
 
@@ -1424,7 +1424,7 @@ hr {
 .newsgroup.actif{
 	background-color: #ddffdd;
 	border-radius: 4px;
-    box-shadow: 2px 1px 1px #888888;
+    box-shadow: 2px 1px 1px #88bb88;
 }
 
 /*

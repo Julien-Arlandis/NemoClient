@@ -72,7 +72,7 @@ execute: function(cmd, callback, xhrInPool) {
 		typeOfData = 'text';
 	}else if(cmd[0] == 'set' && cmd.length > 1) {
 		if(cmd[1].FromName) JNTP.Storage.FromName = cmd[1].FromName;
-		if(cmd[1].FromMail) JNTP.Storage.FromMail = cmd[1].FromMailFF;
+		if(cmd[1].FromMail) JNTP.Storage.FromMail = cmd[1].FromMail;
 		if(cmd[1].ReplyTo) JNTP.Storage.ReplyTo = cmd[1].ReplyTo;
 	}
 

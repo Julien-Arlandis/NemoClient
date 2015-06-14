@@ -915,7 +915,7 @@ initRedaction:function() {
 			if($('#formulaire_fu2').val()) {
 				followupTo = $('#formulaire_fu2').val().replace(/ /g,"").replace(/,\s*$/g,"").split(',');
 			}
-			Interface.articleToWrite.set( {
+			Interface.articleToWrite.set({
 				"FollowupTo": followupTo,
 				"Newsgroups":$('#formulaire_newsgroup').val().replace(/ /g,"").replace(/,\s*$/g,"").split(','),
 				"FromName": $('#formulaire_from').val(),

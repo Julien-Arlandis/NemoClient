@@ -4,7 +4,6 @@ inPopup: false,
 bodyInputID: "formulaire_body",
 articleToRead: new Nemo.Article(),
 articleToWrite: new Nemo.Article(),
-articleToDraft: new Nemo.Article(),
 modeEdit: 'text',
 currentSkin: "classic",
 isCtrlPress: false,
@@ -31,6 +30,14 @@ Char: {
 	grec: ['α','β','γ','δ','ε','ζ','η','θ','ι','κ','λ','μ','ν','ξ','π','ρ','ς','σ','τ','υ','φ','χ','ψ','ω',' ','Γ','Δ','Θ','Λ','Ξ','Π','Ρ','Σ','Φ','Ψ','Ω'],
 	ponctuation: [' ','« ',' »','“','”','À','Ç','É','È','Ê','Ë','Î','Ï','Ô','Ù','Û','ÿ','Ÿ','æ','Æ','œ','Œ','¶','©','®','™'],
 	smiley: ['😃','😇','😉','😁','😎','😞']
+},
+
+draft: function(obj) {
+	if(arguments.length == 0) {
+		return JSON.parse( localStorage.draft );
+	}else{
+		localStorage.draft = JSON.stringify(obj);
+	}
 },
 
 // options = ID,DataID,read,source,surligne,callback;
@@ -81,12 +88,11 @@ callbackGetArticle: function(options, code, j){
 			$('#article_certification').attr('class', 'jntp_invalid');
 		}
 
-		var str = JSON.stringify(JNTP.Packet.val(), undefined, 4);
+		var str = JSON.stringify(j.body[0], undefined, 4);
 		$('#article_size').html('('+str.length+' octets)');
 
 		if (Interface.articleToRead.value.Supersedes){
 				$('#voir_supersede').show();
-				$('#article_supersede').html(Interface.articleToRead.value.Supersedes);
 		}
 
 		$('#article_source').html(Nemo.Tools.syntaxHighlight(str));
@@ -135,7 +141,7 @@ callbackGetArticle: function(options, code, j){
 		if(Interface.articleToRead.value.DataType == 'ListGroup') {
 			$("#article_body").html( $("#article_body").html() + "<br>" + Nemo.Tools.HTMLEncode(JSON.stringify(Interface.articleToRead.value.ListGroup, undefined, 4)) );
 		}
-		var nbLike = (typeof JNTP.Packet.val().Meta.Like == "undefined") ? 0 : JNTP.Packet.val().Meta.Like;
+		var nbLike = (typeof j.body[0].Meta.Like == "undefined") ? 0 : j.body[0].Meta.Like;
 		$('#compteur_like').html(nbLike);
 		Interface.reloadEvent();
 	break;
@@ -301,7 +307,7 @@ displayMediaInfos: function() {
 			}
 		}
 		Nemo.Media.del( index );
-		Nemo.Media.displayInfos();
+		Interface.displayMediaInfos();
 	});
 },
 
@@ -347,7 +353,7 @@ displayThread: function(){
 			circuit = (liste[ind].circuit) ? ' circuit' : '';
 			level = liste[ind].level;
 		}
-		if( !Nemo.isBlackListed(liste[ind].Data.FromName + ',' + liste[ind].Data.FromMail) ) {
+		if( !Nemo.Blacklist.isInList(liste[ind].Data.FromName + ',' + liste[ind].Data.FromMail) ) {
 			ligne = '<tr class="visible'+position+lu+circuit+'" data-line="'+ line++ +'" data-DataID="'+Nemo.Tools.HTMLEncode(liste[ind].Data.DataID)+'" data-level="'+level+'">';
 			ligne += '<td class="tree"></td>';
 			ligne += '<td class="Subject">' + decal + Nemo.Tools.HTMLEncode(liste[ind].Data.Subject) + '&nbsp;</td>';
@@ -420,25 +426,6 @@ displayThread: function(){
 	Interface.surligneArticle(true);
 },
 
-
-draftArticle: function() {
-	Interface.openRedactionWindow(function(){
-		win.Interface.initRedaction();
-		var art = Nemo.draft();
-		win.Interface.bodyEdit( art.Body );
-		win.$('#formulaire_subject').val( art.Subject );
-		win.$('#formulaire_newsgroup').val( art.Newsgroups );
-		win.$('#formulaire_fu2').val( art.FollowupTo );
-		win.$('#formulaire_supersede').val( art.Supersedes )
-		win.Nemo.setReferences( art.References );
-		win.document.getElementById(Interface.bodyInputID).selectionStart = Interface.bodyEdit().length;
-		win.document.getElementById(Interface.bodyInputID).selectionEnd = document.getElementById(Interface.bodyInputID).selectionStart;
-		win.$('#'+Interface.bodyInputID).focus();
-		var objDiv = document.getElementById(Interface.bodyInputID);
-		objDiv.scrollTop = objDiv.scrollHeight;
-	});
-},
-
 logData: function(msg, classCss) {
 	msg = (typeof(msg) == "object") ? Nemo.Tools.syntaxHighlight(JSON.stringify(msg, undefined, 4)) : msg;
 	msg = msg.replace(/[\n]/gi, "<br>" );
@@ -479,8 +466,8 @@ selectModeEdition: function() {
 displayFavoris: function() {
 	$('#favoris').empty();
 	try{
-		for(var groupName in Nemo.favoris) {
-			var rwm = Nemo.favoris[groupName];
+		for(var groupName in Nemo.Tools.getVar('favoris')) {
+			var rwm = Nemo.Tools.getVar('favoris')[groupName];
 			$('#favoris').append('<div class="blocNewsgroup"><div class="icon_favori" data-name="'+groupName+'" data-rwm="'+rwm+'"></div><div class="tri_favoris newsgroup '+rwm+'" data-name="'+groupName+'" data-rwm="'+rwm+'">'+groupName+'</div></div>');
 		}
 	} catch(e){ console.log(e)}
@@ -644,7 +631,7 @@ getNewsgroups: function(params){
 setFavoriIcon: function(groupName, rwm) {
 	$('.icon_favori').removeClass('del_favori add_favori');
 	$('.newsgroup[data-name="'+groupName+'"]').each(function() {
-		if(typeof Nemo.favoris[groupName] == 'undefined') {
+		if(typeof Nemo.Tools.getVar('favoris')[groupName] == 'undefined') {
 			$('.icon_favori[data-name="'+groupName+'"]').removeClass('del_favori').addClass('add_favori');
 		}else{
 			$('.icon_favori[data-name="'+groupName+'"]').removeClass('add_favori').addClass('del_favori');
@@ -759,7 +746,7 @@ reloadEvent: function() {
 			case "blacklist":
 				for(i in Nemo.Thread.value) {
 					if(Nemo.Thread.value[i].ID == ID ) {
-						Nemo.setBlacklist(Nemo.Thread.value[i].Data.FromName + ',' + Nemo.Thread.value[i].Data.FromMail);
+						Nemo.Blacklist.set(Nemo.Thread.value[i].Data.FromName + ',' + Nemo.Thread.value[i].Data.FromMail);
 						Nemo.Thread.display();
 					}
 				}
@@ -852,15 +839,15 @@ reloadEvent: function() {
 closeRedactionWindow: function() {
 	if (this.inPopup){
 		window.close();
-		$('#accueil, #leftnav, #rightnav').show();
-		$('#send_form').hide();
+		$('#accueil, #leftnav, #rightnav').show(); // ??
+		$('#send_form').hide();	// ??
 	}else{
 		$("#send_form").dialog('close');
 	}
 },
 
 openRedactionWindow: function( callback ) {
-	if( !Nemo.activePopup ) {
+	if( !Nemo.Tools.getVar('activePopup') ) {
 		win = window;
 		$('#send_form').dialog({ 
 			height: 600, 
@@ -877,11 +864,11 @@ openRedactionWindow: function( callback ) {
 		win.onload = function() {
 			win.$('#accueil, #leftnav, #rightnav').hide();
 			win.$('#send_form').show();
-			win.JNTP.Session = JNTP.Session;
-			win.JNTP.FromName = JNTP.FromName;
-			win.JNTP.FromMail = JNTP.FromMail;
+			win.JNTP.Storage = JNTP.Storage;
 			win.JNTP.execute(["whoami"]);
 			win.Interface.inPopup = true;
+			callback.$ = win.$;
+			callback.Interface = win.Interface;
 			callback();
 		};
 	}
@@ -894,8 +881,8 @@ initRedaction:function() {
 	Interface.selectModeEdition();
 
 	$('#contextMenu').hide();
-	$('#formulaire_from').val(JNTP.FromName);
-	$('#formulaire_email').val(JNTP.FromMail);
+	$('#formulaire_from').val(JNTP.Storage.FromName);
+	$('#formulaire_email').val(JNTP.Storage.FromMail);
 	$('#redaction, #formulaire_send').show();
 	$('#rendu, #paint_window, .insert_media, #formulaire_update').hide();
 	$('#'+Interface.bodyInputID+', #formulaire_subject, #formulaire_fu2, #formulaire_newsgroup, #add_img_url, #add_pdf_url, #add_file, #add_pdf, #add_img, #formulaire_supersede').val('');
@@ -910,43 +897,72 @@ initRedaction:function() {
 
 	$('#view_rendu').click(function() {
 		if (!$(this).hasClass('selected')) {
-			Interface.articleToWrite.set( {'Body':Interface.bodyEdit()} );
-			Interface.articleToWrite.renduHTML('rendu');
+			Interface.articleToWrite.set( {'Body':Interface.bodyEdit()} ).renduHTML('rendu');
 		}
 	});
 
 	$('#form_post').submit(function() {
 
-		postForm = function() {
+		Interface.postForm = function() {
 			$("#chargement").show();
 			$("#send_form").hide();
-			if($('#formulaire_update').is(':visible')) {
-				Nemo.deleteArticle(Nemo.PacketUpdate);
+
+			if (Interface.inPopup){
+				$('#chargement2').show();
 			}
 
 			var followupTo = [];
 			if($('#formulaire_fu2').val()) {
 				followupTo = $('#formulaire_fu2').val().replace(/ /g,"").replace(/,\s*$/g,"").split(',');
 			}
-			win.Interface.articleToWrite.set( {'FollowupTo': followupTo} );
-			win.Interface.articleToWrite.set( {'Newsgroups':$('#formulaire_newsgroup').val().replace(/ /g,"").replace(/,\s*$/g,"").split(',')} );
-			win.Interface.articleToWrite.set( {'Media': Nemo.Media.val()} ); // à revoir
-			win.Interface.articleToWrite.set( {'FromName': $('#formulaire_from').val()} );
-			win.Interface.articleToWrite.set( {'FromMail': $('#formulaire_email').val()} );
-			win.Interface.articleToWrite.set( {'Body': Interface.bodyEdit().replace(/\?\?/g,"? ? ")} );
-			win.Interface.articleToWrite.set( {'Subject': $('#formulaire_subject').val().replace(/\?\?/g,"? ? ")} );
-			win.Interface.articleToWrite.set( {'ReplyTo': JNTP.ReplyTo} );
+			Interface.articleToWrite.set( {
+				"FollowupTo": followupTo,
+				"Newsgroups":$('#formulaire_newsgroup').val().replace(/ /g,"").replace(/,\s*$/g,"").split(','),
+				"FromName": $('#formulaire_from').val(),
+				"FromMail": $('#formulaire_email').val(),
+				"Body": Interface.bodyEdit().replace(/\?\?/g,"? ? "),
+				"Subject": $('#formulaire_subject').val().replace(/\?\?/g,"? ? ")
+			}).diffuse({"callback":function(options, code, j){switch(code) {
+				case "200":
+					Nemo.Tools.xpostMail({
+						dataid: j.body.Data.DataID, 
+						uri: JNTP.url + '/?DataID='+j.body.Data.DataID,
+						mail: $("#formulaire_xpostmail").val(),
+						subject: $('#formulaire_subject').val()
+					});
+					$('#formulaire_subject, #'+Interface.bodyInputID+', #add_img, #formulaire_xpostmail').val('');
+					$("#chargement, #chargement2").hide();
+					Nemo.Media.del();
+					if($('#formulaire_update').is(':visible')) {
+						Interface.articleToWrite.del({"callback":function(options, code, j){switch(code) {
+							case "200":
+								$('#supprimer_article').hide();
+								$('#article_deleted').show();
+							break;
+							case "500":
+								$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+							break;
+							}}
+						});
+					}
+					Interface.closeRedactionWindow();
+				break;
 
-			Interface.articleToWrite.diffuse();
+				case "500":
+					$("#dialog-alert").dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+					$("#chargement, #chargement2").hide();
+					$("#send_form").show();
+				break;
+				}}
+			});
 		}
 
-		if( Nemo.confirmSendArticle ) {
-
+		if( Nemo.Tools.getVar('confirmSendArticle') ) {
 			$( "#dialog-alert" ).dialog({ 
 				modal: true,
 				buttons: {
 					"Oui": function() {
-						postForm();
+						Interface.postForm();
 						$( this ).dialog( "close" );
 					},
 					"Non": function() {
@@ -955,7 +971,7 @@ initRedaction:function() {
 				}
 			}).html("<p>Confirmer l'envoi de l'article?</p>");
 		}else{
-			postForm();
+			Interface.postForm();
 		}
 		return false;
 	});
@@ -988,7 +1004,7 @@ initRedaction:function() {
 
 	$('#add_pdf').change(function() {
 		uri = 'jntp:#DataID#/Data.Media:'+(parseInt(Nemo.Media.value.length) + 1);
-		if(Nemo.Media.add('add_pdf', Nemo.Media.displayInfos)) {
+		if(Nemo.Media.add('add_pdf', Interface.displayMediaInfos)) {
 			Interface.insertAtSelection('pdf', uri);
 			$('.insert_media').hide();
 		}else{
@@ -1010,7 +1026,7 @@ initRedaction:function() {
 	$('#add_img').change(function() {
 		uri = 'jntp:#DataID#/Data.Media:'+(parseInt(Nemo.Media.value.length) + 1);
 
-		if(Nemo.Media.add('add_img', Nemo.Media.displayInfos)) {
+		if(Nemo.Media.add('add_img', Interface.displayMediaInfos)) {
 			Interface.insertAtSelection('img', uri);
 			$('.insert_media').hide();
 		}else{
@@ -1042,7 +1058,7 @@ initRedaction:function() {
 	});
 
 	$('#insert_signature').click(function() {
-		sign = "[signature]" + Nemo.signature + "[/signature]";
+		sign = "[signature]" + Nemo.Tools.getVar('signature') + "[/signature]";
 		if(Interface.modeEdit == 'text') {
 			Interface.bodyEdit( Interface.bodyEdit()+"\n" + sign);
 			var objDiv = document.getElementById(Interface.bodyInputID);
@@ -1127,15 +1143,15 @@ initRedaction:function() {
 	});
 
 	var periodicDraft = setInterval(function(){
-		Nemo.draft({
+		Interface.draft({
 			"Subject" : $('#formulaire_subject').val(),
 			"Newsgroups" : $('#formulaire_newsgroup').val(),
 			"Body" : Interface.bodyEdit(),
 			"FollowupTo": $('#formulaire_fu2').val(),
-			"References": Nemo.References,
+			"References": Interface.articleToWrite.value.References,
 			"Supersedes" : $('#formulaire_supersede').val(),
-			"ThreadID": Nemo.ThreadID,
-			"ReferenceUserID": Nemo.ReferenceUserID
+			"ThreadID": Interface.articleToWrite.value.ThreadID,
+			"ReferenceUserID": Interface.articleToWrite.value.ReferenceUserID
 		});
 	}, 6000);
 
@@ -1184,104 +1200,115 @@ init: function() {
 		Nemo.Thread.display();
 	});
 
+	$('#new_sujet').click(function() {
+		Interface.openRedactionWindow(function(){
+			var Interface=win.Interface; var $=win.$;
+			Interface.articleToWrite = new Nemo.Article().set({
+				"Supersedes": $('#formulaire_supersede').val(),
+				"ThreadID": ''
+			}).setReferences( [] );
+			
+			if(Interface.modeEdit == 'html') {
+				Interface.modeEdit = 'text';
+				Interface.selectModeEdition();
+			}
+
+			Interface.initRedaction();
+			$('#formulaire_subject').focus();
+			if( Nemo.Thread.filter['Data.Newsgroups'] && Nemo.Thread.filter['Data.Newsgroups'].indexOf('*') == -1) {
+				$('#formulaire_newsgroup').val( Nemo.Thread.filter['Data.Newsgroups'] );
+			}
+		});
+	});
+
 	$("#repondre").click(function(e) {
-
-		Interface.articleToWrite = Interface.articleToRead;
-		if ($('#delete_citations').is(':visible')) {
-			Interface.articleToWrite = Interface.articleToWrite.clearCitations();
-		}
-		Interface.articleToWrite = Interface.articleToWrite.setTemplateVar().clearSignature().getSelectLines().quote();
-		var body = Interface.articleToWrite.value.Body;
-
 		Interface.openRedactionWindow(function() {
-			win.JNTP.Packet.val(JNTP.Packet.val());
+			var Interface=win.Interface; var $=win.$; var document=win.document;
 
 			// References
 			var refs = (typeof Interface.articleToRead.value.References != "undefined") ? Interface.articleToRead.value.References : [];
 			refs.push( Interface.articleToRead.value.DataID );
-			Nemo.ReferenceUserID = (typeof Interface.articleToRead.value.UserID != "undefined") ? Interface.articleToRead.value.UserID : false;
-			Nemo.ThreadID = Interface.articleToRead.value.ThreadID;
-			win.Interface.articleToWrite.setReferences( refs );
 
-			win.Interface.initRedaction();
+			Interface.articleToWrite = new Nemo.Article()
+				.set({
+					"ReferenceUserID": (typeof Interface.articleToRead.value.UserID != "undefined") ? Interface.articleToRead.value.UserID : false,
+					"ThreadID": Interface.articleToRead.value.ThreadID,
+					"Body": Interface.articleToRead.value.Body
+				})
+				.setReferences( refs )
+				.clearCitations( $('#delete_citations').is(':visible') )
+				.setTemplateVar()
+				.clearSignature()
+				.getSelectLines()
+				.quote({
+					"date":Interface.articleToRead.value.InjectionDate,
+					"FromName": Interface.articleToRead.value.FromName,
+					"FromMail": Interface.articleToRead.value.FromMail
+				});
+
+			Interface.initRedaction();
 
 			// Sujet
 			var suf = (Interface.articleToRead.value.Subject.substring(0, 3) != 'Re:')? 'Re: ' : '';
-			win.$('#formulaire_subject').val(suf + Interface.articleToRead.value.Subject);
+			$('#formulaire_subject').val(suf + Interface.articleToRead.value.Subject);
 
 			// Newsgroups
 			if(typeof Interface.articleToRead.value.FollowupTo != "undefined" && Interface.articleToRead.value.FollowupTo.length){
-				win.$('#formulaire_newsgroup').val(Interface.articleToRead.value.FollowupTo.join( ', ' ));
+				$('#formulaire_newsgroup').val(Interface.articleToRead.value.FollowupTo.join( ', ' ));
 			}else{
-				win.$('#formulaire_newsgroup').val(Interface.articleToRead.value.Newsgroups.join( ', ' ));
+				$('#formulaire_newsgroup').val(Interface.articleToRead.value.Newsgroups.join( ', ' ));
 			}
 
 			// Ouvre la popup, positionne le curseur
-			win.Interface.bodyEdit( body );
-			win.document.getElementById(Interface.bodyInputID).selectionStart = win.Interface.bodyEdit().length;
-			win.document.getElementById(Interface.bodyInputID).selectionEnd = win.document.getElementById(Interface.bodyInputID).selectionStart;
-			win.$('#'+Interface.bodyInputID).focus();
-			var objDiv = win.document.getElementById(Interface.bodyInputID);
+			Interface.bodyEdit( Interface.articleToWrite.value.Body );
+			document.getElementById(Interface.bodyInputID).selectionStart = Interface.bodyEdit().length;
+			document.getElementById(Interface.bodyInputID).selectionEnd = document.getElementById(Interface.bodyInputID).selectionStart;
+			$('#'+Interface.bodyInputID).focus();
+			var objDiv = document.getElementById(Interface.bodyInputID);
 			objDiv.scrollTop = objDiv.scrollHeight;
 		});
 	});
 
 	$("#modifier_article").click(function() {
 		Interface.openRedactionWindow(function(){
-			win.Nemo.PacketUpdate = JNTP.Packet.val();
-			Nemo.ReferenceUserID = (typeof Interface.articleToRead.value.ReferenceUserID != "undefined") ? Interface.articleToRead.value.ReferenceUserID : false;
-			win.Nemo.ThreadID = Interface.articleToRead.value.ThreadID;
-			win.Nemo.setReferences( Interface.articleToRead.value.References );
+			var Interface=win.Interface; var $=win.$; var Nemo=win.Nemo;
 
-			win.Interface.initRedaction();
-			win.$('#formulaire_send').hide();
-			win.$('#formulaire_update').show();
-			win.$('#formulaire_supersede').val( Interface.articleToRead.value.DataID );
-			win.$('#formulaire_subject').val( Interface.articleToRead.value.Subject );
-			win.$('#formulaire_newsgroup').val(Interface.articleToRead.value.Newsgroups.join(', '));
-			win.$('#formulaire_fu2').val(Interface.articleToRead.value.FollowupTo.join(', '));
-			win.Nemo.Media.copy( Interface.articleToRead.value.DataID, win.Nemo.Media.displayInfos);
-
-			win.Interface.bodyEdit( Interface.articleToRead.value.Body );
-		});
-	});
-
-	$('#new_sujet').click(function() {
-		Interface.openRedactionWindow(function(){
-
-			win.Interface.articleToWrite = new Nemo.Article();
-
-			if (win.Interface.inPopup){
-				$('#chargement2').show();
-			}
-			
-			if(win.Interface.modeEdit == 'html') {
-				win.Interface.modeEdit = 'text';
-				win.Interface.selectModeEdition();
-			}
-
-			win.Interface.articleToWrite.setReferences( [] );
-			win.Interface.articleToWrite.set( {'Supersedes': $('#formulaire_supersede').val()} );
-			win.Interface.articleToWrite.set( {'Uri': JNTP.url + '/?DataID=#DataID#'} );
-			win.Interface.articleToWrite.set( {'ThreadID': ''} );
-			//win.Interface.articleToWrite.set( {'ReferenceUserID': Nemo.ReferenceUserID });
-			
-			win.Interface.initRedaction();
-			win.$('#formulaire_subject').focus();
-			if( Nemo.Thread.filter['Data.Newsgroups'].indexOf('*') == -1) {
-				win.$('#formulaire_newsgroup').val( Nemo.Thread.filter['Data.Newsgroups'] );
-			}
+			Interface.articleToWrite = jQuery.extend(true, {}, Interface.articleToRead);
+			Interface.initRedaction();
+			$('#formulaire_send').hide();
+			$('#formulaire_update').show();
+			$('#formulaire_supersede').val( Interface.articleToRead.value.DataID );
+			$('#formulaire_subject').val( Interface.articleToRead.value.Subject );
+			$('#formulaire_newsgroup').val(Interface.articleToRead.value.Newsgroups.join(', '));
+			$('#formulaire_fu2').val(Interface.articleToRead.value.FollowupTo.join(', '));
+			Nemo.Media.copy( Interface.articleToRead.value.DataID, Interface.displayMediaInfos);
+			Interface.bodyEdit( Interface.articleToRead.value.Body );
 		});
 	});
 
 	$('#articles_draft').click(function() {
-		Interface.draftArticle();
-	});
+		Interface.openRedactionWindow(function(){
+			var Interface=win.Interface; var $=win.$; var document=win.document;
 
+			Interface.initRedaction();
+			var art = Interface.draft();
+			Interface.bodyEdit( art.Body );
+			$('#formulaire_subject').val( art.Subject );
+			$('#formulaire_newsgroup').val( art.Newsgroups );
+			$('#formulaire_fu2').val( art.FollowupTo );
+			$('#formulaire_supersede').val( art.Supersedes )
+			Nemo.setReferences( art.References );
+			document.getElementById(Interface.bodyInputID).selectionStart = Interface.bodyEdit().length;
+			document.getElementById(Interface.bodyInputID).selectionEnd = document.getElementById(Interface.bodyInputID).selectionStart;
+			$('#'+Interface.bodyInputID).focus();
+			var objDiv = document.getElementById(Interface.bodyInputID);
+			objDiv.scrollTop = objDiv.scrollHeight;
+		});
+	});
 
 	$('#generate_secret_key').click(function() {
 		Nemo.Tools.storeVar("SecretKey", Nemo.Tools.generateSecretKey());
-		$('#secret_key').html(Nemo.SecretKey);
+		$('#secret_key').html(Nemo.Tools.getVar('SecretKey'));
 	});
 
 	$('#supprimer_article').click(function() {
@@ -1289,8 +1316,17 @@ init: function() {
 			modal: true,
 			buttons: {
 				"Oui": function() {
-				  Nemo.deleteArticle(JNTP.Packet);
-				  $( this ).dialog( "close" );
+					Interface.articleToRead.del({"callback":function(options, code, j){switch(code) {
+						case "200":
+							$('#supprimer_article').hide();
+							$('#article_deleted').show();
+						break;
+						case "500":
+							$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+						break;
+						}}
+					});
+				  	$( this ).dialog( "close" );
 				},
 				"Non": function() {
 				  $( this ).dialog( "close" );
@@ -1304,16 +1340,16 @@ init: function() {
 			minHeight: 500, minWidth:750, close: function() {} 
 		});
 		$('.accordeon').accordion();
-		$("#confirm_send_article").attr('checked', (Nemo.confirmSendArticle == 1) ? true : false);
-		$("#total_article").val(Nemo.totalArticle);
-		$('output').text(Nemo.totalArticle);
-		$('#secret_key').html(Nemo.SecretKey);
-		$('#signature').val(Nemo.signature);
-		$('#fromname').val(JNTP.FromName);
-		$('#frommail').val(JNTP.FromMail);
-		$('#replyto').val(JNTP.ReplyTo);
-		$('#active_popup').attr('checked', (Nemo.activePopup == 1) ? true : false);
-		$('#blacklist').val(localStorage.blacklist);
+		$("#confirm_send_article").attr('checked', (Nemo.Tools.getVar('confirmSendArticle') == 1) ? true : false);
+		$("#total_article").val(Nemo.Tools.getVar('totalArticle'));
+		$('output').text(Nemo.Tools.getVar('totalArticle'));
+		$('#secret_key').html(Nemo.Tools.getVar('SecretKey'));
+		$('#signature').val(Nemo.Tools.getVar('signature'));
+		$('#fromname').val(JNTP.Storage.FromName);
+		$('#frommail').val(JNTP.Storage.FromMail);
+		$('#replyto').val(JNTP.Storage.ReplyTo);
+		$('#active_popup').attr('checked', (Nemo.Tools.getVar('activePopup') == 1) ? true : false);
+		$('#blacklist').val(Nemo.Blacklist.getList());
 	});
 
 	$('#form_authentification').submit(function() {
@@ -1331,7 +1367,7 @@ init: function() {
 	});
 
 	$('#articles_send').click(function() {
-		Nemo.Thread.filter = {"Data.UserID": JNTP.UserID};
+		Nemo.Thread.filter = {"Data.UserID": JNTP.Storage.UserID};
 		Nemo.Thread.get({
 			"listenNext":1, 
 			"callback": function(res) {
@@ -1343,7 +1379,7 @@ init: function() {
 	});
 
 	$('#articles_response').click(function() {
-		Nemo.Thread.filter = {"Data.ReferenceUserID": JNTP.UserID};
+		Nemo.Thread.filter = {"Data.ReferenceUserID": JNTP.Storage.UserID};
 		Nemo.Thread.get({
 			"listenNext":1, 
 			"callback": function(res) {
@@ -1444,7 +1480,16 @@ init: function() {
 
 	$('#ban_article').click(function() {
 		if(confirm('Voulez-vous vraiment supprimer cet article du serveur?')) {
-			Nemo.banArticle(JNTP.Packet);
+			Interface.articleToRead.ban({"callback":function(options, code, j){switch(code) {
+				case "200":
+					$('#supprimer_article').hide();
+					$('#article_deleted').show();
+				break;
+				case "500":
+					$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+				break;
+				}}
+			});
 		}
 	});
 
@@ -1495,15 +1540,15 @@ init: function() {
 		var params = {
 			"DataType" : "Like", 
 			"Newsgroups" : Interface.articleToRead.value.Newsgroups, 
-			"Body" : JNTP.FromName + ' a aimé cet article', 
+			"Body" : JNTP.Storage.FromName + ' a aimé cet article', 
 			"FollowupTo" : Interface.articleToRead.value.FollowupTo, 
 			"Subject" : Interface.articleToRead.value.Subject,
-			"ReplyTo": JNTP.ReplyTo,
+			"ReplyTo": JNTP.Storage.ReplyTo,
 			"Uri": JNTP.url + '/?DataID=#DataID#',
 			"DataIDLike": Interface.articleToRead.value.DataID
 		};
 
-		var article = JNTP.forgeDataArticle(params, Nemo.SecretKey);
+		var article = JNTP.forgeDataArticle(params, Nemo.Tools.getVar('SecretKey'));
 		var cmd = [ "diffuse" , { "Data" : article.Data } ];
 		JNTP.execute(cmd, function(code, j){switch(code) {
 		case "200":
@@ -1558,8 +1603,10 @@ init: function() {
 	});
 
 	$('#blacklist').change(function() {
-		localStorage.blacklist = $('#blacklist').val().replace(/\n+/g,"\n").replace(/^\n+/g,"");
-		Nemo.blacklist = localStorage.blacklist.split("\n");
+		var blacklist = $('#blacklist').val().replace(/\n+/g,"\n").replace(/^\n+/g,"").split("\n");
+		for (i in blacklist) {
+			Nemo.Blacklist.set(blacklist[i]);
+		}
 		Nemo.Thread.display();
 	});
 
@@ -1585,7 +1632,7 @@ init: function() {
 
 	$("#total_article").on('change', function(){
 		Nemo.Tools.storeVar("totalArticle", $(this).val());
-		$('output').text(Nemo.totalArticle);
+		$('output').text(Nemo.Tools.getVar('totalArticle'));
 	});
 
 	$("#signature").on('change', function(){
@@ -1597,7 +1644,6 @@ init: function() {
 		JNTP.execute(["set", {"FromName":$('#fromname').val()}], function(code, j){switch(code) {
 		case "200":
 			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
-			JNTP.FromName = $('#fromname').val();
 			break;
 
 		case "500":
@@ -1610,7 +1656,6 @@ init: function() {
 		JNTP.execute(["set", {"FromMail":$('#frommail').val()}], function(code, j){switch(code) {
 		case "200":
 			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
-			JNTP.FromMail = $('#frommail').val();
 			break;
 
 		case "500":
@@ -1623,7 +1668,6 @@ init: function() {
 		JNTP.execute(["set", {"ReplyTo":$('#replyto').val()}], function(code, j){switch(code) {
 		case "200":
 			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
-			JNTP.ReplyTo = $('#replyto').val();
 			break;
 
 		case "500":
@@ -1633,8 +1677,7 @@ init: function() {
 	});
 
 	$("#host_jntp").on('change', function(){
-		JNTP.url = $('#host_jntp').val(),
-		JNTP.uri = JNTP.url + '/jntp/';
+		JNTP.setUrl( $('#host_jntp').val() );
 	});
 
 	$("#req_client").on('change', function(){
@@ -1704,7 +1747,7 @@ init: function() {
 		Interface.isCtrlPress = e.ctrlKey;
 	} );
 
-	$('.limit_size_file').html(Math.round(JNTP.maxFileSize/1024) + ' ko');
+	$('.limit_size_file').html(Math.round(Nemo.Media.maxFileSize/1024) + ' ko');
 	$('#host_jntp').val(JNTP.url);
 
 	if(Newsgroup = Nemo.Tools.HTTPGet('Newsgroup')) {
@@ -1784,32 +1827,27 @@ init: function() {
 }
 
 $(document).ready(function() {
-
-	Nemo.Media.displayInfos = Interface.displayMediaInfos;
-	Nemo.Thread.display = Interface.displayThread;
-
  	$.ajaxSetup({cache: true});
 
-	if(window.location.host.length == 0) {
-		JNTP.url = 'http://devnews.nemoweb.net';
-	}else{
-		if ($('#host_jntp').val().length == 0) {
-			JNTP.url = 'http://'+window.location.host;
-		}
-	}
-	JNTP.uri = JNTP.url + '/jntp/';
+	Nemo.Thread.display = Interface.displayThread;
 	JNTP.logFunction = Interface.logData;
 
-	Nemo.Tools.getVar(["SecretKey","totalArticle","confirmSendArticle","signature","favoris","activePopup"]);
+	if(window.location.host.length == 0) {
+		JNTP.setUrl( 'http://devnews.nemoweb.net' );
+	}else{
+		if ($('#host_jntp').val().length == 0) {
+			JNTP.setUrl( 'http://'+window.location.host );
+		}else{
+			JNTP.setUrl( $('#host_jntp').val() );
+		}
+	}
 
-	if(typeof localStorage.SecretKey == "undefined") {
+
+	if(typeof Nemo.Tools.getVar('SecretKey') == "undefined") {
 		Nemo.Tools.storeVar('SecretKey', Nemo.Tools.generateSecretKey());
 	}
 
-	if(typeof localStorage.blacklist == "undefined" || !localStorage.blacklist) {
-		localStorage.blacklist = '';
-	}
-	Nemo.blacklist = localStorage.blacklist.split("\n");
+	Nemo.Blacklist.load();
 	Nemo.Thread.getView();
 
 	if(skin = Nemo.Tools.HTTPGet('skin')) {
@@ -1823,77 +1861,5 @@ $(document).ready(function() {
 
 })
 
-
-diffuseArticle = function(){
-
-	$("#chargement").show();
-	$("#send_form").hide();
-	if (Nemo.inPopup){
-		$('#chargement2').show();
-	}
-	var newsgroups = $('#formulaire_newsgroup').val().replace(/ /g,"").replace(/,\s*$/g,"").split(',');
-
-	if(Interface.modeEdit == 'html') {
-		Interface.modeEdit = 'text';
-		Interface.selectModeEdition();
-	}
-
-	var body = Interface.bodyEdit().replace(/\?\?/g,"? ? ");
-
-	JNTP.FromName = $('#formulaire_from').val();
-	JNTP.FromMail = $('#formulaire_email').val();
-
-	var followupTo = [];
-	if($('#formulaire_fu2').val()) {
-		followupTo = $('#formulaire_fu2').val().replace(/ /g,"").replace(/,\s*$/g,"").split(',');
-	}
-
-	var params = {
-			"DataType" : "Article", 
-			"Newsgroups" : newsgroups, 
-			"Body" : body, 
-			"FollowupTo" : followupTo, 
-			"Subject" : $('#formulaire_subject').val().replace(/\?\?/g,"? ? "),
-			"Supersedes" : $('#formulaire_supersede').val(),
-			"ReplyTo": JNTP.ReplyTo,
-			"Uri": JNTP.url + '/?DataID=#DataID#',
-			"References": Nemo.References,
-			"Media": Nemo.Media.val(),
-			"ReferenceUserID": Nemo.ReferenceUserID,
-			"ThreadID": Nemo.ThreadID
-	};
-	var article = JNTP.forgeDataArticle(params, Nemo.SecretKey);
-
-	if(article.error == "tooLong") {
-		$("#dialog-alert").dialog({ modal: true, buttons:{} }).html('<p>Article trop long (' + Math.round(article.size/1024) + ' ko), taille maximale autorisée : ' + Math.round(JNTP.maxArticleSize/1024) + ' ko</p>');
-		$("#chargement").hide();
-		$("#send_form").show();
-		return ;
-	}
-
-	JNTP.execute([ "diffuse" , { "Data" : article.Data } ], function(code, j){switch(code) {
-
-	case "200":
-		Nemo.Tools.xpostMail({
-			dataid: j.body.Data.DataID, 
-			uri: JNTP.url + '/?DataID='+j.body.Data.DataID,
-			mail: $("#formulaire_xpostmail").val(),
-			subject: $('#formulaire_subject').val()
-		});
-		$('#formulaire_subject, #'+Interface.bodyInputID+', #add_img, #formulaire_xpostmail').val('');
-		$("#chargement, #chargement2").hide();
-		Nemo.Media.del();
-		Interface.closeRedactionWindow();
-	break;
-
-	case "500":
-		$("#dialog-alert").dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
-		$("#chargement, #chargement2").hide();
-		$("#send_form").show();
-	break;
-
-
-	}});
-}
 
 

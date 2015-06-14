@@ -5,65 +5,31 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.997a',
+UserAgent: 'Nemo/0.998a',
 plugins:{balise:[], module:[]},
 
-References: [],
-ReferenceUserID: false,
-
-SecretKey: '',
-totalArticle: 250,
-confirmSendArticle: 0,
-signature: 'Ce message a été posté avec Nemo : <#Uri#>',
-favoris: {'nemo.*':'h','nemo.bavardages':'w','fr.*':'h'},
-activePopup: 1,
-blacklist: [],
-
+Storage: {
+	SecretKey: '',
+	totalArticle: 250,
+	confirmSendArticle: 0,
+	signature: 'Ce message a été posté avec Nemo : <#Uri#>',
+	favoris: {'nemo.*':'h','nemo.bavardages':'w','fr.*':'h'},
+	activePopup: 1,
+	blacklist: [],
+},
 
 Tools: {
+	getVar: function(variable) {
 
-	getIdentifiantValue: function(identifiant) {
-		try {
-			var key = identifiant.split('/');
-			var value = JNTP.Packet;
-			for(var i in key) {
-				var newKey = key[i].split(':');
-				if(newKey.length > 1) {
-					value = value[newKey[0]];
-					idTab = parseInt(newKey[1]);
-					value = value[idTab-1];
-				} else {
-					value = value[key[i]];
-				}
-			}
-			if(typeof value == 'object') {
-				return JSON.stringify(value)
-			}else{
-				return value;
-			}
-			return value;
-		} catch (e) {
-			return '';
-		}
-	},
-
-	xpostMail: function(opt){
-		if(opt.mail != '') {
-			window.location = "mailto:"+opt.mail+"?subject="+opt.subject+"&body="+encodeURIComponent(article.Data.Body.replace(/#DataID#/g, opt.dataid).replace(/#Uri#/g, opt.uri));
-		}
-	},
-
-	getVar: function(variables) {
-		for(i in variables) {
-			if(typeof localStorage[variables[i]] != "undefined") {
-				try {
-					Nemo[variables[i]] = JSON.parse( localStorage[variables[i]] );
-				} catch (exception) {
-					localStorage[variables[i]] = JSON.stringify( localStorage[variables[i]] );
-					Nemo[variables[i]] = JSON.parse( localStorage[variables[i]] );
-				}
+		if(typeof localStorage[variable] != "undefined") {
+			try {
+				Nemo.Storage[variable] = JSON.parse( localStorage[variable] );
+			} catch (exception) {
+				localStorage[variable] = JSON.stringify( localStorage[variable] );
+				Nemo.Storage[variable] = JSON.parse( localStorage[variable] );
 			}
 		}
+		return Nemo.Storage[variable];
 	},
 
 	storeVar: function(variable, value) {
@@ -71,6 +37,12 @@ Tools: {
 			Nemo[variable] = value;
 		}
 		localStorage[variable] = JSON.stringify(Nemo[variable]);
+	},
+
+	xpostMail: function(opt){
+		if(opt.mail != '') {
+			window.location = "mailto:"+opt.mail+"?subject="+opt.subject+"&body="+encodeURIComponent(article.Data.Body.replace(/#DataID#/g, opt.dataid).replace(/#Uri#/g, opt.uri));
+		}
 	},
 
 	rot13: function(s) {
@@ -180,8 +152,7 @@ Tools: {
 
 Media: {
 	value: {},
-
-	displayInfos: function() {},
+	maxFileSize: 1800000,
 
 	val: function(media) {
 		if(arguments.length) {
@@ -223,7 +194,7 @@ Media: {
 
 	add: function(elt, callback, filename) {
 		size = $('#'+elt)[0].files[0].size;
-		if (size < JNTP.maxFileSize) {
+		if (size < this.maxFileSize) {
 			var fileReader = new FileReader();
 			fileReader.readAsDataURL( $('#'+elt)[0].files[0] );
 			fileReader.onload = function(event) {
@@ -318,7 +289,7 @@ Thread:{
 
 		cmd = ["get", {
 			"select":["Data.DataID","Data.Subject","Data.FromName","Data.FromMail","Data.InjectionDate","Data.ThreadID","Data.Control","@2References","Meta.Size"],
-			"limit": Nemo.totalArticle,
+			"limit": Nemo.Tools.getVar('totalArticle'),
 			"filter": this.filter,
 			"listen": params.listen
 			}
@@ -476,7 +447,7 @@ Thread:{
 			}
 		}
 
-		tree.push({"DataID":"/", "level":0});
+		tree.push({"Data":{"DataID":"/"}, "level":0});
 
 		var article = childs["/"].shift();
 		article.level = level;
@@ -491,7 +462,7 @@ Thread:{
 			if( typeof childs[dataID] != "undefined" && childs[dataID].length) {
 
 				article = childs[dataID].shift();
-				dataID = article['dataID'];
+				dataID = article.Data.DataID;
 				level++;
 				article.level = level;
 				tree.push(article);
@@ -514,7 +485,7 @@ Thread:{
 				return tree;
 			}
 
-			dataID = tree[ind]['dataID'];
+			dataID = tree[ind].Data.DataID;
 			level = tree[ind].level;
 		}
 
@@ -551,112 +522,58 @@ Favoris: {
 		if(typeof favoris != "undefined"){
 			Nemo.Tools.storeVar('favoris', favoris);
 		}else{
-			Nemo.Tools.storeVar('favoris', Nemo.favoris);
+			Nemo.Tools.storeVar('favoris', Nemo.Tools.getVar('favoris'));
 		}
 	},
 
 	sort: function(){
 		var favoris = [];
 		var favoris2 = {};
-		for(i in Nemo.favoris) {
+		for(i in Nemo.Tools.getVar('favoris')) {
 		    favoris.push(i);
 		}
 		favoris.sort();
 		for(i in favoris){
-		    favoris2[favoris[i]] = Nemo.favoris[favoris[i]];
+		    favoris2[favoris[i]] = Nemo.Tools.getVar('favoris')[favoris[i]];
 		};
 
 		this.store(favoris2);
 	},
 
 	add: function(groupName, rwm) {
-		if(typeof Nemo.favoris[groupName] == 'undefined') {
-			Nemo.favoris[groupName] = rwm;
+		if(typeof Nemo.Tools.getVar('favoris')[groupName] == 'undefined') {
+			Nemo.Tools.getVar('favoris')[groupName] = rwm;
 		}
 		this.store();
 	},
 
 	del: function(groupName) {
-		delete Nemo.favoris[groupName];
+		delete Nemo.Tools.getVar('favoris')[groupName];
 		this.store();
 	}
 },
 
-setBlacklist: function(name) {
-	if(name == '') return;
-	delete Nemo.blacklist[Nemo.blacklist.indexOf(name)];
-	Nemo.blacklist.push(name);
-	localStorage.blacklist = Nemo.blacklist.join("\n");
-	localStorage.blacklist = localStorage.blacklist.replace(/\n+/g,"\n").replace(/^\n+/g,"");
-},
-
-isBlackListed: function(name) {
-	return ( $.inArray( name, Nemo.blacklist ) != -1) ? true : false;
-},
-
-draft: function(obj) {
-	if(arguments.length == 0) {
-		return JSON.parse( localStorage.draft );
-	}else{
-		localStorage.draft = JSON.stringify(obj);
+Blacklist: {
+	list: [],
+	getList: function() {
+		return localStorage.blacklist;
+	},
+	load: function() {
+		if(typeof localStorage.blacklist == "undefined" || !localStorage.blacklist) {
+			localStorage.blacklist = '';
+		}
+		this.list = localStorage.blacklist.split("\n");
+	},
+	set: function(name) {
+		if(name == '') return;
+		delete this.list[this.list.indexOf(name)];
+		this.list.push(name);
+		localStorage.blacklist = this.list.join("\n");
+		localStorage.blacklist = localStorage.blacklist.replace(/\n+/g,"\n").replace(/^\n+/g,"");
+	},
+	isInList: function(name) {
+		return ( $.inArray( name, this.list ) != -1) ? true : false;
 	}
-},
-
-deleteArticle: function(art){
-
-	var params = {
-		"DataType" : "Article",
-		"Newsgroups" : art.Data.Newsgroups, 
-		"Body" : "Article d'annulation posté via Nemo.",
-		"Subject" : "Annulation de <"+art.Data.DataID+">",
-		"FollowupTo" : (typeof art.Data.FollowupTo == "array") ? art.Data.FollowupTo : [],
-		"Control" : ["cancel", art.Data.DataID, JNTP.getHashClient(art.Data, Nemo.SecretKey).hashClientSecret],
-		"ThreadID": Nemo.ThreadID
-	};
-
-	var article = JNTP.forgeDataArticle(params, Nemo.SecretKey);
-	var cmd = [ "diffuse" , { "Data" : article.Data } ];
-
-	JNTP.execute(cmd, function(code, j){switch(code) {
-	case "200":
-		$('#supprimer_article').hide();
-		$('#article_deleted').show();
-		Nemo.Media.del();
-		break;
-
-	case "500":
-		$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
-		break;
-
-	}});
-},
-
-banArticle: function(art){
-	var params = {
-		"DataType" : "Article",
-		"Newsgroups" : art.Data.Newsgroups, 
-		"Body" : "Article d'annulation émis depuis Nemo.",
-		"Subject" : "[CANCEL] <"+Data.DataID+">",
-		"FollowupTo" : (typeof art.Data.FollowupTo == "array") ? art.Data.FollowupTo : [],
-		"Control" : ["cancel", art.Data.DataID, "This hash is not correct because generated by Nemo Admin (temporary)"]
-	};
-
-	var article = JNTP.forgeDataArticle(params, Nemo.SecretKey);
-
-	var cmd = [ "diffuse" , { "Data" : article.Data } ];
-
-	JNTP.execute(cmd, function(code, j){switch(code) {
-	case "200":
-		$('#supprimer_article').hide();
-		$('#article_deleted').show();
-		Nemo.Media.del();
-		break;
-
-	case "500":
-		$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
-		break;
-
-	}});
 }
 
 }
@@ -665,6 +582,7 @@ Nemo.Article = function() {
 	this.value = {};
 	this.owner = false;
 	this.isValid = false;
+
 	// options = ID,DataID,read,source,surligne,callback;
 	this.get = function(options){
 		this.owner = false;
@@ -678,13 +596,11 @@ Nemo.Article = function() {
 		JNTP.execute(cmd, function(code, j, callback){
 			switch(code) {
 				case "200":
-					JNTP.Packet.val(j.body[0]);
 					this.value = j.body[0].Data;
-
 					if(this.value.DataType == 'Article') {
-						if( JNTP.Packet.isValid() ){
+						if( JNTP.Packet.isValid(j.body[0]) ){
 							this.isValid = true;
-							if(this.value.HashClient == JNTP.getHashClient(this.value,  Nemo.SecretKey).hashClientCompute) {
+							if(this.value.HashClient == JNTP.getHashClient(this.value,  Nemo.Tools.getVar('SecretKey')).hashClientCompute) {
 								this.owner = true;
 							}
 
@@ -709,15 +625,53 @@ Nemo.Article = function() {
 		}.bind(this));
 	};
 
-	this.diffuse = function(){
-		this.value.DataType = 'Article';
-		var article = JNTP.forgeDataArticle(this.value, Nemo.SecretKey);
-		JNTP.execute([ "diffuse" , { "Data" : article.Data } ], function(code, j){switch(code) {
-		case "200":
-			Nemo.Media.del();
-		break;
+	this.diffuse = function(options){
+		this.set({
+			"DataType" : 'Article',
+			"Media" : Nemo.Media.val(),
+			"ReplyTo" : JNTP.ReplyTo,
+			"Uri": JNTP.url + '/?DataID=#DataID#'
+		});
 
-		}});
+		var article = JNTP.forgeDataArticle(this.value, Nemo.Tools.getVar('SecretKey'));
+		JNTP.execute([ "diffuse" , { "Data" : article.Data } ], function(code, j){
+			switch(code) {
+				case "200":
+					Nemo.Media.del();
+				break;
+			}
+			options.callback(options, code, j);
+		});
+	};
+
+	this.ban = function(options){
+		var articleToDelete = new Nemo.Article().set({
+			"DataType" : "Article",
+			"FollowupTo" : [],
+			"Control" : ["cancel", this.value.DataID, "This hash is not correct because generated by Nemo Admin (temporary)"],
+			"Body" : "Article d'annulation posté via Nemo.",
+			"Subject" : "[CANCEL] <"+this.value.DataID+">",
+			"ThreadID": this.value.ThreadID,
+			"Newsgroups": this.value.Newsgroups,
+			"FromName": JNTP.Storage.FromName,
+			"FromMail": JNTP.Storage.FromMail,
+			"Media": []
+		}).diffuse(options);
+	};
+
+	this.del = function(options){
+		var articleToDelete = new Nemo.Article().set({
+			"DataType" : "Article",
+			"FollowupTo" : [],
+			"Control" : ["cancel", this.value.DataID, JNTP.getHashClient(this.value, Nemo.Tools.getVar('SecretKey')).hashClientSecret],
+			"Body" : "Article d'annulation posté via Nemo.",
+			"Subject" : "Annulation de <"+this.value.DataID+">",
+			"ThreadID": this.value.ThreadID,
+			"Newsgroups": this.value.Newsgroups,
+			"FromName": JNTP.Storage.FromName,
+			"FromMail": JNTP.Storage.FromMail,
+			"Media": []
+		}).diffuse(options);
 	};
 
 	this.setReferences = function(refs){
@@ -727,16 +681,18 @@ Nemo.Article = function() {
 		}else{
 			this.value.References = refs;
 		}
+		return this;
 	};
 
 	this.set = function(json) {
 		for(key in json){
 			this.value[key] = json[key];
 		}
+		return this;
 	};
 
 	this.clone = function(body) {
-		var clone = this;
+		var clone = jQuery.extend(true, {}, this);
 		clone.value.Body = body;
 		return clone;
 	};
@@ -802,18 +758,20 @@ Nemo.Article = function() {
 
 		var reg = /\[var=([#@a-zA-Z0-9\/:]+)\]/g;
 		if(this.value.DataID) {
-			body = body.replace(reg, function(s, m){return Nemo.Tools.getIdentifiantValue(m);});
+			body = body.replace(reg, function(s, m){return this.getIdentifiantValue(m);}); // à revoir
 			body = body.replace(/#Uri#/g, this.value.Uri).replace(/#DataID#/g, this.value.DataID).replace(/#ThreadID#/g, this.value.ThreadID);
 		}
 		return this.clone(body);
 	};
 
-	this.clearCitations = function(){
+	this.clearCitations = function(boolean){
 		var body = this.value.Body;
-		var reg = new RegExp("(>>.*\n)", "g");
-		if(reg.test(body)) {
-			// Supprime la première ligne citée.
-			body = body.replace(/(>.*\n)/,'').replace(reg,'');
+		if (boolean) {
+			var reg = new RegExp("(>>.*\n)", "g");
+			if(reg.test(body)) {
+				// Supprime la première ligne citée.
+				body = body.replace(/(>.*\n)/,'').replace(reg,'');
+			}
 		}
 		return this.clone(body);
 	};
@@ -823,13 +781,13 @@ Nemo.Article = function() {
 		return this.clone(this.value.Body.replace(reg,''));
 	};
 
-	this.quote = function() {
+	this.quote = function(options) {
 		// Citations
 		var body = this.value.Body;
 		var chevron = '>'+Math.floor(Math.random()*1e10)+'<';
 		body = body.replace(/^>/gm, chevron+">" ).replace(/^(?!>)/gm, chevron+" " );
-		var from = (this.value.FromName) ? this.value.FromName : this.value.FromMail;
-		var artDate = Nemo.Tools.date2String(this.value.InjectionDate);
+		var from = (options.FromName) ? options.FromName : options.FromMail;
+		var artDate = Nemo.Tools.date2String(options.date);
 		body = "Le " + artDate.day + " à " + artDate.time + ", " + from + " a écrit :\n" + body + "\n";
 		var reg = /\[([a-z]+)\][\s\S]*?\[\/\1\]/g;
 		body = body.replace(reg, function(s, m){ reg = new RegExp(chevron+" ", "g"); return s.replace(reg,'');});
@@ -875,13 +833,10 @@ Nemo.Article = function() {
 	};
 
 	this.renduHTML = function(div, interpretPlugin) {
-
-$('#accueil').hide();
-$('#panneau_principal').show();
-
 		var newArticle = this.setTemplateVar();
 		var reg = /(\s|^)(https?|ftp)(:\/\/[-A-Z0-9+@#\/%?=~_|*&$!:,.;\(\)]+)(?=\s|$)/ig;
 		newArticle.clone( newArticle.value.Body.replace(reg,'$1[a]$2$3[/a]') );
+
 		var reg = /(\s|^|\(|<)(https?|ftp)(:\/\/[-A-Z0-9+@#\/%?=~_|*&$!:,.;\(\)]+)(\s|>|$)/igm;
 		newArticle.clone( newArticle.value.Body.replace(reg,'$1[a]$2$3[/a]$4') );
 
@@ -891,7 +846,6 @@ $('#panneau_principal').show();
 		});
 
 		var reg = /(\[a\])(https?|ftp)(:\/\/[-A-Z0-9+@#\/%?=~_|*&$!:,.;\(\)]+)(\[\/a\])/ig;
-
 		newArticle.clone( newArticle.value.Body.replace(reg,'<a class="link" href="$2$3" target="_blank">$2$3</a>') );
 
 		if (1==1 || arguments.length == 2 || this.isValid) {
@@ -1017,5 +971,29 @@ $('#panneau_principal').show();
 		}
 	};
 
+	getIdentifiantValue = function(identifiant) {
+		try {
+			var key = identifiant.split('/');
+			var value = this.value;
+			for(var i in key) {
+				var newKey = key[i].split(':');
+				if(newKey.length > 1) {
+					value = value[newKey[0]];
+					idTab = parseInt(newKey[1]);
+					value = value[idTab-1];
+				} else {
+					value = value[key[i]];
+				}
+			}
+			if(typeof value == 'object') {
+				return JSON.stringify(value)
+			}else{
+				return value;
+			}
+			return value;
+		} catch (e) {
+			return '';
+		}
+	};
 }
 

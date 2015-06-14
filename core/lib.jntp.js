@@ -11,18 +11,24 @@ logServeur: true,
 logClient: true,
 url: '',
 uri: '',
-HashKey: '',
-maxFileSize: 1800000,
 maxArticleSize: 2000000,
 authentified: false,
-Session: false,
-userID: '',
-newUserID: false,
 xhrPool: [],
 xhr: {},
-FromName: '',
-FromMail: '',
-ReplyTo: '',
+
+Storage: {
+	HashKey: '',
+	Session: false,
+	UserID: '',
+	FromName: '',
+	FromMail: '',
+	ReplyTo: '',
+},
+
+setUrl: function(url) {
+	JNTP.url = url;
+	JNTP.uri = JNTP.url + '/jntp/';
+},
 
 Packet: {
 	value: {},
@@ -33,13 +39,15 @@ Packet: {
 			return this.value;
 		}
 	},
-	isValid: function() {
-		var copyArticle = jQuery.extend(true, {},JNTP.Packet.val().Data);
-		if(JNTP.Packet.val().Data.DataID == JNTP.Packet.val().Jid) {
+	isValid: function(pack) {
+		if(pack) {
+			JNTP.Packet.val(pack);
+		}
+		var copyArticle = jQuery.extend(true, {},JNTP.Packet.value.Data);
+		if(copyArticle.DataID == JNTP.Packet.value.Jid) {
 			copyArticle.DataID = "";
 		}
-
-		return ( JNTP.hashString( JNTP.uniqueJSON( copyArticle ) ) == JNTP.Packet.val().Jid.split('@')[0] && JNTP.Packet.val().Data.OriginServer == JNTP.Packet.val().Jid.split('@')[1] );
+		return ( JNTP.hashString( JNTP.uniqueJSON( copyArticle ) ) == JNTP.Packet.value.Jid.split('@')[0] && copyArticle.OriginServer == JNTP.Packet.value.Jid.split('@')[1] );
 	}
 },
 
@@ -62,6 +70,10 @@ execute: function(cmd, callback, xhrInPool) {
 		callbackSystem = JNTP.initSession;
 	}else if(cmd[0] == 'help') {
 		typeOfData = 'text';
+	}else if(cmd[0] == 'set' && cmd.length > 1) {
+		if(cmd[1].FromName) JNTP.Storage.FromName = cmd[1].FromName;
+		if(cmd[1].FromMail) JNTP.Storage.FromMail = cmd[1].FromMailFF;
+		if(cmd[1].ReplyTo) JNTP.Storage.ReplyTo = cmd[1].ReplyTo;
 	}
 
 	if(JNTP.log && JNTP.logClient) {
@@ -75,7 +87,7 @@ execute: function(cmd, callback, xhrInPool) {
 		url: JNTP.uri,
 		dataType: typeOfData,
 		data: JSON.stringify(cmd),
-		headers: { 'JNTP-Session': JNTP.Session },
+		headers: { 'JNTP-Session': JNTP.Storage.Session },
 		success: function(j, textStatus, xhr) {
 			if(JNTP.log && JNTP.logServeur) {
 				JNTP.logFunction(j, 'output');
@@ -102,17 +114,17 @@ xhrAbortAll : function() {
 
 initSession: function(cmd, code, j){switch(code) {
 	case "200":
-		JNTP.HashKey = j.body.HashKey;
-		JNTP.Session = j.body.Session;
-		JNTP.UserID = j.body.UserID;
-        	JNTP.FromName = j.body.FromName;
-		JNTP.FromMail = j.body.FromMail;
-		JNTP.ReplyTo = j.body.ReplyTo;
+		JNTP.Storage.HashKey = j.body.HashKey;
+		JNTP.Storage.Session = j.body.Session;
+		JNTP.Storage.UserID = j.body.UserID;
+        	JNTP.Storage.FromName = j.body.FromName;
+		JNTP.Storage.FromMail = j.body.FromMail;
+		JNTP.Storage.ReplyTo = j.body.ReplyTo;
 		JNTP.authentified = true;
 	break;
 
 	case "500":
-		JNTP.Session = false;
+		JNTP.Storage.Session = false;
 		JNTP.authentified = false;
 	break;
 }},
@@ -120,7 +132,7 @@ initSession: function(cmd, code, j){switch(code) {
 
 closeSession: function(cmd, code, j){switch(code) {
 	case "200":
-		JNTP.Session = false;
+		JNTP.Storage.Session = false;
 		JNTP.authentified = false;
 	break;
 }},
@@ -139,7 +151,7 @@ getHashClient: function(art, secretKey){
 			"Body" : art.Body,
 			"Media": art.Media,
 			"FollowupTo": followupTo,
-			"HashClient" : secretKey+JNTP.HashKey
+			"HashClient" : secretKey+JNTP.Storage.HashKey
 	};
 
 	var hashClientSecret = data.HashClient = JNTP.hashString( JNTP.uniqueJSON(data) );
@@ -160,7 +172,7 @@ forgeDataArticle: function(params, secretKey) {
 		"Body" : params.Body,
 		"Media": params.Media,
 		"FollowupTo": params.FollowupTo,
-		"HashClient" : secretKey+JNTP.HashKey,
+		"HashClient" : secretKey+JNTP.Storage.HashKey,
 	};
 
 	var sizeArticle = JSON.stringify(data).length;

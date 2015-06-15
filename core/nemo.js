@@ -297,15 +297,14 @@ Thread:{
 
 		JNTP.execute(cmd, function(code, j){switch(code) {
 		case "200":
-			var maxID = 0;
+			var ID, maxID = "1970";
 			var res = {"firstID":0, "total":0};
 			if(typeof params.notclean == "undefined") {
 				this.clean();
 			}
 			if(j.body.length) {
-
 				for(ind in j.body) {
-					ID = parseInt(j.body[ind].ID);
+					ID = j.body[ind].ID;
 					maxID = (ID > maxID) ? ID : maxID;
 					if(!j.body[ind].Data.Control){
 						j.body[ind].Data.InjectionDate = (typeof j.body[ind].Data.InjectionDate) ? j.body[ind].Data.InjectionDate.replace("T", " ").replace("Z",""): '';
@@ -335,6 +334,7 @@ Thread:{
 				maxID = params.IDstart;
 			}
 			if(params.listen || params.listenNext) {
+console.log('rrrrr', maxID);
 				JNTP.xhrAbortAll();
 				this.get({"listen":1,"notclean":true,"IDstart":maxID});
 			}

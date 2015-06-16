@@ -1140,7 +1140,7 @@ initRedaction:function() {
 		  if (terms.length > 2) $('#box_formulaire_fu2').show();
 		  return false;
         }
-      }).tagit();
+      });
 
 	$("#formulaire_body_html").keydown(function(e) {
 		return Interface.enterNewlineOrTab(e);
@@ -1296,8 +1296,13 @@ init: function() {
 		Interface.openRedactionWindow(function(){
 			var Interface=win.Interface; var $=win.$; var document=win.document;
 
-			Interface.initRedaction();
 			var art = Interface.draft();
+			Interface.articleToWrite = new win.Nemo.Article().set({
+					"ReferenceUserID": (typeof art.ReferenceUserID != "undefined") ? art.ReferenceUserID : false,
+					"ThreadID": art.ThreadID,
+				})
+
+			Interface.initRedaction();
 			Interface.bodyEdit( art.Body );
 			$('#formulaire_subject').val( art.Subject );
 			$('#formulaire_newsgroup').val( art.Newsgroups );

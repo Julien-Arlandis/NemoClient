@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<translation>
+<t k="title">Access to newsgroups</t>
+<t k="#user" attr="placeholder">Enter your email</t>
+<t k="#password" attr="placeholder">Enter your password</t>
+<t k="!authentification">authentification window</t>
+<t k="#articles_send">Articles send</t>
+<t k="#articles_response">Responses</t>
+<t k="#articles_draft">Draft</t>
+</translation>

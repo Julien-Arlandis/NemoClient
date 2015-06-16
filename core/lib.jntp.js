@@ -5,66 +5,50 @@
 
 var JNTP = {
 
-UserAgent: 'Nemo/0.996e',
-url: '',
-log: '',
-outputLog: '',
-bodyInputID: '',
-favoris: {'nemo.*':'h','nemo.bavardages':'w','fr.*':'h'},
-uri: '',
-blacklist: [],
-Newsgroups: '*',
-Article: {},
-ArticleUpdate: {},
-media: [],
-isView: [],
-Fil: [],
-indexJid: [],
-totalArticle: 250,
-confirmSendArticle: 0,
-viewReferences: false,
-newReferences: [],
-newUserID: false,
-newThreadID: '',
-filter: {},
-FromName: '',
-FromMail: '',
-ReplyTo: '',
-signature: '',
-tri: {"field":"InjectionDate","order":"desc","tree":false},
-SecretKey: '',
-HashKey: '',
-maxFileSize: 1800000,
-maxArticleSize: 2000000,
-modeEdit: 'text',
-logClient: true,
+version: '1.0',
+log: false,
 logServeur: true,
-activePopup: 1,
-inPopup: false,
-viewlu: 'all',
+logClient: true,
+url: '',
+uri: '',
+maxArticleSize: 2000000,
 authentified: false,
-Session: false,
-userID: '',
 xhrPool: [],
-xhr: false,
-refreshFunction: '',
+xhr: {},
 
-init: function(config) {
-	JNTP.log = config.log;
-	JNTP.outputLog = config.outputLog;
-	JNTP.bodyInputID = config.bodyInputID;
-	JNTP.signature = config.signature;
+Storage: {
+	HashKey: '',
+	Session: false,
+	UserID: '',
+	FromName: '',
+	FromMail: '',
+	ReplyTo: '',
+},
+
+setUrl: function(url) {
+	JNTP.url = url;
 	JNTP.uri = JNTP.url + '/jntp/';
-	JNTP.refreshFunction = config.refreshFunction;
-	if(typeof localStorage.SecretKey == "undefined") {
-		JNTP.storeVar('SecretKey', JNTP.generateSecretKey());
+},
+
+Packet: {
+	value: {},
+	val: function(pack) {
+		if(arguments.length) {
+			this.value = pack;
+		}else{
+			return this.value;
+		}
+	},
+	isValid: function(pack) {
+		if(pack) {
+			JNTP.Packet.val(pack);
+		}
+		var copyArticle = jQuery.extend(true, {},JNTP.Packet.value.Data);
+		if(copyArticle.DataID == JNTP.Packet.value.Jid) {
+			copyArticle.DataID = "";
+		}
+		return ( JNTP.hashString( JNTP.uniqueJSON( copyArticle ) ) == JNTP.Packet.value.Jid.split('@')[0] && copyArticle.OriginServer == JNTP.Packet.value.Jid.split('@')[1] );
 	}
-	if(typeof localStorage.blacklist == "undefined" || !localStorage.blacklist) {
-		localStorage.blacklist = '';
-	}
-	JNTP.blacklist = localStorage.blacklist.split("\n");
-	JNTP.getView();
-	JNTP.getVar(["SecretKey","totalArticle","confirmSendArticle","signature","favoris","activePopup"]);
 },
 
 execute: function(cmd, callback, xhrInPool) {
@@ -73,8 +57,8 @@ execute: function(cmd, callback, xhrInPool) {
 		try {
 			cmd = JSON.parse(cmd);
 		} catch (exception) {
-			JNTP.logData(cmd, 'input');
-			return JNTP.logData('Bad Syntax', 'output');
+			JNTP.logFunction(cmd, 'input');
+			return JNTP.logFunction('Bad Syntax', 'output');
 		}
 	}
 
@@ -86,10 +70,14 @@ execute: function(cmd, callback, xhrInPool) {
 		callbackSystem = JNTP.initSession;
 	}else if(cmd[0] == 'help') {
 		typeOfData = 'text';
+	}else if(cmd[0] == 'set' && cmd.length > 1) {
+		if(cmd[1].FromName) JNTP.Storage.FromName = cmd[1].FromName;
+		if(cmd[1].FromMail) JNTP.Storage.FromMail = cmd[1].FromMail;
+		if(cmd[1].ReplyTo) JNTP.Storage.ReplyTo = cmd[1].ReplyTo;
 	}
 
 	if(JNTP.log && JNTP.logClient) {
-		JNTP.logData(cmd, 'input');
+		JNTP.logFunction(cmd, 'input');
 	}
 
 	if(callbackSystem) callbackSystem(cmd);
@@ -99,10 +87,10 @@ execute: function(cmd, callback, xhrInPool) {
 		url: JNTP.uri,
 		dataType: typeOfData,
 		data: JSON.stringify(cmd),
-		headers: { 'JNTP-Session': JNTP.Session },
+		headers: { 'JNTP-Session': JNTP.Storage.Session },
 		success: function(j, textStatus, xhr) {
 			if(JNTP.log && JNTP.logServeur) {
-				JNTP.logData(j, 'output');
+				JNTP.logFunction(j, 'output');
 			}
 			code = (typeof(j) == 'object') ? j.code : "200";
 			code = (typeof(j) == undefined) ? "500" : code;
@@ -124,97 +112,19 @@ xhrAbortAll : function() {
 	JNTP.xhrPool = [];
 },
 
-// Param = {IDstart, IDstop, notclean, listen, listenNext}
-getFil: function(params){
-	JNTP.filter["Data.DataType"] = "Article";
-
-	if(typeof JNTP.filter["Data.Newsgroups"] != "undefined") {
-		JNTP.Newsgroups = JNTP.filter["Data.Newsgroups"]
-	}
-
-	if(typeof params.listen == "undefined") {
-		params.listen = 0;
-	}
-
-	if(params.IDstart) {
-		JNTP.filter["ID"] = [params.IDstart, 'min'];
-	}
-	else if(params.IDstop) {
-		JNTP.filter["ID"] = [params.IDstop, 'max'];
-	}else{
-		delete JNTP.filter["ID"];
-	}
-
-	cmd = ["get", {
-		"select":["Data.DataID","Data.Subject","Data.FromName","Data.FromMail","Data.InjectionDate","Data.ThreadID","Data.Control","@2References","Meta.Size"],
-		"limit": JNTP.totalArticle,
-		"filter": JNTP.filter,
-		"listen": params.listen
-		}
-	];
-
-	JNTP.execute(cmd, function(code, j){switch(code) {
-	case "200":
-		var maxID = 0;
-		var res = {"firstID":0, "total":0};
-		if(typeof params.notclean == "undefined") {
-			JNTP.cleanFil();
-		}
-		if(j.body.length) {
-
-			for(ind in j.body) {
-				ID = parseInt(j.body[ind].ID);
-				maxID = (ID > maxID) ? ID : maxID;
-				if(!j.body[ind].Data.Control){
-					j.body[ind].Data.InjectionDate = (typeof j.body[ind].Data.InjectionDate) ? j.body[ind].Data.InjectionDate.replace("T", " ").replace("Z",""): '';
-					j.body[ind].Read = (typeof JNTP.getView(j.body[ind].Jid) == "undefined" || !JNTP.getView(j.body[ind].Jid)) ? 0 : 1;
-					JNTP.addToFil(j.body[ind], j.body[ind].Jid);
-				}else{
-					if(j.body[ind].Data.Control[0] == 'cancel') {
-						JNTP.deleteToFil(j.body[ind].Data.Control[1]);
-					}
-				}
-			}
-
-			i=JNTP.Fil.length;
-			do
-			   i--;
-			while (typeof JNTP.Fil[i] == "undefined" && i>0);
-			if(typeof JNTP.Fil[i] != "undefined") {
-				res.firstID = JNTP.Fil[i].ID;
-			}
-		}
-		if(maxID == 0) {
-			maxID = params.IDstart;
-		}
-		if(params.listen || params.listenNext) {
-			JNTP.xhrAbortAll();
-			JNTP.getFil({"listen":1,"notclean":true,"IDstart":maxID});
-		}
-
-		res.total = JNTP.Fil.length;
-
-		if(params.callback) {
-			params.callback(res);
-		}
-		JNTP.refreshFunction(res.total);
-	break;
-	}}, true);
-},
-
 initSession: function(cmd, code, j){switch(code) {
 	case "200":
-		JNTP.HashKey = j.body.HashKey;
-		JNTP.Session = j.body.Session;
-		JNTP.UserID = j.body.UserID;
-        	JNTP.FromName = j.body.FromName;
-		JNTP.FromMail = j.body.FromMail;
-		JNTP.ReplyTo = j.body.ReplyTo;
+		JNTP.Storage.HashKey = j.body.HashKey;
+		JNTP.Storage.Session = j.body.Session;
+		JNTP.Storage.UserID = j.body.UserID;
+        	JNTP.Storage.FromName = j.body.FromName;
+		JNTP.Storage.FromMail = j.body.FromMail;
+		JNTP.Storage.ReplyTo = j.body.ReplyTo;
 		JNTP.authentified = true;
 	break;
 
 	case "500":
-		JNTP.Session = false;
+		JNTP.Storage.Session = false;
 		JNTP.authentified = false;
 	break;
 }},
@@ -222,12 +132,12 @@ initSession: function(cmd, code, j){switch(code) {
 
 closeSession: function(cmd, code, j){switch(code) {
 	case "200":
-		JNTP.Session = false;
+		JNTP.Storage.Session = false;
 		JNTP.authentified = false;
 	break;
 }},
 
-getHashClient: function(art){
+getHashClient: function(art, secretKey){
 
 	var followupTo = (typeof art.FollowupTo == "undefined") ? [] : art.FollowupTo;
 
@@ -238,133 +148,51 @@ getHashClient: function(art){
 			"Subject" : art.Subject,
 			"References" : art.References,
 			"Newsgroups" : art.Newsgroups,
-			"UserAgent" : art.UserAgent,
 			"Body" : art.Body,
 			"Media": art.Media,
 			"FollowupTo": followupTo,
-			"HashClient" : JNTP.SecretKey+JNTP.HashKey
+			"HashClient" : secretKey+JNTP.Storage.HashKey
 	};
 
-	var hashClientSecret = data.HashClient = hashString( JNTP.uniqueJSON(data) );
+	var hashClientSecret = data.HashClient = JNTP.hashString( JNTP.uniqueJSON(data) );
+	var hashClientCompute = JNTP.hashString( JNTP.uniqueJSON(data) );
 
-	var hashClientCompute = hashString( JNTP.uniqueJSON(data) );
 	return {"hashClientSecret":hashClientSecret,"hashClientCompute":hashClientCompute};
 },
 
-isValidJNTP: function(article){
+forgeDataArticle: function(params, secretKey) {
 
-	var copyArticle = jQuery.extend(true, {},JNTP.Article.Data);
-	if(article.Data.DataID == JNTP.Article.Jid) {
-		copyArticle.DataID = "";
-	}
-
-	return ( hashString( JNTP.uniqueJSON(    copyArticle    ) ) == JNTP.Article.Jid.split('@')[0] && JNTP.Article.Data.OriginServer == JNTP.Article.Jid.split('@')[1] );
-},
-
-forgeData: function(params) {
 	var data = {
 		"DataType" : params.DataType,
-		"FromName" : JNTP.FromName,
-		"FromMail" : JNTP.FromMail,
+		"FromName" : params.FromName,
+		"FromMail" : params.FromMail,
 		"Subject" : params.Subject,
-		"References" : JNTP.newReferences,
+		"References" : params.References,
 		"Newsgroups" : params.Newsgroups,
-		"UserAgent" : JNTP.UserAgent,
 		"Body" : params.Body,
-		"Media": JNTP.media,
+		"Media": params.Media,
 		"FollowupTo": params.FollowupTo,
-		"HashClient" : JNTP.SecretKey+JNTP.HashKey,
+		"HashClient" : secretKey+JNTP.Storage.HashKey,
 	};
 
 	var sizeArticle = JSON.stringify(data).length;
 	if(sizeArticle > JNTP.maxArticleSize ) {
 		return {"error":"tooLong","size":sizeArticle};
 	}
+	data.HashClient = JNTP.hashString(JNTP.uniqueJSON(data));
+	data.HashClient = JNTP.hashString(JNTP.uniqueJSON(data));
 
-	copyArticle = jQuery.extend(true, {}, data);
-	copyArticle.Media = JNTP.media;
-	copyArticle.HashClient = hashString(JNTP.uniqueJSON(copyArticle));
-
-	data.HashClient = hashString(JNTP.uniqueJSON(copyArticle));
-	data['ThreadID'] = JNTP.newThreadID;
-	if(JNTP.newUserID) {
-		data.ReferenceUserID = JNTP.newUserID;
-	}
-	if(params.Control) {
-		data.Control = params.Control;
-	}
-
+	data.ThreadID = params.ThreadID;
+	if(params.ReferenceUserID) { data.ReferenceUserID = params.ReferenceUserID; }
+	if(params.Control) { data.Control = params.Control; }
 	if(params.Uri) { data.Uri = params.Uri; }
 	if(params.ReplyTo) { data.ReplyTo = params.ReplyTo; }
-	if(params.JidLike) { data.JidLike = params.JidLike; }
+	if(params.DataIDLike) { data.DataIDLike = params.DataIDLike; }
 	if(params.Supersedes) { data.Supersedes = params.Supersedes; }
 
 	if(params.Control != undefined && params.Control[0] == "cancel") { data.Media = []; }
+
 	return {"Data":data,"error":false};
-},
-
-logData: function(msg, classCss) {
-	msg = (typeof(msg) == "object") ? JNTP.syntaxHighlight(JSON.stringify(msg, undefined, 4)) : msg;
-	msg = msg.replace(/[\n]/gi, "<br>" );
-	$('#'+JNTP.outputLog).append('<div class="'+classCss+'">'+msg+'</div>');
-	var objDiv = document.getElementById('log');
-	objDiv.scrollTop = objDiv.scrollHeight;
-},
-
-minIDFil:function() {
-	var minID = 1e15;
-	if(JNTP.Fil.length) {
-		for(var ind in JNTP.Fil) {
-			ID = parseInt(JNTP.Fil[ind].ID);
-			minID = (ID < minID) ? ID : minID;
-		}
-	}
-	return minID;
-},
-
-addToFil: function(art, jid) {
-	if( !JNTP.indexJid[jid]) {
-		JNTP.Fil.push(art);
-		JNTP.indexJid[jid] = true;
-	}
-},
-
-cleanFil: function() {
-	JNTP.Fil = [];
-	JNTP.indexJid= [];
-},
-
-deleteToFil: function(jid) {
-	for(i in JNTP.Fil) {
-		if( JNTP.Fil[i].Jid == jid) {
-			delete JNTP.Fil[i];
-			delete JNTP.indexJid[jid];
-		}
-	}
-},
-
-clearMedia: function() {
-	JNTP.media = [];
-},
-
-setReferences: function(refs, threadID, userid){
-	if(refs.length > 10) {
-		JNTP.newReferences = refs.slice(refs.length-10,refs.length);	
-	}else{
-		JNTP.newReferences = refs;
-	}
-
-	if(typeof threadID == "undefined" || !threadID) {
-		JNTP.newThreadID = "";
-	}else{
-		JNTP.newThreadID = threadID;
-	}
-
-	if(userid) {
-		JNTP.newUserID = userid;
-	}else{
-		JNTP.newUserID = false;
-	}
 },
 
 uniqueJSON: function(json, isrecursiv) {
@@ -380,7 +208,7 @@ uniqueJSON: function(json, isrecursiv) {
 			var re = /([\u0080-\u07FF\uD800-\uDFFF])|([\u0800-\uFFFF])/g;
 
 			if (typeof json[tmp_array[i]] == 'string' && json[tmp_array[i]].replace(re, "$1$1$2$2$2").length > 27) {
-				new_value['#'+tmp_array[i]] = hashString(json[tmp_array[i]]);
+				new_value['#'+tmp_array[i]] = JNTP.hashString(json[tmp_array[i]]);
 			}else{
 				new_value[tmp_array[i]] = JNTP.uniqueJSON(json[tmp_array[i]], true);
 			}
@@ -423,436 +251,11 @@ sortJSON: function(json, isrecursiv) {
 	return json;
 },
 
-
-getIdentifiantValue: function(identifiant) {
-	try {
-		var key = identifiant.split('/');
-		var value = JNTP.Article;
-		for(var i in key) {
-			var newKey = key[i].split(':');
-			if(newKey.length > 1) {
-				value = value[newKey[0]];
-				idTab = parseInt(newKey[1]);
-				value = value[idTab-1];
-			} else {
-				value = value[key[i]];
-			}
-		}
-		if(typeof value == 'object') {
-			return JSON.stringify(value)
-		}else{
-			return value;
-		}
-		return value;
-	} catch (e) {
-		return '';
-	}
-},
-
-getVar: function(variables) {
-	for(i in variables) {
-		if(typeof localStorage[variables[i]] != "undefined") {
-			try {
-				this[variables[i]] = JSON.parse( localStorage[variables[i]] );
-			} catch (exception) {
-				localStorage[variables[i]] = JSON.stringify( localStorage[variables[i]] );
-				this[variables[i]] = JSON.parse( localStorage[variables[i]] );
-			}
-		}
-	}
-},
-
-storeVar: function(variable, value) {
-	if(typeof value != "undefined") {
-		JNTP[variable] = value;
-	}
-	localStorage[variable] = JSON.stringify(JNTP[variable]);
-},
-
-getView: function(Jid) {
-
-	if(arguments.length == 1) {
-		return JNTP.isView[Jid];
-	}
-
-	if(typeof localStorage.articleRead == "undefined" || !localStorage.articleRead) {
-		localStorage.articleRead = '';
-	}
-	tab = localStorage.articleRead.split('<>');
-	for(i in tab) {
-		JNTP.isView[tab[i]]=true;
-	}
-},
-
-isBlackListed: function(name) {
-	return ( $.inArray( name, JNTP.blacklist ) != -1) ? true : false;
-},
-
-setBlacklist: function(name) {
-	if(name == '') return;
-	delete JNTP.blacklist[JNTP.blacklist.indexOf(name)];
-	JNTP.blacklist.push(name);
-	localStorage.blacklist = JNTP.blacklist.join("\n");
-	localStorage.blacklist = localStorage.blacklist.replace(/\n+/g,"\n").replace(/^\n+/g,"");
-},
-
-setView: function(Jid, value) {
-	JNTP.isView[Jid] = value;
-	if(typeof localStorage.articleRead == "undefined" || !localStorage.articleRead) {
-		localStorage.articleRead = '';
-	}
-	localStorage.articleRead = localStorage.articleRead.replace(new RegExp(Jid+'<>', 'g'),'');
-	if(value == true) {
-		localStorage.articleRead = Jid + '<>' + localStorage.articleRead;
-		if(localStorage.articleRead.split('<>').length > 3000) {
-			localStorage.articleRead = localStorage.articleRead.substring(0, localStorage.articleRead.lastIndexOf('<>')+1);
-		}
-	}
-
-	for(ind in JNTP.Fil) {
-		if (JNTP.Fil[ind].Jid == Jid) {
-			JNTP.Fil[ind].Read = value;
-			break;
-		}
-	}
-},
-
-generateSecretKey: function() {
-	tab = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	secretKey = '';
-	for(i=0;i<16;i++) {
-		secretKey += tab[Math.floor((Math.random()*62)+1)-1];
-	}
-	return secretKey;
-},
-
-draft: function(obj) {
-	if(arguments.length == 0) {
-		return JSON.parse( localStorage.draft );
-	}else{
-		localStorage.draft = JSON.stringify(obj);
-	}
-},
-
-syntaxHighlight: function(json) {
-	json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-	return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-	    var cls = 'number';
-	    if (/^"/.test(match)) {
-	        if (/:$/.test(match)) {
-	            cls = 'key';
-	        } else {
-	            cls = 'string';
-	        }
-	    } else if (/true|false/.test(match)) {
-	        cls = 'boolean';
-	    } else if (/null/.test(match)) {
-	        cls = 'null';
-	    }
-	    return '<span class="' + cls + '">' + match + '</span>';
-	});
-},
-
-
-trierFil: function() {
-	if(JNTP.tri.tree) {
-		if( JNTP.tri.order == "asc" && JNTP.tri.field == "InjectionDate"){
-			return JNTP.getTree( JNTP.Fil.sort(JNTP.comparAsc("InjectionDate")) );
-		}else{
-			return JNTP.getTree( JNTP.Fil.sort(JNTP.comparDesc("InjectionDate")) );
-		}
-	}
-
-	if (JNTP.tri.order == 'asc') {
-		return JNTP.Fil.sort(JNTP.comparAsc(JNTP.tri.field));
-	} else {
-		return JNTP.Fil.sort(JNTP.comparDesc(JNTP.tri.field));
-	}
-},
-
-comparAsc: function(prop) {
-	return function(a,b) {
-		if( a.Data[prop].toString().toLowerCase() > b.Data[prop].toString().toLowerCase()) {
-			return -1;
-		}else if( a.Data[prop].toString().toLowerCase() < b.Data[prop].toString().toLowerCase() ) {
-			return +1;
-		}
-		return 0;
-	}
-},
-
-comparDesc: function(prop) {
-	return function(a,b) {
-		if( a.Data[prop].toString().toLowerCase() > b.Data[prop].toString().toLowerCase()) {
-			return +1;
-		}else if( a.Data[prop].toString().toLowerCase() < b.Data[prop].toString().toLowerCase() ) {
-			return -1;
-		}
-		return 0;
-	}
-},
-
-getTree: function(liste, idArticle) {
-	childs = {"/":[]};
-	var index = [];
-	var tree = [];
-	var ind = 1;
-	var level = 1;
-	var ref = 'References';
-
-	// Indexation des Jid
-	for(var i in liste) {
-		index[liste[i]['Jid']] = true;
-	}
-
-	var numberOfElement = 0;
-
-	// On parcourt la liste des articles
-	for(var i in liste) {
-		numberOfElement++;
-		if(typeof liste[i] == "undefined") {
-			continue;
-		}
-
-		var bool = false;
-		// Si le champ Références n'existe pas ou s'il est mal formaté on le transforme en tableau vide
-		if (typeof liste[i].Data[ref] == "undefined" || !(liste[i].Data[ref] instanceof Array) ) {
-			liste[i].Data[ref] = [];
-		}
-		// On balaye les références de l'articles depuis la fin pour détecter si une référence a été indexée
-		for(var j = liste[i].Data[ref].length - 1; j >= 0; j--) {
-			if(index[liste[i].Data[ref][j]]) {
-				bool = true;
-				break;
-			}
-		}
-
-		// Si pas de références indexées l'article est enfant de la racine / sinon l'article est enfant de sa référence.
-		if(!bool) {
-			childs["/"].push(liste[i]); 
-		}else{
-			if( typeof childs[liste[i].Data[ref][j]] == "undefined" ) {
-				childs[liste[i].Data[ref][j]] = [];
-			}
-			childs[liste[i].Data[ref][j]].push(liste[i]);
-		}
-	}
-
-	tree.push({"Jid":"/", "level":0});
-
-	var article = childs["/"].shift();
-	article.level = level;
-	var jid = article['Jid'];
-	tree.push(article);
-
-
-	while(tree.length < numberOfElement + 1) {
-
-		//Si jid est parent on dépile l'article du tableau childs
-		var ind;
-		if( typeof childs[jid] != "undefined" && childs[jid].length) {
-
-			article = childs[jid].shift();
-			jid = article['Jid'];
-			level++;
-			article.level = level;
-			tree.push(article);
-			ind = tree.length - 1;
-		}else{
-			ind--;
-		}
-
-		if(ind < 0) {
-
-			for(var i in childs) {
-				while(childs[i].length) {
-					article = childs[i].shift();
-					article.level = 1;
-					article.circuit = true;
-					tree.push(article);
-				}
-			}
-			tree.shift();
-			return tree;
-		}
-
-		jid = tree[ind]['Jid'];
-		level = tree[ind].level;
-	}
-
-	tree.shift();
-
-	// Renvoie seulement la branche contenant jid
-	if(arguments.length == 2) {
-
-		branch = [];
-		pos = 0;
-		for(i in tree){
-			if(tree[i].ID == idArticle) break;
-			pos++;
-		}
-
-		for(i=pos; i>=0; i--){
-			branch.push(tree[i]);
-			if(tree[i].level == 1) break;
-		}
-
-		for(i=pos+1; i<tree.length; i++){
-			if(tree[i].level == 1) break;
-			branch.push(tree[i]);
-		}
-		return branch;
-	} else {
-		return tree.reverse();
-	}
-},
-
-setTemplateVar: function(body) {
-	var reg = /\[spoil\]([\s\S]*?)\[\/spoil\]/ig;
-	body = body.replace(reg, function(s, m){return '[spoil]'+JNTP.rot13(JNTP.rot13(m).replace(/#Jid#/g, JNTP.Article.Jid))+'[/spoil]';});
-
-	var reg = /\[var=([#@a-zA-Z0-9\/:]+)\]/g;
-	body = body.replace(reg, function(s, m){return JNTP.getIdentifiantValue(m);});
-
-	return body.replace(/#Uri#/g, JNTP.Article.Data.Uri).replace(/#Jid#/g, JNTP.Article.Jid).replace(/#ThreadID#/g, JNTP.Article.Data['ThreadID']);
-},
-
-mediaInfo: function() {
-	info = [];
-	for(ind in JNTP.media) {
-		obj = {};
-		obj.index = (parseFloat(ind)+1).toString();
-		if(typeof JNTP.media[ind]['data'] == "undefined") {
-			console.log("data not available");
-		}else{
-			obj.format = JNTP.media[ind]['data'].split(',')[0].split(';')[0].split(':')[1];
-			obj.size = JNTP.media[ind]['data'].length;
-		}
-		if( typeof JNTP.media[ind].filename != "undefined" ) {
-			obj.filename = JNTP.media[ind].filename;
-		}
-		info.push(obj);
-	}
-	return info;
-},
-
-copyMedia: function( Jid, callback ) {
-	JNTP.execute(["get",{"filter":{"Data.DataType":"Article", "Jid":Jid}, "maxDataLength":0, "select":["Data.Media"]}], function(code, j){switch(code) {
-		case "200":
-			JNTP.media = j.body[0].Data.Media;
-			callback();
-			break;
-		case "500":
-			break;
-	}});
-},
-
-addMedia: function(elt, callback, filename) {
-	size = $('#'+elt)[0].files[0].size;
-	if (size < JNTP.maxFileSize) {
-		var fileReader = new FileReader();
-		fileReader.readAsDataURL( $('#'+elt)[0].files[0] );
-		fileReader.onload = function(event) {
-
-			content = event.target.result;
-
-			if(typeof filename != "undefined") {
-				JNTP.media.push({"filename":filename, "data":content});
-			}else{
-				JNTP.media.push({"data":content});
-			}
-			$('#'+elt).val('');
-			callback();
-		}
-		return true;
-	}else{
-		$('#'+elt).val('');
-		return false;
-	}
-},
-
-deleteMedia: function(index) {
-	if(arguments.length == 1) {
-		delete JNTP.media[index-1];
-		arraytmp = [];
-		for (i in JNTP.media){
-				if (typeof JNTP.media[i] != 'undefined') {
-					arraytmp.push( JNTP.media[i] );
-				}
-		}
-		JNTP.media = arraytmp;
-	}else{
-		JNTP.media = [];
-	}
-},
-
-HTMLEncode: function(txt) {
-	try{
-		if(typeof(txt)!="string") {
-			txt=txt.toString();
-		}
-		return txt.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&#39;");
-	} catch(err){ return "";}
-},
-
-storeFavoris: function(favoris) {
-	if(typeof favoris != "undefined"){
-		JNTP.storeVar('favoris', favoris);
-	}else{
-		JNTP.storeVar('favoris', JNTP.favoris);
-	}
-},
-
-triFavoris:function() {
-
-	var favoris = [];
-	var favoris2 = {};
-	for(i in JNTP.favoris) {
-	    favoris.push(i);
-	}
-	favoris.sort();
-	for(i in favoris){
-	    favoris2[favoris[i]] = JNTP.favoris[favoris[i]];
-	};
-
-	JNTP.storeFavoris(favoris2);
-},
-
-addFavoris: function(groupName, rwm) {
-	if(typeof JNTP.favoris[groupName] == 'undefined') {
-		JNTP.favoris[groupName] = rwm;
-	}
-	JNTP.storeFavoris();
-},
-
-deleteFavoris: function(groupName) {
-	delete JNTP.favoris[groupName];
-	JNTP.storeFavoris();
-},
-
-rot13: function(s) {
-	var rot = function( t, u, v ) {
-		return String.fromCharCode( ( ( t - u + v ) % ( v * 2 ) ) + u );
-	};
-
-	var b = [], c, i = s.length,
-	a = 'a'.charCodeAt(), z = a + 26,
-	A = 'A'.charCodeAt(), Z = A + 26;
-	while(i--) {
-		c = s.charCodeAt( i );
-		if( c>=a && c<z ) { b[i] = rot( c, a, 13 ); }
-		else if( c>=A && c<Z ) { b[i] = rot( c, A, 13 ); }
-		else { b[i] = s.charAt( i ); }
-	}
-	return b.join( '' );
+hashString: function(str) {
+	return CryptoJS.SHA1(str).toString(CryptoJS.enc.Base64).slice(0,-1).replace(/\+/g,'-').replace(/\//g,'_');
 }
 
-};
-
-
-hashString = function(str) {
-	return CryptoJS.SHA1(str).toString(CryptoJS.enc.Base64).slice(0,-1).replace(/\+/g,'-').replace(/\//g,'_');
-};
+}
 
 /*
 CryptoJS v3.1.2

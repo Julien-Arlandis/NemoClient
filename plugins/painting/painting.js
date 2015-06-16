@@ -45,14 +45,14 @@ var painting = function() {
 
 		context_canvas.drawImage(canvas_effect,0,0);
 		context_canvas.drawImage(canvas_paint,0,0);
-		JNTP.media.push({"data":canvas.toDataURL("image/png"), "hash":CryptoJS.SHA1(canvas.toDataURL("image/png")).toString(CryptoJS.enc.Hex)});
-		Nemo.insertAtSelection('img', 'jntp:#Jid#/Data.Media:'+JNTP.media.length);
+		Nemo.Media.value.push({"data":canvas.toDataURL("image/png"), "hash":CryptoJS.SHA1(canvas.toDataURL("image/png")).toString(CryptoJS.enc.Hex)});
+		Interface.insertAtSelection('img', 'jntp:#DataID#/Data.Media:'+Nemo.Media.value.length);
 
 		$('.onglet').removeClass("selected");
 		$('#view_redaction').addClass("selected");
 		$('#paint_window').hide();
 		$('#redaction').show();
-		Nemo.displayMediaInfos();
+		Nemo.Media.displayInfos();
 	});
 
 	canvas.bind('touchstart mousedown', function(event){

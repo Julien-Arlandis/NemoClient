@@ -132,6 +132,7 @@ initSession: function(cmd, code, j){switch(code) {
 
 closeSession: function(cmd, code, j){switch(code) {
 	case "200":
+		JNTP.Storage.HashKey = '';
 		JNTP.Storage.Session = false;
 		JNTP.authentified = false;
 	break;
@@ -179,9 +180,9 @@ forgeDataArticle: function(params, secretKey) {
 	if(sizeArticle > JNTP.maxArticleSize ) {
 		return {"error":"tooLong","size":sizeArticle};
 	}
-	data.HashClient = JNTP.hashString(JNTP.uniqueJSON(data));
-	data.HashClient = JNTP.hashString(JNTP.uniqueJSON(data));
 
+	data.HashClient = JNTP.hashString(JNTP.uniqueJSON(data));
+	data.HashClient = JNTP.hashString(JNTP.uniqueJSON(data));
 	data.ThreadID = params.ThreadID;
 	if(params.ReferenceUserID) { data.ReferenceUserID = params.ReferenceUserID; }
 	if(params.Control) { data.Control = params.Control; }
@@ -189,10 +190,12 @@ forgeDataArticle: function(params, secretKey) {
 	if(params.ReplyTo) { data.ReplyTo = params.ReplyTo; }
 	if(params.DataIDLike) { data.DataIDLike = params.DataIDLike; }
 	if(params.Supersedes) { data.Supersedes = params.Supersedes; }
+	if(params.UserAgent) { data.UserAgent = params.UserAgent; }
 
 	if(params.Control != undefined && params.Control[0] == "cancel") { data.Media = []; }
 
 	return {"Data":data,"error":false};
+
 },
 
 uniqueJSON: function(json, isrecursiv) {

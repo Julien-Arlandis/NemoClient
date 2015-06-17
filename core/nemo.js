@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998a',
+UserAgent: 'Nemo/0.998b',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -37,12 +37,6 @@ Tools: {
 			Nemo[variable] = value;
 		}
 		localStorage[variable] = JSON.stringify(Nemo[variable]);
-	},
-
-	xpostMail: function(opt){
-		if(opt.mail != '') {
-			window.location = "mailto:"+opt.mail+"?subject="+opt.subject+"&body="+encodeURIComponent(article.Data.Body.replace(/#DataID#/g, opt.dataid).replace(/#Uri#/g, opt.uri));
-		}
 	},
 
 	rot13: function(s) {
@@ -151,7 +145,7 @@ Tools: {
 },
 
 Media: {
-	value: {},
+	value: [],
 	maxFileSize: 1800000,
 
 	val: function(media) {
@@ -297,7 +291,7 @@ Thread:{
 
 		JNTP.execute(cmd, function(code, j){switch(code) {
 		case "200":
-			var ID, maxID = "1970";
+			var ID, maxID = "0";
 			var res = {"firstID":0, "total":0};
 			if(typeof params.notclean == "undefined") {
 				this.clean();
@@ -334,7 +328,6 @@ Thread:{
 				maxID = params.IDstart;
 			}
 			if(params.listen || params.listenNext) {
-console.log('rrrrr', maxID);
 				JNTP.xhrAbortAll();
 				this.get({"listen":1,"notclean":true,"IDstart":maxID});
 			}
@@ -542,14 +535,14 @@ Favoris: {
 
 	add: function(groupName, rwm) {
 		if(typeof Nemo.Tools.getVar('favoris')[groupName] == 'undefined') {
-			Nemo.Tools.getVar('favoris')[groupName] = rwm;
+			Nemo.Storage.favoris[groupName] = rwm;
 		}
-		this.store();
+		this.store(Nemo.Storage.favoris);
 	},
 
 	del: function(groupName) {
-		delete Nemo.Tools.getVar('favoris')[groupName];
-		this.store();
+		delete Nemo.Storage.favoris[groupName];
+		this.store(Nemo.Storage.favoris);
 	}
 },
 
@@ -580,8 +573,10 @@ Blacklist: {
 
 Nemo.Article = function() {
 	this.value = {};
+	this.Jid = '';
 	this.owner = false;
-	this.isValid = false;
+	this.isJNTPValid = false;
+	this.isProtected = false;
 
 	// options = ID,DataID,read,source,surligne,callback;
 	this.get = function(options){
@@ -597,15 +592,14 @@ Nemo.Article = function() {
 			switch(code) {
 				case "200":
 					this.value = j.body[0].Data;
+					this.Jid = j.body[0].Jid;
 					if(this.value.DataType == 'Article') {
 						if( JNTP.Packet.isValid(j.body[0]) ){
-							this.isValid = true;
-							if(this.value.HashClient == JNTP.getHashClient(this.value,  Nemo.Tools.getVar('SecretKey')).hashClientCompute) {
-								this.owner = true;
-							}
-
+							this.isJNTPValid = true;
+							this.owner = (this.value.HashClient == JNTP.getHashClient(this.value,  Nemo.Tools.getVar('SecretKey')).hashClientCompute);
+							this.isProtected = (this.Jid == this.value.DataID);
 						}else{
-							this.isValid = false;
+							this.isJNTPValid = false;
 						}
 					}
 
@@ -625,14 +619,15 @@ Nemo.Article = function() {
 		}.bind(this));
 	};
 
+
 	this.diffuse = function(options){
 		this.set({
 			"DataType" : 'Article',
 			"Media" : Nemo.Media.val(),
 			"ReplyTo" : JNTP.ReplyTo,
-			"Uri": JNTP.url + '/?DataID=#DataID#'
+			"Uri": JNTP.url + '/?DataID=#DataID#',
+			"UserAgent": Nemo.UserAgent
 		});
-
 		var article = JNTP.forgeDataArticle(this.value, Nemo.Tools.getVar('SecretKey'));
 		JNTP.execute([ "diffuse" , { "Data" : article.Data } ], function(code, j){
 			switch(code) {
@@ -672,9 +667,11 @@ Nemo.Article = function() {
 			"FromMail": JNTP.Storage.FromMail,
 			"Media": []
 		}).diffuse(options);
+		this.value = {};
 	};
 
 	this.setReferences = function(refs){
+		if (!refs.length) refs = []; // refs instanceof Array => false in popup, but true in principal window
 		if(refs.length > 10) {
 			this.value.References = refs.slice(refs.length-10,refs.length);
 			this.value.References[0] = refs[0];
@@ -691,9 +688,14 @@ Nemo.Article = function() {
 		return this;
 	};
 
+	this.setBody = function(body) {
+		this.value.Body = body;
+		return this;
+	};
+
 	this.clone = function(body) {
 		var clone = jQuery.extend(true, {}, this);
-		clone.value.Body = body;
+		if(body) clone.value.Body = body;
 		return clone;
 	};
 
@@ -766,7 +768,7 @@ Nemo.Article = function() {
 
 	this.clearCitations = function(boolean){
 		var body = this.value.Body;
-		if (boolean) {
+		if (typeof boolean == "undefined" || boolean) {
 			var reg = new RegExp("(>>.*\n)", "g");
 			if(reg.test(body)) {
 				// Supprime la première ligne citée.
@@ -833,12 +835,12 @@ Nemo.Article = function() {
 	};
 
 	this.renduHTML = function(div, interpretPlugin) {
-		var newArticle = this.setTemplateVar();
+		var newArticle = this.clone();
 		var reg = /(\s|^)(https?|ftp)(:\/\/[-A-Z0-9+@#\/%?=~_|*&$!:,.;\(\)]+)(?=\s|$)/ig;
-		newArticle.clone( newArticle.value.Body.replace(reg,'$1[a]$2$3[/a]') );
+		newArticle.setBody( newArticle.value.Body.replace(reg,'$1[a]$2$3[/a]') );
 
 		var reg = /(\s|^|\(|<)(https?|ftp)(:\/\/[-A-Z0-9+@#\/%?=~_|*&$!:,.;\(\)]+)(\s|>|$)/igm;
-		newArticle.clone( newArticle.value.Body.replace(reg,'$1[a]$2$3[/a]$4') );
+		newArticle.setBody( newArticle.value.Body.replace(reg,'$1[a]$2$3[/a]$4') );
 
 		newArticle = newArticle.renduQuote().setBalise({
 			"name":"signature",
@@ -846,9 +848,9 @@ Nemo.Article = function() {
 		});
 
 		var reg = /(\[a\])(https?|ftp)(:\/\/[-A-Z0-9+@#\/%?=~_|*&$!:,.;\(\)]+)(\[\/a\])/ig;
-		newArticle.clone( newArticle.value.Body.replace(reg,'<a class="link" href="$2$3" target="_blank">$2$3</a>') );
+		newArticle.setBody( newArticle.value.Body.replace(reg,'<a class="link" href="$2$3" target="_blank">$2$3</a>') );
 
-		if (1==1 || arguments.length == 2 || this.isValid) {
+		if (this.isJNTPValid) {
 
 			newArticle = newArticle.renduFont().setBalise({
 				"name": "cite",
@@ -868,50 +870,50 @@ Nemo.Article = function() {
 			});
 
 			var reg = /(\[size=([0-9]+)\])([\s\S]*?)(\[\/size\])/g;
-			newArticle.clone( newArticle.value.Body.replace(reg,'<span style="font-size:$2px;">$3</span>') );
+			newArticle.setBody( newArticle.value.Body.replace(reg,'<span style="font-size:$2px;">$3</span>') );
 
 			var reg = /\[file name=(.+?)\]\s?(.+?)\s?\[\/file\]/g;
-			newArticle.clone( newArticle.value.Body.replace(reg,'<a class="file link" href="$2">$1</a>') );
+			newArticle.setBody( newArticle.value.Body.replace(reg,'<a class="file link" href="$2">$1</a>') );
 
 			var reg = /(\[size=([0-9]+)\])([\s\S]*?)(\[\/size\])/g;
-			newArticle.clone( newArticle.value.Body.replace(reg,'<span style="font-size:$2px;">$3</span>') );
+			newArticle.setBody( newArticle.value.Body.replace(reg,'<span style="font-size:$2px;">$3</span>') );
 
 			var reg = /(\[font=([a-zA-Z0-9 ]+)\])([\s\S]*?)(\[\/font\])/g;
-			newArticle.clone( newArticle.value.Body.replace(reg,'<span style="font-family:\'$2\';">$3</span>') );
+			newArticle.setBody( newArticle.value.Body.replace(reg,'<span style="font-family:\'$2\';">$3</span>') );
 
 			var reg = /\[pdf\]\s?(jntp:.+?)\s?\[\/pdf\]/g;
-			newArticle.clone( newArticle.value.Body.replace(reg, function(s, m){return this.displayResource(m, 'pdf');}) );
+			newArticle.setBody( newArticle.value.Body.replace(reg, function(s, m){return this.displayResource(m, 'pdf');}) );
 
 			var reg = /\[pdf\]\s?(.+?)\s?\[\/pdf\]/g;
-			newArticle.clone( newArticle.value.Body.replace(reg, '<embed type="application/pdf" width="95%" height="950" src="$1">') );
+			newArticle.setBody( newArticle.value.Body.replace(reg, '<embed type="application/pdf" width="95%" height="950" src="$1">') );
 
 			var reg = /\[img\]\s?(jntp:.+?)\s?\[\/img\]/g;
-			newArticle.clone( newArticle.value.Body.replace(reg, function(s, m){return this.displayResource(m, 'img');}) );
+			newArticle.setBody( newArticle.value.Body.replace(reg, function(s, m){return this.displayResource(m, 'img');}) );
 
 			var reg = /\[img\]\s?(.+?)\s?\[\/img\]/g;
-			newArticle.clone( newArticle.value.Body.replace(reg, "\n"+'<a class="popin" href="$1"><img src="$1"></a>') );
+			newArticle.setBody( newArticle.value.Body.replace(reg, "\n"+'<a class="popin" href="$1"><img src="$1"></a>') );
 
 			var reg = /\[audio\]\s?(.+?)\s?\[\/audio\]/g;
-			newArticle.clone( newArticle.value.Body.replace(reg,'<audio controls src="$1"></audio>') );
+			newArticle.setBody( newArticle.value.Body.replace(reg,'<audio controls src="$1"></audio>') );
 
 			var reg = /\[youtube\]([a-zA-Z0-9_\-]*)\[\/youtube\]/g;
-			newArticle.clone( newArticle.value.Body.replace(reg,'<iframe width="420" height="315" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>') );
+			newArticle.setBody( newArticle.value.Body.replace(reg,'<iframe width="420" height="315" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>') );
 
 			var reg = /\[dailymotion\]([a-zA-Z0-9_\-]*)\[\/dailymotion\]/g;
-			newArticle.clone( newArticle.value.Body.replace(reg,'<iframe width="480" height="270" src="http://www.dailymotion.com/embed/video/$1" frameborder="0" allowfullscreen></iframe>') );
+			newArticle.setBody( newArticle.value.Body.replace(reg,'<iframe width="480" height="270" src="http://www.dailymotion.com/embed/video/$1" frameborder="0" allowfullscreen></iframe>') );
 
-			var reg = /(news:)([-A-Z0-9+#\/%?=~_|$!:,.;]+@[-A-Z0-9+#\/%?=~_|$!:,.;]+)/ig;
-			newArticle.clone( newArticle.value.Body.replace(reg,'<a class="link" href="/?DataID=$2" target="_blank">$1 $2</a>') );
+			var reg = /(news:)([\-A-Z0-9+#\/%?=~_|$!:,.;]+@[-A-Z0-9+#\/%?=~_|$!:,.;]+)/ig;
+			newArticle.setBody( newArticle.value.Body.replace(reg,'<a class="link" href="/?DataID=$2" target="_blank">$1<span></span>$2</a>') );
 
-			var reg = /(news:)([A-Z0-9+#.*@]+)/ig;
-			newArticle.clone( newArticle.value.Body.replace(reg,'<a class="link" href="/?Newsgroup=$2" target="_blank">$1 $2</a>') );
+			var reg = /(news:)([\-A-Z0-9+#.*@]+)/ig;
+			newArticle.setBody( newArticle.value.Body.replace(reg,'<a class="link" href="/?Newsgroup=$2" target="_blank">$1$2</a>') );
 
 			var reg = /"(jntp:)([-A-Z0-9+@#\/%?=~_|!:,.;]+)"/ig;
-			newArticle.clone( newArticle.value.Body.replace(reg,JNTP.uri+'$2') );
+			newArticle.setBody( newArticle.value.Body.replace(reg,JNTP.uri+'$2') );
 
 			// set [c=x]
 			var reg = /\[c=(x?[0-9a-fA-F]+)\]/g;
-			newArticle.clone( newArticle.value.Body.replace(reg, function(s,m) {
+			newArticle.setBody( newArticle.value.Body.replace(reg, function(s,m) {
 				val = (m[0] != 'x') ? parseInt(m) : parseInt(m.substr(1),16);
 				if(val < 0xFFFF) {
 					return String.fromCharCode(val);
@@ -968,6 +970,12 @@ Nemo.Article = function() {
 					return '<embed src="' + url + '" type="application/pdf" width="95%" height="950" style="display:none">';
 				}
 			}
+		}
+	};
+
+	this.xpostMail = function(opt){
+		if(opt.mail != '') {
+			window.location = "mailto:"+opt.mail+"?subject="+opt.subject+"&body="+encodeURIComponent(this.value.Body.replace(/#DataID#/g, opt.dataid).replace(/#Uri#/g, opt.uri));
 		}
 	};
 

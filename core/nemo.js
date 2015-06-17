@@ -291,7 +291,7 @@ Thread:{
 
 		JNTP.execute(cmd, function(code, j){switch(code) {
 		case "200":
-			var ID, maxID = "1970";
+			var ID, maxID = "0";
 			var res = {"firstID":0, "total":0};
 			if(typeof params.notclean == "undefined") {
 				this.clean();

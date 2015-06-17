@@ -132,6 +132,7 @@ initSession: function(cmd, code, j){switch(code) {
 
 closeSession: function(cmd, code, j){switch(code) {
 	case "200":
+		JNTP.Storage.HashKey = '';
 		JNTP.Storage.Session = false;
 		JNTP.authentified = false;
 	break;

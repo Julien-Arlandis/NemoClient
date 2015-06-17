@@ -1275,11 +1275,13 @@ init: function() {
 			$('#formulaire_subject').val(suf + Interface.articleToRead.value.Subject);
 
 			// Newsgroups
-			if(typeof Interface.articleToRead.value.FollowupTo != "undefined" && Interface.articleToRead.value.FollowupTo.length){
+			if(Interface.articleToRead.value.FollowupTo){
 				$('#formulaire_newsgroup').val(Interface.articleToRead.value.FollowupTo.join( ', ' ));
 			}else{
 				$('#formulaire_newsgroup').val(Interface.articleToRead.value.Newsgroups.join( ', ' ));
 			}
+
+			if( $('#formulaire_newsgroup').val().split(',').length > 2) $('#box_formulaire_fu2').show();
 
 			// Ouvre la popup, positionne le curseur
 			win.Interface.bodyEdit( win.Interface.articleToWrite.value.Body );

@@ -1,7 +1,7 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.996e - 2015-04-16
+	Interface Classic - Mise à jour Nemo/0.998c - 2015-06-18
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -1355,6 +1355,7 @@ input {
 #articles_send:hover, #articles_draft:hover,  #articles_response:hover {
 	background-color: #fcecda;
 	border-radius: 4px;
+	box-shadow: 2px 1px 2px #ffbb88;
 }
 
 hr {
@@ -1371,6 +1372,7 @@ hr {
 .w:hover, .r:hover, .h:hover, .newsgroup:hover {
 	background-color: #fcecda;
 	border-radius: 4px;
+	box-shadow: 2px 1px 2px #ffbb88;
 }
 
 .newsgroup:hover {

@@ -22,7 +22,7 @@ Storage: {
 	UserID: '',
 	FromName: '',
 	FromMail: '',
-	ReplyTo: '',
+	ReplyTo: ''
 },
 
 setUrl: function(url) {
@@ -138,10 +138,7 @@ closeSession: function(cmd, code, j){switch(code) {
 	break;
 }},
 
-getHashClient: function(art, secretKey){
-
-	var followupTo = (typeof art.FollowupTo == "undefined") ? [] : art.FollowupTo;
-
+getHashClient: function(art, secretKey, returnData){
 	var data = {
 			"DataType" : art.DataType,
 			"FromName" : art.FromName,
@@ -151,51 +148,34 @@ getHashClient: function(art, secretKey){
 			"Newsgroups" : art.Newsgroups,
 			"Body" : art.Body,
 			"Media": art.Media,
-			"FollowupTo": followupTo,
+			"FollowupTo": art.FollowupTo,
 			"HashClient" : secretKey+JNTP.Storage.HashKey
 	};
 
 	var hashClientSecret = data.HashClient = JNTP.hashString( JNTP.uniqueJSON(data) );
 	var hashClientCompute = JNTP.hashString( JNTP.uniqueJSON(data) );
-
-	return {"hashClientSecret":hashClientSecret,"hashClientCompute":hashClientCompute};
+	return {"hashClientSecret":hashClientSecret, "hashClientCompute":hashClientCompute, "data": (returnData) ? data : {} };
 },
 
-forgeDataArticle: function(params, secretKey) {
-
-	var data = {
-		"DataType" : params.DataType,
-		"FromName" : params.FromName,
-		"FromMail" : params.FromMail,
-		"Subject" : params.Subject,
-		"References" : params.References,
-		"Newsgroups" : params.Newsgroups,
-		"Body" : params.Body,
-		"Media": params.Media,
-		"FollowupTo": params.FollowupTo,
-		"HashClient" : secretKey+JNTP.Storage.HashKey,
-	};
-
-	var sizeArticle = JSON.stringify(data).length;
+forgeDataArticle: function(art, secretKey) {
+	var sizeArticle = JSON.stringify(art).length;
 	if(sizeArticle > JNTP.maxArticleSize ) {
 		return {"error":"tooLong","size":sizeArticle};
 	}
+	
+	var hash = JNTP.getHashClient(art, secretKey, true);
+	var data = hash.data;
+	data.HashClient = hash.hashClientSecret;
+	data.HashClient = hash.hashClientCompute;
 
-	data.HashClient = JNTP.hashString(JNTP.uniqueJSON(data));
-	data.HashClient = JNTP.hashString(JNTP.uniqueJSON(data));
-	data.ThreadID = params.ThreadID;
-	if(params.ReferenceUserID) { data.ReferenceUserID = params.ReferenceUserID; }
-	if(params.Control) { data.Control = params.Control; }
-	if(params.Uri) { data.Uri = params.Uri; }
-	if(params.ReplyTo) { data.ReplyTo = params.ReplyTo; }
-	if(params.DataIDLike) { data.DataIDLike = params.DataIDLike; }
-	if(params.Supersedes) { data.Supersedes = params.Supersedes; }
-	if(params.UserAgent) { data.UserAgent = params.UserAgent; }
+	var allowedKeys = ['ThreadID','ReferenceUserID','Control','Uri','ReplyTo','DataIDLike','Supersedes','UserAgent'];
+	$.each(allowedKeys, function(key, value){
+		if(typeof art[value] != "undefined") { data[value] = art[value]; }
+	});
 
-	if(params.Control != undefined && params.Control[0] == "cancel") { data.Media = []; }
+	if(art.Control != undefined && art.Control[0] == "cancel") { data.Media = []; }
 
 	return {"Data":data,"error":false};
-
 },
 
 uniqueJSON: function(json, isrecursiv) {

@@ -7,6 +7,7 @@
 <link rel="icon" type="image/png" href="favicon.png" />
 <link rel="stylesheet" data-theme="general" href="skins/classic/style.css" type="text/css" media="screen" />
 <link rel="stylesheet" type="text/css" href="core/colorbox/colorbox.css" media="screen" />
+
 <meta property="og:image" content="http://news.nemoweb.net/nemo.png" />
 <meta name="Description" lang="fr" content="Nemo est une application web qui permet de navigueur sur un réseau de groupe de discussions" />
 <meta name="Keywords" lang="fr" content="forums, usenet, newsgroups, protocole JNTP, NNTP" />
@@ -30,7 +31,7 @@
 	<div id="img_left"></div>
 
 	<div id="authentification">
-		<div class="title" tk="authentification">Authentification</div>
+		<div class="title">Authentification</div>
 		<div class="content">
 			<form id="form_authentification" name="form_authentification">
 				<input id="user" type="text" placeholder="Entrez votre email"  autocomplete="on" required>
@@ -88,7 +89,7 @@
 		</div>
 
 		<div id="menu_bouton_top">
-		<button class="button" id="new_sujet">Nouveau sujet</button>
+		<button class="button" id="new_sujet" autocomplete="off" >Nouveau sujet</button>
 		<button class="button" id="recherche_article">Rechercher</button>
 		<button class="button" id="parametres">Préférences</button>
 		<button class="button faq_nemo">FAQ</button>
@@ -121,8 +122,8 @@
 			<div id="article_header">
 				<button class="button" id="ban_article" style="display:none">Del</button>
 				<button class="button" id="supprimer_article">Annuler</button>
-				<button class="button" id="modifier_article">Modifier</button>
-				<button class="button" id="repondre">Répondre</button>
+				<button class="button" id="modifier_article" autocomplete="off">Modifier</button>
+				<button class="button" id="repondre" autocomplete="off">Répondre</button>
 				<button class="button" id="view_source">Voir source</button>
 				<button class="button" id="hide_source" style="display:none">Cacher la source</button>
 				<div><span class="champ_article">De </span><span class="champ_value" id="article_from"><!--Nemo::from--></span></div>
@@ -139,14 +140,16 @@
 				<span id="revoir_citations" style="display:none">Voir toutes les citations</span>&nbsp;
 				</div>
 				<div id="voir_supersede" class="supersede" style="display:none">Cet article a été modifié</div>
-				<div id="article_deleted" style="display:none">Article supprimé</div>
-				<div id="article_certification" data-info="" class="jntp_valid"></div>
-				<div id="like"><span id="compteur_like"></span></div>
+				<div id="article_certification" data-info="" class="is_protected"></div>
+				<div id="like" data-info="Cliquez si vous avez aimé cet article"><span id="compteur_like"></span></div>
 				<div id="references"></div>
 
 				<pre id="article_source" style="display:none"></pre>
 			</div>
+			<div id="article_deleted" style="display:none">Article supprimé</div>
+			<div id="article_updated" style="display:none">Article modifié</div>
 			<div id="article_body"><!--Nemo::article--></div>
+			<div id="attach_file" style="display:none"><span id="number_attach_file"></span> pièces jointes</div>
 		</div>
 	</div><!--/panneau_principal-->
 
@@ -235,30 +238,31 @@
 	<form id="form_post">
 
 	<fieldset>
-	<label for="formulaire_from">Expéditeur</label>
+	<label class="label" for="formulaire_from">Expéditeur</label>
 	<input name="formulaire_from" id="formulaire_from" pattern=".*[^ \t\n].*" type="text" placeholder="Entrez votre nom" value="" required tabindex="1">
 	<input name="formulaire_email" type="email" title="email" id="formulaire_email" placeholder="Entrez votre email" value="" required tabindex="2">
 	</fieldset>
 
 	<fieldset>
-	<label for="formulaire_subject">Sujet</label>
+	<label class="label" for="formulaire_subject">Sujet</label>
 	<input name="formulaire_subject" id="formulaire_subject" pattern=".*[^ \t\n].*" type="text" placeholder="Entrez le sujet de votre article" required tabindex="3">
 	</fieldset>
 
 	<fieldset>
-	<label for="formulaire_newsgroup">Newsgroups</label>
+	<label class="label" for="formulaire_newsgroup">Newsgroups</label>
 	<input name="formulaire_newsgroup" id="formulaire_newsgroup" type="text" value="" placeholder="Saisissez les groupes séparés par une virgule" required tabindex="4">
-	</fieldset>
-
-	<fieldset>
-	<label for="formulaire_fu2">Faire suivre</label>
-	<input name="formulaire_fu2" id="formulaire_fu2" type="text" value="" placeholder="Newsgroup de redirection" tabindex="5">
-	<input name="formulaire_xpostmail" id="formulaire_xpostmail" type="text" value="" placeholder="Saisissez une adresse email" tabindex="5">
-
-	<input class="button" id="formulaire_send" type="submit" value="Envoyer">
+	<span id="button_formulaire_fu2" class="button">Faire‌ suivre</span>
+	<input id="formulaire_send" class="button" type="submit" value="Envoyer">
 	<input class="button" id="formulaire_update" type="submit" value="Modifier" style="display:none">
-	<input id="formulaire_supersede" type="hidden">
+
 	</fieldset>
+
+	<fieldset id="box_formulaire_fu2" style="display:none">
+	<label class="label" for="formulaire_fu2">Faire suivre</label>
+	<input name="formulaire_fu2" id="formulaire_fu2" type="text" value="" placeholder="Groupe de redirection" tabindex="5">
+	<input name="formulaire_xpostmail" id="formulaire_xpostmail" type="email" value="" placeholder="Saisissez une adresse email" tabindex="5">
+	</fieldset>
+
 	</form>
 
 	<div class="ui-widget">
@@ -310,8 +314,8 @@
 		<option id="insert_table" title="Insérer une table" value="table">table</option>
 		<option id="insert_td" title="Insérer une colonne" value="td">td</option>
 		<option id="insert_tr" title="Insérer une ligne" value="tr">tr</option>
-		<option id="insert_size" title="Taille de police" value="size=">size=</option>
-		<option id="insert_font" title="Type de police" value="font=">font=</option>
+		<option id="insert_size" title="Taille de police" value="size=15">size</option>
+		<option id="insert_font" title="Type de police" value="font=Verdana">font</option>
 	</select>
 
 	<button id="mode_html" data-info="Édition en mode texte ou en mode ergonomique">&lt;/&gt;</button>
@@ -402,13 +406,12 @@
 	<h3>Paramètres serveur</h3>
 	<div>
 
-	<div><label for="host_jntp">Serveur JNTP </label> <input type="text" value="" style="width:300px;" id="host_jntp"></div>
+	<div><label class="label" for="host_jntp">Serveur JNTP </label> <input type="text" value="" style="width:400px;" id="host_jntp"></div>
 	<p> </p>
-	<div><label for="fromname">Expéditeur </label> <input type="text" style="width:300px;" id="fromname"></div>
-	<div><label for="frommail">Email visible </label> <input type="text" style="width:300px;" id="frommail"></div>
-	<div><label for="replyto">Email de réponse </label> <input type="text" style="width:300px" id="replyto"></div>
-	<p> </p>
-	<div><span>Signature </span> <br><textarea id="signature" style="width:500px"></textarea></div>
+	<div><label class="label" for="fromname">Expéditeur </label> <input type="text" style="width:400px;" id="fromname"></div>
+	<div><label class="label" for="frommail">Email visible </label> <input type="text" style="width:400px;" id="frommail"></div>
+	<div><label class="label" for="replyto">Email de réponse </label> <input type="text" style="width:400px" id="replyto"></div>
+	<div><label class="label" for="signature">Signature </label> <textarea style="width:400px" id="signature" ></textarea></div>
 
 	</div>
 	<h3>Configuration du client</h3>
@@ -418,16 +421,20 @@
 	<button class="button" style="float:right" id="generate_secret_key">Générer une nouvelle clé</button>
 	<span>Cette clé permet de générer une empreinte sur vos articles pour authentifier les suppressions et les modifications futures.</span>
 	<br>
-	<span id="secret_key"></span>
+	<input type="text" id="secret_key">
 	</div>
 
 	<hr>
 
-	<p><p>
-	<div><input type="checkbox" id="confirm_send_article" value="1" checked><span>&nbsp;Confirmer l'envoi d'un message </span></div>
-	<p><p>
-	<div><input type="checkbox" id="active_popup" value="1"><span>&nbsp;Fenêtre rédaction dans une fenêtre pop-up </span></div>
-	<p><p>
+	<p>
+	<div><input type="checkbox" id="confirm_send_article" value="1" checked><label for="confirm_send_article">&nbsp;Confirmer l'envoi d'un message </label></div>
+	<p>
+	<div><input type="checkbox" id="active_popup" value="1"><label for="active_popup">&nbsp;Fenêtre rédaction dans une fenêtre pop-up </label></div>
+	<p>
+	<div><input type="checkbox" id="signature_auto" value="1"><label for="signature_auto">&nbsp;Signature automatique</label> </div>
+	<p>
+	<div><input type="checkbox" id="active_html" value="1"><label for="active_html">&nbsp;Édition en mode HTML </label></div>
+	<p>
 	<hr>
 	<div><span>Nombre d'articles maximum à charger </span> <input id="total_article" type="range" value="250" max="1000" min="50" step="10">&nbsp;<output for="total_article"></output></div>
 	<br>
@@ -461,7 +468,7 @@
 	<h3>Liste noire</h3>
 	<div>
 		<div>
-		<textarea id="blacklist" style="width:500px; height:180px;"></textarea>
+		<ul id="blacklist"></ul>
 		</div>
 	</div>
 </div>
@@ -510,7 +517,9 @@ Inscrivez votre email<input id="email_recup_password" type="text" size="50" valu
 	<hr>
 	<div data-menu="open_window"> Ouvrir dans une nouvelle fenêtre </div>
 	<hr>
+	<div data-menu="view_articles_author"> Voir les articles de cet auteur</div>
 	<div data-menu="blacklist"> Blacklister cet utilisateur</div>
+	<div data-menu="openBlacklistConfig"> Gérer la liste noire</div>
 	<hr>
 	<div data-menu="load_more"> Voir plus d'articles </div>
 </div><!--/contextMenu-->
@@ -518,6 +527,7 @@ Inscrivez votre email<input id="email_recup_password" type="text" size="50" valu
 <div id="infobulle" style="display:none"></div>
 <div id="faq" title="Foire Aux Questions" style="display:none"></div>
 <div id="dialog-alert" title="Alerte" style="display:none"></div>
+<div id="dialog-info" title="Info" style="display:none"></div>
 <!--Nemo::ID-->
 </body>
 </html>

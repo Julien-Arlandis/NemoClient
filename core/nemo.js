@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998b',
+UserAgent: 'Nemo/0.998f',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -15,7 +15,8 @@ Storage: {
 	signature: 'Ce message a été posté avec Nemo : <#Uri#>',
 	favoris: {'nemo.*':'h','nemo.bavardages':'w','fr.*':'h'},
 	activePopup: 1,
-	blacklist: [],
+	signatureAuto: 0,
+	activeHTML: 0
 },
 
 Tools: {
@@ -34,9 +35,9 @@ Tools: {
 
 	storeVar: function(variable, value) {
 		if(typeof value != "undefined") {
-			Nemo[variable] = value;
+			Nemo.Storage[variable] = value;
 		}
-		localStorage[variable] = JSON.stringify(Nemo[variable]);
+		localStorage[variable] = JSON.stringify(Nemo.Storage[variable]);
 	},
 
 	rot13: function(s) {
@@ -253,12 +254,10 @@ Thread:{
 	},
 
 	getMinID: function(){
-		var minID = 1e15;
-		var ID;
+		var minID = "99999999";
 		if(this.value.length) {
 			for(var ind in this.value) {
-				ID = parseInt(this.value[ind].ID);
-				minID = (ID < minID) ? ID : minID;
+				minID = (this.value[ind].ID < minID) ? this.value[ind].ID : minID;
 			}
 		}
 		return minID;
@@ -345,9 +344,11 @@ Thread:{
 	sort: function(){
 		if(this.tri.tree) {
 			if( this.tri.order == "asc" && this.tri.field == "InjectionDate"){
-				return this.tree( this.value.sort(Nemo.Tools.comparAsc("InjectionDate")) );
+				this.value = this.value.sort(Nemo.Tools.comparAsc("InjectionDate"));
+				return this.tree();
 			}else{
-				return this.tree( this.value.sort(Nemo.Tools.comparDesc("InjectionDate")) );
+				this.value = this.value.sort(Nemo.Tools.comparDesc("InjectionDate"))
+				return this.tree();
 			}
 		}
 
@@ -394,7 +395,7 @@ Thread:{
 		}
 	},
 
-	tree: function(idArticle) {
+	tree: function(dataidArticle) {
 		
 		var childs = {"/":[]};
 		var index = [];
@@ -485,12 +486,11 @@ Thread:{
 		tree.shift();
 
 		// Renvoie seulement la branche contenant dataID
-		if(arguments.length == 2) {
-
+		if(arguments.length == 1) {
 			branch = [];
 			pos = 0;
 			for(i in tree){
-				if(tree[i].ID == idArticle) break;
+				if(tree[i].Data.DataID == dataidArticle) { break;}
 				pos++;
 			}
 
@@ -548,21 +548,32 @@ Favoris: {
 
 Blacklist: {
 	list: [],
-	getList: function() {
-		return localStorage.blacklist;
-	},
 	load: function() {
 		if(typeof localStorage.blacklist == "undefined" || !localStorage.blacklist) {
-			localStorage.blacklist = '';
+			localStorage.blacklist = JSON.stringify( [] );
 		}
-		this.list = localStorage.blacklist.split("\n");
+		try {
+			this.list = JSON.parse( localStorage.blacklist );
+		} catch (exception) {
+			console.log(exception);
+		}
 	},
 	set: function(name) {
 		if(name == '') return;
 		delete this.list[this.list.indexOf(name)];
 		this.list.push(name);
-		localStorage.blacklist = this.list.join("\n");
-		localStorage.blacklist = localStorage.blacklist.replace(/\n+/g,"\n").replace(/^\n+/g,"");
+		localStorage.blacklist = JSON.stringify( this.list );
+	},
+	del: function(name) {
+		delete this.list[this.list.indexOf(name)];
+		var newlist = [];
+		for(i in this.list) {
+			if(typeof this.list[i] != "undefined" ) {
+				newlist.push(this.list[i]);
+			}
+		}
+		this.list = newlist;
+		localStorage.blacklist = JSON.stringify( this.list );
 	},
 	isInList: function(name) {
 		return ( $.inArray( name, this.list ) != -1) ? true : false;
@@ -699,8 +710,15 @@ Nemo.Article = function() {
 		return clone;
 	};
 
-	this.renduQuote = function() {
+	this.addSignature = function() {
+		if(Nemo.Tools.getVar('signatureAuto') == 1) {
+			return this.clone(this.value.Body  +"\n[signature]" + Nemo.Tools.getVar('signature') + "[/signature]");
+		}else{
+			return this;
+		}
+	};
 
+	this.renduQuote = function() {
 	 	var body = Nemo.Tools.HTMLEncode( this.value.Body );
 		var rt_alea = '@'+Math.floor(Math.random()*1e10)+'@';
 		var rt = "\n";
@@ -710,12 +728,13 @@ Nemo.Article = function() {
 
 		for (i in body)
 		{
-			motif = body[i].match(/^(&gt;| )+\s?/gi);
+			var motif = body[i].match(/^(&gt;| )+\s?/gi);
 
 			if(motif) {
-				n = motif[0].split("&gt;").length - 1;
-				pos = (n > 0) ? (motif[0].length - motif[0].lastIndexOf("&gt;") - 5) : motif[0].length;
-				ligne = body[i].substr(motif[0].length - pos, body[i].length);
+				var tab = motif[0].split("&gt;");
+				var n = tab.length - 1;
+				var pos = (n > 0) ? (motif[0].length - motif[0].lastIndexOf("&gt;") - 4 - tab[n].length) : motif[0].length;
+				var ligne = body[i].substr(motif[0].length - pos, body[i].length);
 			}else{
 				n = 0;
 				ligne = body[i];
@@ -779,13 +798,14 @@ Nemo.Article = function() {
 	};
 
 	this.clearSignature = function() {
-		var reg = /(\[signature\])([\s\S]*?)(\[\/signature\])/ig;
+		var reg = /(\n?\[signature\])([\s\S]*?)(\[\/signature\])/ig;
 		return this.clone(this.value.Body.replace(reg,''));
 	};
 
 	this.quote = function(options) {
 		// Citations
-		var body = this.value.Body;
+		
+		var body = this.value.Body.replace(/\n*$/g,'');
 		var chevron = '>'+Math.floor(Math.random()*1e10)+'<';
 		body = body.replace(/^>/gm, chevron+">" ).replace(/^(?!>)/gm, chevron+" " );
 		var from = (options.FromName) ? options.FromName : options.FromMail;
@@ -850,7 +870,7 @@ Nemo.Article = function() {
 		var reg = /(\[a\])(https?|ftp)(:\/\/[-A-Z0-9+@#\/%?=~_|*&$!:,.;\(\)]+)(\[\/a\])/ig;
 		newArticle.setBody( newArticle.value.Body.replace(reg,'<a class="link" href="$2$3" target="_blank">$2$3</a>') );
 
-		if (this.isJNTPValid) {
+		if (this.isJNTPValid || interpretPlugin) {
 
 			newArticle = newArticle.renduFont().setBalise({
 				"name": "cite",

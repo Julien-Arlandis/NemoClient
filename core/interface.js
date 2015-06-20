@@ -33,6 +33,137 @@ Char: {
 	smiley: ['😃','😇','😉','😁','😎','😞']
 },
 
+bodyTransform: function(option, body) {
+	if(option == 'toTxt') {
+		body = body.replace(/<div data-cite="0"><br data-newline="0"><\/div>/g,"\n");
+		body = body.replace(/<br data-newline="0">/g,"\n");
+		body = body.replace(/&nbsp;|<div>/g,"");
+		body = body.replace(/(<\/div>|<\/span>)/g,"\n");
+		body = body.replace(/<b>/g,"[b]").replace(/<i>/g,"[i]").replace(/<u>/g,"[u]").replace(/<strike>/g,"[s]");
+		body = body.replace(/<\/b>/g,"[/b]").replace(/<\/i>/g,"[/i]").replace(/<\/u>/g,"[/u]").replace(/<\/strike>/g,"[/s]");
+		var reg = /<(span|div|br).*?data-cite="([0-9]+)".*?>/g;
+		body = body.replace(reg, function(m, p1, p2){ cite = ''; for(i=0;i<p2;i++) {cite += '>'} return (cite=='')?cite:cite+' ';});
+		body = body.replace(/(<\/?.*?>)/g,"");
+		body = body.replace( /&gt;/g,'>').replace( /&lt;/g,'<');
+
+	}else if(option == 'toHTML') {
+		body = new Nemo.Article().set({"Body": body}).renduQuote().renduFont().value.Body;
+	}
+	return body;
+},
+
+enterNewlineOrTab: function(e) {
+	if(e.which == 13) {
+		if(typeof $(window.getSelection().anchorNode.parentNode).attr('data-line') != 'undefined') {
+			document.execCommand('insertHTML',false,' ');
+			document.execCommand('delete');
+			document.execCommand('insertHTML',false,'<div data-cite="0"><br data-newline="0"></div>');
+			return false;
+		}
+	}
+	else if(e.which == 9) {
+		document.execCommand('insertHTML',false,"\t");
+		return false;
+	}
+},
+
+getBody: function() {
+	if(Interface.modeEdit == 'html') {
+		return Interface.bodyTransform('toTxt', $('#formulaire_body_html').html() );
+	}else{
+		return $('#'+Interface.bodyInputID).val();
+	}
+},
+
+setBody: function(body) {
+	if(Interface.modeEdit == 'html') {
+		$('#formulaire_body_html').html( Interface.bodyTransform('toHTML', body) );
+	}else{
+		$('#'+Interface.bodyInputID).val(body);
+	}
+},
+
+selectModeEdition: function(mode) {
+	Interface.modeEdit = mode;
+	if(Interface.modeEdit == 'html') {
+		$('#'+Interface.bodyInputID).hide();
+		$('#formulaire_body_html').show();
+		$('#mode_html').addClass('activated');
+		Interface.setBody( $('#'+Interface.bodyInputID).val() );
+	}else{
+		$('#'+Interface.bodyInputID).show();
+		$('#formulaire_body_html').hide();
+		$('#mode_html').removeClass('activated');
+		Interface.setBody( Interface.bodyTransform('toTxt', $('#formulaire_body_html').html() ) );
+	}
+},
+
+insertBaliseAtSelection: function(balise, txt) {
+
+	var endBalise = balise.split(/[ =]+/)[0];
+	txt = (typeof txt == "undefined") ? '' : txt;
+	if(Interface.modeEdit == 'text') {
+		var posStart = document.getElementById(Interface.bodyInputID).selectionStart;
+		var posEnd = document.getElementById(Interface.bodyInputID).selectionEnd;		
+		var beforeBalise = Interface.getBody().substring(0, posStart);
+		var afterBalise = Interface.getBody().substring(posEnd);
+		var n = balise.length;
+		if(arguments.length == 1) {
+			inBalise = Interface.getBody().substring(posStart, posEnd);
+			if(balise == 'spoil') {
+				if (posStart == posEnd) {
+					$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html("<p>Vous devez d'abord sélectionner votre texte</p>");
+					$('#'+Interface.bodyInputID).focus();
+					return;
+				}else{
+					inBalise = Nemo.Tools.rot13(inBalise);
+				}
+			}
+		}else{
+			var inBalise = txt;
+		}
+		if(balise != ''){
+			var body = beforeBalise + "["+balise+"]" + inBalise + "[/"+endBalise+"]" + afterBalise;
+			var decalCursor = posEnd + balise.length + endBalise.length + 5 + txt.length;
+		}else{
+			body = beforeBalise + inBalise + afterBalise;
+			decalCursor = posEnd + balise.length + endBalise.length + txt.length;
+		}
+		Interface.setBody( body );
+		document.getElementById(Interface.bodyInputID).selectionEnd = decalCursor;
+		document.getElementById(Interface.bodyInputID).selectionStart= decalCursor;
+		$('#'+Interface.bodyInputID).focus();
+	}else{
+
+		if(balise == 'b') {
+			document.execCommand('bold','','');
+		}
+		else if(balise == 'i') {
+			document.execCommand('italic','','');
+		}
+		else if(balise == 'u') {
+			document.execCommand('underline','','');
+		}
+		else if(balise == 's') {
+			document.execCommand('strikeThrough','','');
+		}
+		else{
+			if(arguments.length == 1) {
+				txt = window.getSelection().getRangeAt(0).cloneContents().textContent;
+				if(balise == 'spoil') {
+					if (txt=='') {
+						$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html("<p>Vous devez d'abord sélectionner votre texte</p>");
+					}else{
+						txt = Nemo.Tools.rot13(txt);
+					}
+				}
+			}
+			txt = "["+balise+"]" + txt + "[/"+endBalise+"]";
+			document.execCommand('insertText','', txt);
+		}
+	}
+},
+
 draft: function(obj) {
 	if(arguments.length == 0) {
 		return JSON.parse( localStorage.draft );
@@ -153,100 +284,6 @@ callbackGetArticle: function(options, code, j){
 	}
 },
 
-insertBaliseAtSelection: function(balise, txt) {
-
-	var endBalise = balise.split(/[ =]+/)[0];
-	txt = (typeof txt == "undefined") ? '' : txt;
-	if(Interface.modeEdit == 'text') {
-		var posStart = document.getElementById(Interface.bodyInputID).selectionStart;
-		var posEnd = document.getElementById(Interface.bodyInputID).selectionEnd;		
-		var beforeBalise = Interface.bodyEdit().substring(0, posStart);
-		var afterBalise = Interface.bodyEdit().substring(posEnd);
-		var n = balise.length;
-		if(arguments.length == 1) {
-			inBalise = Interface.bodyEdit().substring(posStart, posEnd);
-			if(balise == 'spoil') {
-				if (posStart == posEnd) {
-					$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html("<p>Vous devez d'abord sélectionner votre texte</p>");
-					$('#'+Interface.bodyInputID).focus();
-					return;
-				}else{
-					inBalise = Nemo.Tools.rot13(inBalise);
-				}
-			}
-		}else{
-			var inBalise = txt;
-		}
-		if(balise != ''){
-			var body = beforeBalise + "["+balise+"]" + inBalise + "[/"+endBalise+"]" + afterBalise;
-			var decalCursor = posEnd + balise.length + endBalise.length + 5 + txt.length;
-		}else{
-			body = beforeBalise + inBalise + afterBalise;
-			decalCursor = posEnd + balise.length + endBalise.length + txt.length;
-		}
-		Interface.bodyEdit( body );
-		document.getElementById(Interface.bodyInputID).selectionEnd = decalCursor;
-		document.getElementById(Interface.bodyInputID).selectionStart= decalCursor;
-		$('#'+Interface.bodyInputID).focus();
-	}else{
-
-		if(balise == 'b') {
-			document.execCommand('bold','','');
-		}
-		else if(balise == 'i') {
-			document.execCommand('italic','','');
-		}
-		else if(balise == 'u') {
-			document.execCommand('underline','','');
-		}
-		else if(balise == 's') {
-			document.execCommand('strikeThrough','','');
-		}
-		else{
-			if(arguments.length == 1) {
-				txt = window.getSelection().getRangeAt(0).cloneContents().textContent;
-				if(balise == 'spoil') {
-					if (txt=='') {
-						$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html("<p>Vous devez d'abord sélectionner votre texte</p>");
-					}else{
-						txt = Nemo.Tools.rot13(txt);
-					}
-				}
-			}
-			txt = "["+balise+"]" + txt + "[/"+endBalise+"]";
-			document.execCommand('insertText','', txt);
-
-		}
-	}
-},
-
-bodyEdit: function(body, format){
-
-	if (arguments.length > 0) {
-		if(format == 'html'){
-			body = body.replace(/&nbsp;/g,"");
-			body = body.replace(/<div>/g,"");
-			body = body.replace(/(<\/div>|<br.*?>|<\/span>)/g,"\n");
-			body = body.replace(/\n$/,"");
-
-			body = body.replace(/<b>/g,"[b]");
-			body = body.replace(/<i>/g,"[i]");
-			body = body.replace(/<u>/g,"[u]");
-			body = body.replace(/<strike>/g,"[s]");
-			body = body.replace(/<\/b>/g,"[/b]");
-			body = body.replace(/<\/i>/g,"[/i]");
-			body = body.replace(/<\/u>/g,"[/u]");
-			body = body.replace(/<\/strike>/g,"[/s]");
-
-			var reg = /<(span|div|br).*?data-cite="([0-9]+)".*?>/g;
-			body = body.replace(reg, function(m, p1, p2){ cite = ''; for(i=0;i<p2;i++) {cite += '>'} return (cite=='')?cite:cite+' ';});
-			body = body.replace( /&gt;/g,'>').replace( /&lt;/g,'<');
-		}
-		$('#'+Interface.bodyInputID).val(body);
-	}
-	return $('#'+Interface.bodyInputID).val();
-},
-
 selectOrder: function(field, order, tree) {
 
 	if(typeof tree != "undefined") {
@@ -302,9 +339,9 @@ displayMediaInfos: function() {
 		obj = Nemo.Media.info();
 		for(i=index; i<=obj.length ; i++) {
 			if(i == index) {
-				Interface.bodyEdit( Interface.bodyEdit().replace('jntp:#DataID#/Data.Media:'+index,'') );
+				Interface.setBody( Interface.getBody().replace('jntp:#DataID#/Data.Media:'+index,'') );
 			}else{
-				Interface.bodyEdit( Interface.bodyEdit().replace('jntp:#DataID#/Data.Media:'+(i).toString(), 'jntp:#DataID#/Data.Media:'+(i-1).toString()  ) );
+				Interface.setBody( Interface.getBody().replace('jntp:#DataID#/Data.Media:'+(i).toString(), 'jntp:#DataID#/Data.Media:'+(i-1).toString()  ) );
 			}
 		}
 		Nemo.Media.del( index );
@@ -324,7 +361,8 @@ displayThread: function(){
 
 	if(Nemo.Thread.value.length == 0) {
 		$('#fil_info').show();
-		$('#fil_info').html(Nemo.Thread.filter["Data.Newsgroups"] + " : Pas d'articles");
+		var groupName = (typeof Nemo.Thread.filter["Data.Newsgroups"] != "undefined") ? Nemo.Thread.filter["Data.Newsgroups"]+ ' : ' : '';
+		$('#fil_info').html(groupName  + "Pas d'articles");
 		$('#fil').html('');
 		return;
 	}
@@ -381,7 +419,7 @@ displayThread: function(){
 		while(level >= 1) {
 			// On affiche l'article
 			$('#fil [data-DataID="'+dataid+'"]').removeClass('invisible').addClass('visible');
-			if(typeof id == "undefined" || level == 1) {
+			if(typeof dataid == "undefined" || level == 1) {
 				// On met une flèche en bas pour le parent
 				$('#fil [data-DataID="'+dataid+'"] .tree').removeClass('right').addClass('down');
 				break;
@@ -435,35 +473,6 @@ logData: function(msg, classCss) {
 	objDiv.scrollTop = objDiv.scrollHeight;
 },
 
-enterNewlineOrTab: function(e) {
-	if(e.which == 13) {
-		if(typeof $(window.getSelection().anchorNode.parentNode).attr('data-line') != 'undefined') {
-			document.execCommand('insertHTML',false,' ');
-			document.execCommand('delete');
-			document.execCommand('insertHTML',false,'<div data-cite="0"><br></div>');
-			return false;
-		}
-	}
-	else if(e.which == 9) {
-		document.execCommand('insertHTML',false,"\t");
-		return false;
-	}
-},
-
-selectModeEdition: function() {
-	if(Interface.modeEdit == 'html') {
-		$('#'+Interface.bodyInputID).hide();
-		$('#formulaire_body_html').show();
-		$('#formulaire_body_html').html( Nemo.renduQuote( Interface.bodyEdit() ));
-		$('#mode_html').addClass('activated');
-	}else{
-		$('#'+Interface.bodyInputID).show();
-		$('#formulaire_body_html').hide();
-		Interface.bodyEdit( $('#formulaire_body_html').html(), "html" );
-		$('#mode_html').removeClass('activated');
-	}
-},
-
 displayFavoris: function() {
 	$('#favoris').empty();
 	try{
@@ -490,7 +499,7 @@ changeSkin: function(skin) {
 	}
 },
 
-startConnexion: function(){
+startConnexion: function() {
 	this.inPopup = false;
 	$('#nemo_version').html(Nemo.UserAgent);
 	$("#chargement").show();
@@ -518,7 +527,7 @@ startConnexion: function(){
 	}});
 },
 
-authentification: function(){
+authentification: function() {
 	JNTP.execute(["auth", { "user":$('#user').val(), "password":$('#password').val() }], function(code, j){switch(code) {
 	case "200":
 		$("#password, #user").val('');
@@ -536,6 +545,9 @@ authentification: function(){
 		}
 		$('#box_inscription').html('<strong>Bienvenue sur Nemo, vous êtes actuellement connectés avec ' + j.body.email+'</strong>');
 		$('#deconnect').attr('data-info','Se déconnecter du compte ' + j.body.email);
+
+		$('#formulaire_from').val(JNTP.Storage.FromName);
+		$('#formulaire_email').val(JNTP.Storage.FromMail);
 		break;
 
 	case "400":
@@ -745,13 +757,32 @@ reloadEvent: function() {
 
 		$('#contextMenu .select').off("click").click(function() {
 			switch ($(this).attr('data-menu')) {
+
+			case "view_articles_author":
+				for(var i in Nemo.Thread.value) {
+					if(Nemo.Thread.value[i].Data.DataID == dataid ) {
+						Nemo.Thread.filter = {};
+						Nemo.Thread.filter["Data.FromName"] = [Nemo.Thread.value[i].Data.FromName, 'contain'];
+						Nemo.Thread.get({
+							"callback": function(res) {
+								if(res.firstID) Interface.articleToRead.get({"ID":res.firstID, "read":0, "surligne":true, "graphicRefresh":Interface.callbackGetArticle});
+							}
+						});
+						break;
+					}
+				}
+				break;
 			case "blacklist":
-				for(i in Nemo.Thread.value) {
+				for(var i in Nemo.Thread.value) {
 					if(Nemo.Thread.value[i].Data.DataID == dataid ) {
 						Nemo.Blacklist.set(Nemo.Thread.value[i].Data.FromName + ',' + Nemo.Thread.value[i].Data.FromMail);
+						Interface.refreshBlackList();
 						Nemo.Thread.display();
 					}
 				}
+				break;
+			case "openBlacklistConfig":
+				Interface.openConfigWindow({"numPanel":3});
 				break;
 			case "open_window":
 				winskin = (Interface.currentSkin != 'classic') ? '&skin='+Interface.currentSkin : '';
@@ -782,16 +813,16 @@ reloadEvent: function() {
 				}
 				break;
 			case "mark_nonlu_branche":
-				branch = Nemo.Thread.tree(ID);
+				var branch = Nemo.Thread.tree(dataid);
 				$(branch).each(function(i) {
-					$('#fil [data-DataID="'+branch[i].ID+'"]').removeClass("lu");
+					$('#fil [data-DataID="'+branch[i].Data.DataID+'"]').removeClass("lu");
 					Nemo.Thread.setView(branch[i].Data.DataID, false);
 				})
 				break;
 			case "mark_lu_branche":
-				branch = Nemo.Thread.tree(ID);
+				var branch = Nemo.Thread.tree(dataid);
 				$(branch).each(function(i) {
-					$('#fil [data-DataID="'+branch[i].ID+'"]').addClass("lu");
+					$('#fil [data-DataID="'+branch[i].Data.DataID+'"]').addClass("lu");
 					Nemo.Thread.setView(branch[i].Data.DataID, true);
 				})
 				break;
@@ -846,9 +877,50 @@ closeRedactionWindow: function() {
 	}
 },
 
-openRedactionWindow: function( callback ) {
+refreshBlackList: function() {
+	$('#blacklist').html('');
+	for(i in Nemo.Blacklist.list) {
+		$('#blacklist').append('<li>'+Nemo.Blacklist.list[i]+'</li>');
+	}
+	if( Nemo.Blacklist.list.length == 0) {
+		$('#blacklist').append('Aucun utilisateur dans la liste noire');
+	}
+
+	$('#blacklist li').click(function() {
+		Nemo.Blacklist.del( $(this).html() );
+		Interface.refreshBlackList();
+		Nemo.Thread.display();
+	});
+},
+
+openConfigWindow: function( options, callback ) {
+	$("#config_nemo").dialog({ 
+		minHeight: 500, minWidth:750, close: function() {} 
+	});
+	$('.accordeon').accordion({
+		active: (options && options.numPanel) ? options.numPanel : 0
+	});
+
+	$("#total_article").val(Nemo.Tools.getVar('totalArticle'));
+	$('output').text(Nemo.Tools.getVar('totalArticle'));
+	$('#secret_key').val(Nemo.Tools.getVar('SecretKey'));
+	$('#signature').val(Nemo.Tools.getVar('signature'));
+	$('#fromname').val(JNTP.Storage.FromName);
+	$('#frommail').val(JNTP.Storage.FromMail);
+	$('#replyto').val(JNTP.Storage.ReplyTo);
+	$('#signature_auto').attr('checked', (Nemo.Tools.getVar('signatureAuto') == 1) ? true : false);
+	$("#confirm_send_article").attr('checked', (Nemo.Tools.getVar('confirmSendArticle') == 1) ? true : false);
+	$('#active_popup').attr('checked', (Nemo.Tools.getVar('activePopup') == 1) ? true : false);
+	$('#active_html').attr('checked', (Nemo.Tools.getVar('activeHTML') == 1) ? true : false);
+	Interface.refreshBlackList();
+
+	if(callback) callback();
+},
+
+openRedactionWindow: function( callback1, callback2 ) {
 	if( !Nemo.Tools.getVar('activePopup') ) {
 		win = winParent = window;
+		callback1()
 		$('#send_form').dialog({ 
 			height: 600, 
 			width:900,
@@ -856,7 +928,7 @@ openRedactionWindow: function( callback ) {
 	 		position: { my: "center top", at: "center top", of: window },
 			close: function(ev, ui) { $('#new_sujet, #repondre, #modifier_article').removeAttr("disabled"); }
 		});
-		callback();
+		if (callback2) callback2(); // Before opening window to not lost focus
 	}else{
 		winskin = (Interface.currentSkin != 'classic') ? '&skin='+Interface.currentSkin : '';
 		winParent = window;
@@ -867,7 +939,8 @@ openRedactionWindow: function( callback ) {
 			win.JNTP.Storage = JNTP.Storage;
 			win.JNTP.execute(["whoami"]);
 			win.Interface.inPopup = true;
-			callback();
+			callback1();
+			callback2();
 		};
 	}
 },
@@ -876,8 +949,13 @@ initRedaction:function() {
 	Nemo.Media.del();
 	Interface.displayMediaInfos();
 	Interface.reloadEvent();
-	Interface.modeEdit = 'text';
-	Interface.selectModeEdition();
+	Interface.selectModeEdition( (Nemo.Tools.getVar("activeHTML") == 1) ? 'html' : 'text' );
+
+	if(Nemo.Tools.getVar('signatureAuto') == 1) {
+		$('#insert_signature').hide();
+	}else{
+		$('#insert_signature').show();
+	}
 
 	$('#contextMenu, #box_formulaire_fu2').hide();
 	$('#formulaire_from').val(JNTP.Storage.FromName);
@@ -896,7 +974,7 @@ initRedaction:function() {
 
 	$('#view_rendu').click(function() {
 		if (!$(this).hasClass('selected')) {
-			Interface.articleToWrite.set( {'Body':Interface.bodyEdit()} ).renduHTML('rendu');
+			Interface.articleToWrite.set( {'Body':Interface.getBody()} ).addSignature().renduHTML('rendu', true);
 		}
 	});
 
@@ -920,9 +998,11 @@ initRedaction:function() {
 				"Newsgroups":$('#formulaire_newsgroup').val().replace(/ /g,"").replace(/,\s*$/g,"").split(','),
 				"FromName": $('#formulaire_from').val(),
 				"FromMail": $('#formulaire_email').val(),
-				"Body": Interface.bodyEdit().replace(/\?\?/g,"? ? "),
+				"Body": Interface.getBody().replace(/\?\?/g,"? ? "),
 				"Subject": $('#formulaire_subject').val().replace(/\?\?/g,"? ? ")
-			}).diffuse({"callback":function(options, code, j){switch(code) {
+			})
+			.addSignature()
+			.diffuse({"callback":function(options, code, j){switch(code) {
 				case "200":
 					Interface.articleToWrite.xpostMail({
 						dataid: j.body.Data.DataID, 
@@ -1050,8 +1130,12 @@ initRedaction:function() {
 	});
 
 	$('#mode_html').click(function() {
-		Interface.modeEdit = (Interface.modeEdit == 'text') ? 'html' : 'text';
-		Interface.selectModeEdition();
+		if (Interface.modeEdit == 'text') {
+			Interface.selectModeEdition('html');
+		}else{
+			Interface.selectModeEdition('text');
+		}
+		
 	});
 
 	$('#insert_pdf, #insert_file, #insert_img, #insert_c').click(function() {
@@ -1064,14 +1148,13 @@ initRedaction:function() {
 	});
 
 	$('#insert_signature').click(function() {
-		sign = "[signature]" + Nemo.Tools.getVar('signature') + "[/signature]";
+		var sign = "[signature]" + Nemo.Tools.getVar('signature') + "[/signature]";
+		Interface.setBody( Interface.getBody()+"\n" + sign);
 		if(Interface.modeEdit == 'text') {
-			Interface.bodyEdit( Interface.bodyEdit()+"\n" + sign);
 			var objDiv = document.getElementById(Interface.bodyInputID);
 			objDiv.scrollTop = objDiv.scrollHeight;
 		}else{
-			Interface.bodyEdit( Interface.bodyEdit()+"\n" + sign);
-			$('#formulaire_body_html').html( Nemo.renduQuote( Interface.bodyEdit() ));
+			$('#formulaire_body_html').html( new Nemo.Article().set({"Body": Interface.getBody()}).renduQuote().value.Body );
 		}
 	});
 
@@ -1150,7 +1233,7 @@ initRedaction:function() {
 		Interface.draft({
 			"Subject" : $('#formulaire_subject').val(),
 			"Newsgroups" : $('#formulaire_newsgroup').val(),
-			"Body" : Interface.bodyEdit(),
+			"Body" : Interface.getBody(),
 			"FollowupTo": $('#formulaire_fu2').val(),
 			"References": Interface.articleToWrite.value.References,
 			"Supersedes" : Interface.articleToWrite.value.Supersedes,
@@ -1205,23 +1288,20 @@ init: function() {
 	});
 
 	$('#new_sujet').click(function() {
-		Interface.openRedactionWindow(function(){
-			var $=win.$;
-			win.Interface.articleToWrite = new win.Nemo.Article().set({
-				"ThreadID": ""
-			}).setReferences( [] )
-			
-			if(win.Interface.modeEdit == 'html') {
-				win.Interface.modeEdit = 'text';
-				win.Interface.selectModeEdition();
+		Interface.openRedactionWindow(
+			function(){
+				var $=win.$;
+				win.Interface.articleToWrite = new win.Nemo.Article().set({
+					"ThreadID": ""
+				}).setReferences( [] );
+				win.Interface.initRedaction();
+				if( Nemo.Thread.filter['Data.Newsgroups'] && Nemo.Thread.filter['Data.Newsgroups'].indexOf('*') == -1) {
+					$('#formulaire_newsgroup').val( Nemo.Thread.filter['Data.Newsgroups'] );
+				}
+			},function(){
+				$('#formulaire_subject').focus();
 			}
-
-			win.Interface.initRedaction();
-			$('#formulaire_subject').focus();
-			if( Nemo.Thread.filter['Data.Newsgroups'] && Nemo.Thread.filter['Data.Newsgroups'].indexOf('*') == -1) {
-				$('#formulaire_newsgroup').val( Nemo.Thread.filter['Data.Newsgroups'] );
-			}
-		});
+		);
 	});
 
 	$("#modifier_article").click(function() {
@@ -1230,7 +1310,8 @@ init: function() {
 			win.Interface.articleToWrite = new win.Nemo.Article().set({
 				"Body": Interface.articleToRead.clearSignature().value.Body,
 				"ThreadID": Interface.articleToRead.value.ThreadID,
-				"Supersedes": Interface.articleToRead.value.DataID
+				"Supersedes": Interface.articleToRead.value.DataID,
+				"References": Interface.articleToRead.value.References
 			})
 
 			win.Interface.articleToDelete = Interface.articleToRead.clone();
@@ -1241,55 +1322,55 @@ init: function() {
 			$('#formulaire_newsgroup').val(Interface.articleToRead.value.Newsgroups.join(', '));
 			$('#formulaire_fu2').val(Interface.articleToRead.value.FollowupTo.join(', '));
 			win.Nemo.Media.copy( Interface.articleToRead.value.DataID, win.Interface.displayMediaInfos);
-			win.Interface.bodyEdit( win.Interface.articleToWrite.value.Body );
+			win.Interface.setBody( win.Interface.articleToWrite.value.Body );
 		});
 	});
 
 	$("#repondre").click(function(e) {
-		Interface.openRedactionWindow(function() {
-			var $=win.$; var document=win.document;
+		Interface.openRedactionWindow(
+			function() {
+				var $=win.$; var document=win.document;
 
-			// References
-			var refs = (typeof Interface.articleToRead.value.References != "undefined") ? Interface.articleToRead.value.References.slice() : [];
-			refs.push( Interface.articleToRead.value.DataID );
+				// References
+				var refs = (typeof Interface.articleToRead.value.References != "undefined") ? Interface.articleToRead.value.References.slice() : [];
+				refs.push( Interface.articleToRead.value.DataID );
+				win.Interface.articleToWrite = new win.Nemo.Article()
+					.set({
+						"ReferenceUserID": (typeof Interface.articleToRead.value.UserID != "undefined") ? Interface.articleToRead.value.UserID : false,
+						"ThreadID": Interface.articleToRead.value.ThreadID,
+						"Body": Interface.articleToRead.setTemplateVar().getSelectLines().value.Body
+					})
+					.setReferences( refs )
+					.clearCitations( !winParent.$('#delete_citations').is(':visible') )
+					.clearSignature()
+					.quote({
+						"date":Interface.articleToRead.value.InjectionDate,
+						"FromName": Interface.articleToRead.value.FromName,
+						"FromMail": Interface.articleToRead.value.FromMail
+					});
+			},function() {
+				var $=win.$; var document=win.document;
+				win.Interface.initRedaction();
 
-			win.Interface.articleToWrite = new win.Nemo.Article()
-				.set({
-					"ReferenceUserID": (typeof Interface.articleToRead.value.UserID != "undefined") ? Interface.articleToRead.value.UserID : false,
-					"ThreadID": Interface.articleToRead.value.ThreadID,
-					"Body": Interface.articleToRead.setTemplateVar().value.Body
-				})
-				.setReferences( refs )
-				.clearCitations( !winParent.$('#delete_citations').is(':visible') )
-				.clearSignature()
-				.getSelectLines()
-				.quote({
-					"date":Interface.articleToRead.value.InjectionDate,
-					"FromName": Interface.articleToRead.value.FromName,
-					"FromMail": Interface.articleToRead.value.FromMail
-				});
-			win.Interface.initRedaction();
+				// Sujet
+				var suf = (Interface.articleToRead.value.Subject.substring(0, 3) != 'Re:')? 'Re: ' : '';
+				$('#formulaire_subject').val(suf + Interface.articleToRead.value.Subject);
 
-			// Sujet
-			var suf = (Interface.articleToRead.value.Subject.substring(0, 3) != 'Re:')? 'Re: ' : '';
-			$('#formulaire_subject').val(suf + Interface.articleToRead.value.Subject);
+				// Newsgroups
+				if(Interface.articleToRead.value.FollowupTo && Interface.articleToRead.value.FollowupTo.length){
+					$('#formulaire_newsgroup').val(Interface.articleToRead.value.FollowupTo.join( ', ' ));
+				}else{
+					$('#formulaire_newsgroup').val(Interface.articleToRead.value.Newsgroups.join( ', ' ));
+				}
 
-			// Newsgroups
-			if(Interface.articleToRead.value.FollowupTo){
-				$('#formulaire_newsgroup').val(Interface.articleToRead.value.FollowupTo.join( ', ' ));
-			}else{
-				$('#formulaire_newsgroup').val(Interface.articleToRead.value.Newsgroups.join( ', ' ));
-			}
+				if( $('#formulaire_newsgroup').val().split(',').length > 1) $('#box_formulaire_fu2').show();
 
-			if( $('#formulaire_newsgroup').val().split(',').length > 2) $('#box_formulaire_fu2').show();
-
-			// Ouvre la popup, positionne le curseur
-			win.Interface.bodyEdit( win.Interface.articleToWrite.value.Body );
-			document.getElementById(win.Interface.bodyInputID).selectionStart = win.Interface.bodyEdit().length;
-			document.getElementById(win.Interface.bodyInputID).selectionEnd = document.getElementById(win.Interface.bodyInputID).selectionStart;
-			$('#'+Interface.bodyInputID).focus();
-			var objDiv = document.getElementById(win.Interface.bodyInputID);
-			objDiv.scrollTop = objDiv.scrollHeight;
+				// positionne le curseur à la fin
+				win.Interface.setBody( win.Interface.articleToWrite.value.Body );
+				var val = $('#'+Interface.bodyInputID).val()+"\n";
+				$('#'+Interface.bodyInputID).focus().val('').val(val);
+				var objDiv = document.getElementById(win.Interface.bodyInputID);
+				objDiv.scrollTop = objDiv.scrollHeight;
 		});
 
 	});
@@ -1305,21 +1386,16 @@ init: function() {
 				})
 
 			Interface.initRedaction();
-			Interface.bodyEdit( art.Body );
+			Interface.setBody( art.Body );
 			$('#formulaire_subject').val( art.Subject );
 			$('#formulaire_newsgroup').val( art.Newsgroups );
 			$('#formulaire_fu2').val( art.FollowupTo );
-			document.getElementById(Interface.bodyInputID).selectionStart = Interface.bodyEdit().length;
+			document.getElementById(Interface.bodyInputID).selectionStart = Interface.getBody().length;
 			document.getElementById(Interface.bodyInputID).selectionEnd = document.getElementById(Interface.bodyInputID).selectionStart;
 			$('#'+Interface.bodyInputID).focus();
 			var objDiv = document.getElementById(Interface.bodyInputID);
 			objDiv.scrollTop = objDiv.scrollHeight;
 		});
-	});
-
-	$('#generate_secret_key').click(function() {
-		Nemo.Tools.storeVar("SecretKey", Nemo.Tools.generateSecretKey());
-		$('#secret_key').html(Nemo.Tools.getVar('SecretKey'));
 	});
 
 	$('#supprimer_article').click(function() {
@@ -1347,20 +1423,7 @@ init: function() {
 	});
 
 	$('#parametres').click(function() {
-		$("#config_nemo").dialog({ 
-			minHeight: 500, minWidth:750, close: function() {} 
-		});
-		$('.accordeon').accordion();
-		$("#confirm_send_article").attr('checked', (Nemo.Tools.getVar('confirmSendArticle') == 1) ? true : false);
-		$("#total_article").val(Nemo.Tools.getVar('totalArticle'));
-		$('output').text(Nemo.Tools.getVar('totalArticle'));
-		$('#secret_key').html(Nemo.Tools.getVar('SecretKey'));
-		$('#signature').val(Nemo.Tools.getVar('signature'));
-		$('#fromname').val(JNTP.Storage.FromName);
-		$('#frommail').val(JNTP.Storage.FromMail);
-		$('#replyto').val(JNTP.Storage.ReplyTo);
-		$('#active_popup').attr('checked', (Nemo.Tools.getVar('activePopup') == 1) ? true : false);
-		$('#blacklist').val(Nemo.Blacklist.getList());
+		Interface.openConfigWindow();
 	});
 
 	$('#form_authentification').submit(function() {
@@ -1434,7 +1497,6 @@ init: function() {
 		}
 	});
 
-
 	$('#active_console').click(function() {
 		JNTP.log = true;
 		$("#content_console").dialog("open");
@@ -1467,11 +1529,14 @@ init: function() {
 			modal: true,
 			buttons: {
 				"Oui": function() {
-				  localStorage.clear();
-				  $( this ).dialog( "close" );
+					localStorage.clear();
+					Nemo.Blacklist.load();
+					Interface.refreshBlackList();
+					Nemo.Thread.display();
+					$( this ).dialog( "close" );
 				},
 				"Non": function() {
-				  $( this ).dialog( "close" );
+					$( this ).dialog( "close" );
 				}
 			}
 			}).html("<p>Ceci entrainera la suppression de vos paramètres de configuration de Nemo. <br>Confirmer?</p>");
@@ -1613,14 +1678,6 @@ init: function() {
 		Interface.changeSkin($(this).val());
 	});
 
-	$('#blacklist').change(function() {
-		var blacklist = $('#blacklist').val().replace(/\n+/g,"\n").replace(/^\n+/g,"").split("\n");
-		for (i in blacklist) {
-			Nemo.Blacklist.set(blacklist[i]);
-		}
-		Nemo.Thread.display();
-	});
-
 	$("#console").keypress(function(e) {
 		if(e.keyCode==13) {
 			var cmd = $('#console').val();
@@ -1631,14 +1688,27 @@ init: function() {
 		}
 	});
 
+	$('#generate_secret_key').click(function() {
+		Nemo.Tools.storeVar("SecretKey", Nemo.Tools.generateSecretKey());
+		$('#secret_key').val(Nemo.Tools.getVar('SecretKey'));
+	});
+
+	$("#secret_key").on('change', function(){
+		Nemo.Tools.storeVar("SecretKey", $(this).val() );
+	});
+
 	$("#confirm_send_article").on('change', function(){
 		value = $(this).is(':checked') ? 1 : 0;
 		Nemo.Tools.storeVar("confirmSendArticle", value);
 	});
 
 	$("#active_popup").on('change', function(){
-		value = $(this).is(':checked') ? 1 : 0;
-		Nemo.Tools.storeVar("activePopup", value);
+		Nemo.Tools.storeVar("activePopup", $(this).is(':checked') ? 1 : 0);
+	});
+
+	$("#active_html").on('change', function(){
+		Nemo.Tools.storeVar("activeHTML", $(this).is(':checked') ? 1 : 0);
+		Interface.modeEdit = $(this).is(':checked') ? 'html' : 'text';
 	});
 
 	$("#total_article").on('change', function(){
@@ -1648,6 +1718,11 @@ init: function() {
 
 	$("#signature").on('change', function(){
 		Nemo.Tools.storeVar("signature", $('#signature').val());
+	});
+
+	$("#signature_auto").on('change', function(){
+		var bool = $('#signature_auto').is(':checked') ? 1 : 0;
+		Nemo.Tools.storeVar("signatureAuto", bool );
 	});
 
 	$("#fromname").on('change', function(){
@@ -1834,7 +1909,6 @@ init: function() {
 	Interface.displayFavoris();
 }
 
-
 }
 
 $(document).ready(function() {
@@ -1853,8 +1927,7 @@ $(document).ready(function() {
 		}
 	}
 
-
-	if(typeof Nemo.Tools.getVar('SecretKey') == "undefined") {
+	if(typeof Nemo.Tools.getVar('SecretKey') == "undefined" || Nemo.Tools.getVar('SecretKey') == '') {
 		Nemo.Tools.storeVar('SecretKey', Nemo.Tools.generateSecretKey());
 	}
 

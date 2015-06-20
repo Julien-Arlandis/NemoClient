@@ -159,6 +159,32 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	margin-left: -80px;
 }
 
+/* Config */
+
+.ui-state-default {
+    background-color: #f6f6f6;
+    color: #1c94c4;
+}
+
+#blacklist {
+    list-style-type: none;
+}
+ 
+#blacklist li {
+    margin-bottom: 2px;
+    background-image: url("img/croix_suppr.png");
+    background-position: 0 center;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    background-size: 10px;
+}
+
+#blacklist li:hover {
+    background-color: #fffff5;
+    cursor: pointer;
+}
+
+
 /* -----------------------
 	Panneau accueil
 -------------------------- */
@@ -209,7 +235,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	background-repeat:no-repeat;
 	background-size: 16px;
 	background-position: left;
-}
+}g
 
 #chargement2 {
 	line-height:300px;
@@ -316,7 +342,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	padding-top: 10px;
 }
 
-#jid_value, #newsgroups_value, #article_value1 {		/*NEW - Aligner input*/
+#jid_value, #newsgroups_value, #article_value1, #dataid_value {		/*NEW - Aligner input*/
 	left: 130px;
 	position: absolute;
 	width: 520px;
@@ -347,7 +373,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	font-weight: bold;
 }
 
-#host_jntp, #fromname, #frommail, #replyto {			/*NEW - Aligner input*/
+#host_jntp, #fromname, #frommail, #replyto, #signature {			/*NEW - Aligner input*/
 	left: 5px;
 	margin-bottom: 5px;
 	position: relative;
@@ -672,6 +698,23 @@ tr.color{
     position: relative;
 }
 
+
+#formulaire_newsgroup {
+	width: 517px;
+}
+ 
+#button_formulaire_fu2 {
+    background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #e5e5e5 0%, #f2f2f2 100%) repeat scroll 0 0;
+    border: 1px solid grey;
+    box-shadow: none;
+    color: darkgreen;
+    text-shadow: 1px 1px 1px white;
+}
+ 
+#button_formulaire_fu2:hover {
+	background: linear-gradient(to bottom, #f2f2f2 0%, #e5e5e5 100%);
+}
+
 #voir_references, #delete_citations, #revoir_citations, #voir_allThread, #retour {
 	display: inline;
 	text-align : right;
@@ -683,7 +726,7 @@ tr.color{
 }
 
 #voir_references:hover, #delete_citations:hover, #revoir_citations:hover, #voir_allThread:hover, #retour:hover, a:hover {
-	background-color: #FFFFFF;
+	background-color: #fcecda;
 }
 
 #references {
@@ -720,11 +763,43 @@ tr.color{
 	font-size: 14px;
 }
 
+.not_jntp {
+    background-image: url("img/not_jntp.gif");
+    background-position: left top;
+    background-repeat: no-repeat;
+    background-size: 100px auto;
+    position: absolute;
+    right: 0px;
+    top: 45px;
+    height: 100px;
+    width: 320px;
+}
+
+.is_protected {
+    background-image: url("img/jntp_protected.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 22px auto;
+    height: 29px;
+    position: absolute;
+    right: 95px;
+    top: 45px;
+    width: 28px;
+}
+
+.is_not_protected {
+    height: 29px;
+    position: absolute;
+    right: 95px;
+    top: 45px;
+    width: 28px;
+}
+
 #like {
     background-image: url("img/like_bouton.png");
     background-position: left center;
     background-repeat: no-repeat;
-    background-size: 29px 29px;
+    background-size: 22px 22px;
     cursor: pointer;
     display: inline;
     height: 29px;
@@ -767,39 +842,23 @@ tr.color{
 	cursor: pointer;
 }
 
-#article_certification.jntp_valid {
-    background-image: url("img/jntp_logo.png");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 29px auto;
-    height: 29px;
-    position: absolute;
-    right: 95px;
-    top: 45px;
-    width: 28px;
-}
-
-#article_certification.jntp_invalid {
-	position: absolute;
-	top:38px;
-	right:10px;
-	height:30px;
-	width:70px;
-	background-image:url(img/not_jntp.gif);
-	background-size: 70px;
-	background-repeat:no-repeat;
-	background-position:center center;
-}
-
 #article_body {
 	min-height: 300px;
 }
 
-#article_body, #rendu, #formulaire_body_html {
+#article_body, #rendu {
 	padding: 10px;
 	font: 14px monospace !important;
 	white-space: pre-wrap;
 	background-color: white;
+	overflow-x: scroll;
+}
+
+#formulaire_body_html {
+	padding: 10px;
+	font: 14px monospace !important;
+	background-color: #EFFBFB;
+	white-space: pre-wrap;
 	overflow-x: scroll;
 }
 
@@ -809,7 +868,7 @@ tr.color{
 	max-width: 100%;
 }
 
-#article_deleted {
+#article_deleted, #article_updated {
 	color: red;
 	font-weight:bold;
 	text-align:center;
@@ -956,7 +1015,7 @@ input[type="range"]:after {
 	border: 0;
 	background-color:#222222;
 	color: #FFFFFF;
-	font: 13px monospace !important;
+	font: 12px monospace !important;
 	resize: both;
 }
 
@@ -970,7 +1029,7 @@ input[type="range"]:after {
 	background-color:#222222;
 	padding: 0 5px;
 	color: #FFFFFF;
-	font: 13px monospace !important;
+	font: 12px monospace !important;
 	resize: both;
 }
 
@@ -1020,7 +1079,7 @@ fieldset {
 	min-width:750px;
 }
 
-label {
+.label {
     float: left;
     font-weight: bold;									/*MOD*/
     line-height: 22px;
@@ -1161,7 +1220,6 @@ label {
 	display: block;
 	padding: 10px;
 	border: 1px solid gray;
-	background-color: white;
 	font: 14px monospace;
 	margin: 0;
 	width: -moz-calc(100% - 55px);					/*MOD - Was calc(100% - 60px)*/
@@ -1172,17 +1230,16 @@ label {
 	height: calc(100% - 180px);
 	resize: none;
 }
-
-#formulaire_subject, #formulaire_newsgroup {
+#formulaire_subject {
 	width: 608px;
 }
 
 #formulaire_fu2 {
-	width: 265px;
+	width: 299px;
 }
 
 #formulaire_xpostmail {
-	width: 265px;
+	width: 298px;
 }
 
 .insert_media {
@@ -1311,7 +1368,7 @@ label {
 	background: linear-gradient(to bottom, #dfdfdf 5%,#ededed 100%); /* W3C */
 }
 
-input {
+input, textarea {
 	border-radius: 4px;
 }
 

@@ -420,10 +420,10 @@
 	<div>
 	<button class="button" style="float:right" id="generate_secret_key">Générer une nouvelle clé</button>
 	<span>Cette clé permet de générer une empreinte sur vos articles pour authentifier les suppressions et les modifications futures.</span>
-	<br>
-	<input type="text" id="secret_key">
+	<p>
+	<span>SecretKey : <input type="text" id="secret_key"></span>
 	</div>
-
+	<div><input type="checkbox" id="use_hasheky" value="1"><label for="use_hasheky">&nbsp;Ne pas utiliser la hashKey </label></div>
 	<hr>
 
 	<p>
@@ -471,8 +471,20 @@
 		<ul id="blacklist"></ul>
 		</div>
 	</div>
+
+	<h3>Local Storage</h3>
+	<div>
+		<button class="button" id="delete_localStorage">Effacer le local storage</button>
+		<hr>
+		<button class="button" id="export_localStorage">Exporter le local storage</button>
+		<label class="label" for="txt_localStorage_export"> </label> <textarea id="txt_localStorage_export" style="display:none"></textarea>
+		<hr>
+		<label class="label" for="txt_localStorage_export"> </label> <textarea id="txt_localStorage_import"></textarea>
+		<p><button class="button" id="import_localStorage">Importer le local storage</button>
+	</div>
+
 </div>
-<button class="button" id="delete_localStorage">Effacer le local storage</button>
+
 <button class="button" id="valid_config">Quitter</button>
 </div><!--/config_nemo-->
 

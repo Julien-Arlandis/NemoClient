@@ -193,9 +193,7 @@ Media: {
 			var fileReader = new FileReader();
 			fileReader.readAsDataURL( $('#'+elt)[0].files[0] );
 			fileReader.onload = function(event) {
-
-				content = event.target.result;
-
+				var content = event.target.result;
 				if(typeof filename != "undefined") {
 					this.value.push({"filename":filename, "data":content});
 				}else{

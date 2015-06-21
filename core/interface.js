@@ -763,6 +763,7 @@ reloadEvent: function() {
 					if(Nemo.Thread.value[i].Data.DataID == dataid ) {
 						Nemo.Thread.filter = {};
 						Nemo.Thread.filter["Data.FromName"] = [Nemo.Thread.value[i].Data.FromName, 'contain'];
+						Nemo.Thread.filter["Data.FromMail"] = [Nemo.Thread.value[i].Data.FromMail, 'contain'];
 						Nemo.Thread.get({
 							"callback": function(res) {
 								if(res.firstID) Interface.articleToRead.get({"ID":res.firstID, "read":0, "surligne":true, "graphicRefresh":Interface.callbackGetArticle});
@@ -1525,7 +1526,7 @@ init: function() {
 	});
 
 	$('#delete_localStorage').click(function() {
-		$( "#dialog-alert" ).dialog({ 
+		$( "#dialog-alert" ).dialog({
 			modal: true,
 			buttons: {
 				"Oui": function() {
@@ -1533,6 +1534,28 @@ init: function() {
 					Nemo.Blacklist.load();
 					Interface.refreshBlackList();
 					Nemo.Thread.display();
+					$( this ).dialog( "close" );
+				},
+				"Non": function() {
+					$( this ).dialog( "close" );
+				}
+			}
+			}).html("<p>Ceci entrainera la suppression de vos paramètres de configuration de Nemo. <br>Confirmer?</p>");
+	});
+
+	$('#export_localStorage').click(function() {
+		$('#txt_localStorage_export').val( JSON.stringify( localStorage )).show();
+	});
+
+	$('#import_localStorage').click(function() {
+		$( "#dialog-alert" ).dialog({
+			modal: true,
+			buttons: {
+				"Oui": function() {
+					var json = JSON.parse( $('#txt_localStorage_import').val() );
+					for (var key in json) {
+						localStorage[key] = json[key];
+					}
 					$( this ).dialog( "close" );
 				},
 				"Non": function() {

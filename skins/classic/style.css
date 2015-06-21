@@ -355,7 +355,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	text-shadow: 1px 1px 1px white;
 }
 
-#recherche_article_jid, #recherche_article_go, #change_email, #change_password, #valid_recup_password {								/*NEW - Centrer boutons*/
+#recherche_article_jid, #recherche_article_go, #change_email, #change_password, #valid_recup_password, #recherche_article_dataid {								/*NEW - Centrer boutons*/
     display: block;
     margin: auto;
 }

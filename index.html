@@ -472,15 +472,20 @@
 		</div>
 	</div>
 
-	<h3>Local Storage</h3>
+	<h3>localStorage</h3>
 	<div>
-		<button class="button" id="delete_localStorage">Effacer le local storage</button>
-		<hr>
-		<button class="button" id="export_localStorage">Exporter le local storage</button>
-		<label class="label" for="txt_localStorage_export"> </label> <textarea id="txt_localStorage_export" style="display:none"></textarea>
-		<hr>
-		<label class="label" for="txt_localStorage_export"> </label> <textarea id="txt_localStorage_import"></textarea>
-		<p><button class="button" id="import_localStorage">Importer le local storage</button>
+		<button id="export_localStorage" class="button">Exporter le localStorage</button><p></p>
+		- Cliquer sur le bouton "Exporter le localStorage".<br>
+		- Le contenu de votre localStorage s'affichera dans la zône de texte ci-dessous.<br>
+		- Sélectionner tout le texte et le copier.<br>
+		- Coller le contenu dans un éditeur de texte.<br>
+		- Sauvegarder le fichier avec un nom (ex : localStorage.txt) et à l'emplacement de votre choix.<p></p>
+		<textarea id="txt_localStorage"></textarea><p></p>
+		<button id="import_localStorage" class="button">Importer le localStorage</button><p></p>
+		- Ouvrir le fichier de sauvegarde de votre localStorage (ex : localStorage.txt).<br>
+		- Sélectionner tout le contenu et le copier dans la zône de texte ci-dessus.<br>
+		- Cliquer sur le bouton "Importer le localStorage".<br>
+		<p><button id="delete_localStorage" class="button">Effacer le localStorage</button></p>
 	</div>
 
 </div>

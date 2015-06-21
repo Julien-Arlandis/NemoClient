@@ -1,7 +1,7 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.998c - 2015-06-18
+	Interface Classic - Mise à jour Nemo/0.998f - 2015-06-21
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -184,6 +184,21 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
     cursor: pointer;
 }
 
+/* localStorage*/
+
+#ui-accordion-1-panel-4 {
+	font-family: Verdana;
+	font-size: 0.9em;
+}
+
+#txt_localStorage {
+	height: 85px;
+	width: 650px;
+}
+
+#delete_localStorage {
+	float: right;
+}
 
 /* -----------------------
 	Panneau accueil
@@ -902,12 +917,12 @@ tr.color{
 	Boutons
 -------------------------- */
 
-#supprimer_article, #ban_article {
+#supprimer_article, #ban_article, #delete_localStorage {						/*MOD*/
 	background: #ffec64; /* Old browsers */
 	background: linear-gradient(to bottom, #ffec64 5%,#ff0000 100%); /* W3C */
 }
 
-#supprimer_article:hover, #ban_article:hover {
+#supprimer_article:hover, #ban_article:hover, #delete_localStorage:hover {	/*MOD*/
 	cursor: pointer;
 	background: #ffab23; /* Old browsers */
 	background: linear-gradient(to bottom, #ffab23 5%,#ffec64 100%); /* W3C */

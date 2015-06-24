@@ -38,20 +38,23 @@ $(document).ready(function() {
 
 	Nemo.plugins.balise.map = {
 		load: function(params) {
-			$.getScript("http://maps.google.com/maps/api/js?sensor=true&callback=initialize").done(function(script, textStatus) {
+			$.getScript("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=initialize").done(function(script, textStatus) {
 				initialize = function() {
 					var mapdiv = 'gmap' + Math.floor(Math.random()*1e10);
 					var reg = '(\\[map\\])([0-9,.\\s]*?)(\\[\\/map\\])';
 					reg = new RegExp(reg, 'g');
 					var res = reg.exec($('#'+params.div).html());
 					var coord = res[2].split(',');
-					$('#'+params.div).html( $('#'+params.div).html().replace(reg,'<div style="width:600px; height:600px;"><div id="'+mapdiv+'" style="width:100%; height:100%;"></div></div>') );
+
+					$('#'+params.div).html( $('#'+params.div).html().replace(reg,'<div style="height:600px; width:100%;"><div id="'+mapdiv+'" style="height:100%;"></div></div>') );
 					$(".popin").colorbox({photo:true, maxWidth:"95%", maxHeight:"95%"});
-					new google.maps.Map(document.getElementById(mapdiv), {
-						zoom: 8, 
-						center: new google.maps.LatLng(coord[0], coord[1]),
-						mapTypeId: google.maps.MapTypeId.ROADMAP
-					});
+
+					var mapOptions = {
+					zoom: 8,
+					center: new google.maps.LatLng(coord[0], coord[1])
+					};
+
+					var map = new google.maps.Map(document.getElementById(mapdiv), mapOptions);
 				}
 			})
 		}

@@ -149,7 +149,7 @@ getHashClient: function(art, secretKey, returnData){
 			"Body" : art.Body,
 			"Media": art.Media,
 			"FollowupTo": art.FollowupTo,
-			"HashClient" : secretKey+JNTP.Storage.HashKey
+			"HashClient" : secretKey
 	};
 
 	var hashClientSecret = data.HashClient = JNTP.hashString( JNTP.uniqueJSON(data) );

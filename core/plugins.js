@@ -71,10 +71,10 @@ $(document).ready(function() {
 		}
 	};
 
-	Nemo.plugins.module.painting = {
+	Nemo.plugins.module.paint = {
 		load: function(params) {
-			$.getScript(JNTP.url+"/plugins/painting/painting.js").done(function(script, textStatus) {
-				painting();
+			$.getScript(JNTP.url+"/plugins/paint/paint.js").done(function(script, textStatus) {
+				paint();
 			})
 		}
 	};

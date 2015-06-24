@@ -975,7 +975,7 @@ initRedaction:function() {
 	if(Interface.windowLoaded) return;
 
 	Interface.windowLoaded = true;
-	Nemo.plugins.module.painting.load();
+	Nemo.plugins.module.paint.load();
 
 	$('#view_rendu').click(function() {
 		if (!$(this).hasClass('selected')) {
@@ -1065,15 +1065,14 @@ initRedaction:function() {
 	});
 
 	$('.onglet').click(function() {
-		div_click = $(this).attr('data-div');
+		var div_click = $(this).attr('data-div');
 		$('.onglet').removeClass("selected");
 		$('.onglet').each(function(i){
-			div = $(this).attr('data-div');
-			if(div_click == div) {
-				$('#'+div).show();
+			if(div_click == $(this).attr('data-div') ) {
+				$('#'+$(this).attr('data-div')).show();
 				$(this).addClass("selected");
 			}else{
-				$('#'+div).hide();
+				$('#'+$(this).attr('data-div')).hide();
 			}
  		});
 	});
@@ -1166,6 +1165,14 @@ initRedaction:function() {
 		}else{
 			$('.insert_media').hide();
 		}
+	});
+
+	$('#insert_paint').click(function() {
+		$('.onglet').removeClass("selected");
+		$('.onglet').each(function(i){
+			$('#'+$(this).attr('data-div')).hide();
+ 		});
+		$('#paint_window').show();
 	});
 
 	$('#insert_signature').click(function() {

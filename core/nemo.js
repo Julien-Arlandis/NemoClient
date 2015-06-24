@@ -872,6 +872,9 @@ Nemo.Article = function() {
 			var reg = /\[img\]\s?(jntp:.+?)\s?\[\/img\]/g;
 			newArticle.setBody( newArticle.value.Body.replace(reg, function(s, m){return this.displayResource(m, 'img');}) );
 
+			var reg = /\[paint\]\s?(jntp:.+?)\s?\[\/paint\]/g;
+			newArticle.setBody( newArticle.value.Body.replace(reg, function(s, m){return this.displayResource(m, 'img');}) );
+
 			var reg = /\[img\]\s?(.+?)\s?\[\/img\]/g;
 			newArticle.setBody( newArticle.value.Body.replace(reg, "\n"+'<a class="popin" href="$1"><img src="$1"></a>') );
 

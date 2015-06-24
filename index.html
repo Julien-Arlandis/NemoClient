@@ -308,7 +308,7 @@
 		<button class="icon" id="insert_c" value="c" data-info="Table des caractères">
 			<img class="icon_img" src="skins/classic/icones/char.png" alt=""></button>
 		<button class="icon" id="insert_paint" value="paint" data-info="Insérer un dessin">
-			Paint</button>
+			<img class="icon_img" src="skins/classic/icones/paint.png" alt=""></button>
 		<button class="icon" id="insert_signature" value="signature" data-info="Insérer une signature">
 			<img class="icon_img" src="skins/classic/icones/signature.png" alt=""></button>
 
@@ -377,18 +377,34 @@
 
 	<div id="rendu"></div><!--/rendu-->
 
-	<div id="paint_window">
-		<div style="margin:0 0 0 0; cursor:crosshair; position:relative; width:640px; height:450px; background-color: #FFFFFF; border-style: solid; border-width: 2px;">
-			<canvas id="paint" width="640" height="450" style="z-index: 2; opacity:1; position:absolute; left:0px; top:0px; margin:0 0 0 0; cursor:crosshair;">
+	<div style="display: block;" id="paint_window">
+		<div id="menu_dessin">
+			<div id="icones_dessin">
+			<button data-info="Couleur" value="color" id="draw_button" class="icon">
+				<img alt="" src="skins/classic/icones/dessin_couleur.png" class="icon_img"></button>
+			<button data-info="Noirceur" value="color" id="draw_button" class="icon">
+				<img alt="" src="skins/classic/icones/dessin_noirceur.png" class="icon_img"></button>
+			<button data-info="Epaisseur" value="color" id="draw_button" class="icon">
+				<img alt="" src="skins/classic/icones/dessin_epaisseur.png" class="icon_img"></button>
+			<button data-info="Gomme" value="color" id="draw_button" class="icon">
+				<img alt="" src="skins/classic/icones/dessin_gomme.png" class="icon_img"></button>
+			<button data-info="infobulle" value="color" id="draw_button" class="icon">
+				<img alt="" src="skins/classic/icones/spoil.png" class="icon_img"></button>
+			</div>
+			<div id="outils_dessin">
+			Couleur : <input type="color" value="#000000" id="mycolor"><p></p>
+			Noirceur :<input type="range" id="noirceur" min="0" max="1" step="0.002" value="0.25" style="width: 100px"><p></p>
+			Epaisseur :<input type="range" id="thickness" min="0" max="130" step="2" value="40" style="width: 100px"><p></p>
+			</div>
+		</div>
+		<div id="cadre_dessin">
+			<canvas style="z-index: 2; opacity:1; position:absolute; left:0px; top:0px; margin:0 0 0 0; cursor:crosshair;" height="450" width="640" id="paint">
 			</canvas>
-			<canvas id="effect" width="640" height="450" style="z-index: 1; opacity:1; position:absolute; left:0px; top:0px; margin:0 0 0 0; cursor:crosshair;">
+			<canvas style="z-index: 1; opacity:1; position:absolute; left:0px; top:0px; margin:0 0 0 0; cursor:crosshair;" height="450" width="640" id="effect">
 			</canvas>
 		</div>
-		<input type="color" id="mycolor" value="#000000">
-		noirceur : <input type="range" id="noirceur" min="0" max="1" step="0.002" value="0.25" style="width: 100px">
-		épaisseur : <input type="range" id="thickness" min="0" max="130" step="2" value="40" style="width: 100px">
-		<button class="button" id="clear_dessin">Effacer</button>
-		<button class="button" id="capture_dessin">Joindre le dessin</button>
+		<button id="capture_dessin" class="button">Joindre le dessin</button>
+		<button id="clear_dessin" class="button">Effacer le dessin</button>
 	</div><!--/paint_window-->
 
 </div><!--/send_form-->

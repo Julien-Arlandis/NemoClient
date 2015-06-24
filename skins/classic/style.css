@@ -1,7 +1,7 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.998f - 2015-06-21
+	Interface Classic - Mise à jour Nemo/0.998g - 2015-06-24
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -1339,6 +1339,60 @@ fieldset {
 	color: blue;
 	font-weight: bold;
 	font-size: 160%;
+}
+
+/*Onglet Dessin*/
+
+#paint_window {
+    height: 90%;
+}
+
+#menu_dessin {
+    font-family: Verdana;
+    font-size: 0.9em;
+    margin: 0 0 0 10px;
+    width: 200px;
+}
+
+#icones_dessin {
+    border: 2px solid;
+    height: 225px;
+    margin-top: 34px;
+    padding: 10px 0 0 10px;
+}
+
+#draw_button {
+    margin-right: 5px;
+}
+
+#outils_dessin {
+    border: 2px solid;
+    height: 191px;
+    margin-top: 10px;
+    padding: 10px 0 0 10px;
+}
+
+#outils_dessin input {
+	float: right;
+	margin-right: 10px;
+}
+
+#cadre_dessin {
+    background-color: #ffffff;
+    border: 2px solid;
+    cursor: crosshair;
+    height: 450px;
+    left: 230px;
+    position: absolute;
+    top: 52px;
+    width: 640px;
+}
+
+#clear_dessin, #capture_dessin {
+    float: right;
+    margin-right: 27px;
+    position: relative;
+    top: 20px;
 }
 
 /* -----------------------

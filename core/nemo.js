@@ -5,40 +5,46 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998f',
+UserAgent: 'Nemo/0.998g',
 plugins:{balise:[], module:[]},
 
 Storage: {
-	SecretKey: '',
+	secretKey: '',
 	totalArticle: 250,
 	confirmSendArticle: 0,
 	signature: 'Ce message a été posté avec Nemo : <#Uri#>',
 	favoris: {'nemo.*':'h','nemo.bavardages':'w','fr.*':'h'},
-	activePopup: 1,
+	activePopup: 0,
 	signatureAuto: 0,
-	activeHTML: 0
+	activeHTML: 0,
+	useHashKey: 1,
+	blacklist: [],
+	articleState: {}
+},
+
+initStorage: function() {
+	for (var key in localStorage) {
+		try {
+			Nemo.Storage[key] = JSON.parse( localStorage[key] );
+		} catch(err) {
+			console.log(err);
+		}
+	}
+	if(typeof Nemo.get('secretKey') == "undefined" || Nemo.get('secretKey') == '') {
+		Nemo.set('secretKey', Nemo.Tools.generateSecretKey());
+	}
+},
+
+get: function(variable) {
+	return Nemo.Storage[variable];
+},
+
+set: function(variable, value) {
+	Nemo.Storage[variable] = value;
+	localStorage[variable] = JSON.stringify(Nemo.Storage[variable]);
 },
 
 Tools: {
-	getVar: function(variable) {
-
-		if(typeof localStorage[variable] != "undefined") {
-			try {
-				Nemo.Storage[variable] = JSON.parse( localStorage[variable] );
-			} catch (exception) {
-				localStorage[variable] = JSON.stringify( localStorage[variable] );
-				Nemo.Storage[variable] = JSON.parse( localStorage[variable] );
-			}
-		}
-		return Nemo.Storage[variable];
-	},
-
-	storeVar: function(variable, value) {
-		if(typeof value != "undefined") {
-			Nemo.Storage[variable] = value;
-		}
-		localStorage[variable] = JSON.stringify(Nemo.Storage[variable]);
-	},
 
 	rot13: function(s) {
 		var rot = function( t, u, v ) {
@@ -231,18 +237,17 @@ Thread:{
 	filterOld: {},
 	tri: {"field":"InjectionDate","order":"desc","tree":false},
 	oldTri: [],
-	viewlu: 'all',
-	isView: [],
+	viewlu: 'all', // à mettre dans l'interface
 	indexDataID: [],
 	value: [],
 	display: function() {},
 
-	clean: function(){
+	clean: function() {
 		this.value = [];
 		this.indexDataID = [];
 	},
 
-	del: function( dataID ){
+	del: function( dataID ) {
 		for(i in this.value) {
 			if( this.value[i].Data.DataID == dataID) {
 				delete this.value[i];
@@ -251,7 +256,7 @@ Thread:{
 		}
 	},
 
-	getMinID: function(){
+	getMinID: function() {
 		var minID = "99999999";
 		if(this.value.length) {
 			for(var ind in this.value) {
@@ -261,7 +266,7 @@ Thread:{
 		return minID;
 	},
 
-	get: function(params){
+	get: function(params) {
 
 		this.filter["Data.DataType"] = "Article";
 
@@ -280,7 +285,7 @@ Thread:{
 
 		cmd = ["get", {
 			"select":["Data.DataID","Data.Subject","Data.FromName","Data.FromMail","Data.InjectionDate","Data.ThreadID","Data.Control","@2References","Meta.Size"],
-			"limit": Nemo.Tools.getVar('totalArticle'),
+			"limit": Nemo.get('totalArticle'),
 			"filter": this.filter,
 			"listen": params.listen
 			}
@@ -299,8 +304,7 @@ Thread:{
 					maxID = (ID > maxID) ? ID : maxID;
 					if(!j.body[ind].Data.Control){
 						j.body[ind].Data.InjectionDate = (typeof j.body[ind].Data.InjectionDate) ? j.body[ind].Data.InjectionDate.replace("T", " ").replace("Z",""): '';
-						j.body[ind].Read = (typeof this.getView(j.body[ind].Data.DataID) == "undefined" || !this.getView(j.body[ind].Data.DataID)) ? 0 : 1;
-
+						j.body[ind].Read = ( this.getState(j.body[ind].Data.DataID) ) ? this.getState(j.body[ind].Data.DataID) : 0;
 						if( !this.indexDataID[j.body[ind].Data.DataID]) {
 							this.value.push(j.body[ind]);
 							this.indexDataID[j.body[ind].Data.DataID] = true;
@@ -339,7 +343,7 @@ Thread:{
 		}}.bind(this), true);
 	},
 
-	sort: function(){
+	sort: function() {
 		if(this.tri.tree) {
 			if( this.tri.order == "asc" && this.tri.field == "InjectionDate"){
 				this.value = this.value.sort(Nemo.Tools.comparAsc("InjectionDate"));
@@ -357,57 +361,28 @@ Thread:{
 		}
 	},
 
-	getView: function(dataID) {
-
-		if(arguments.length == 1) {
-			return this.isView[dataID];
-		}
-
-		if(typeof localStorage.articleRead == "undefined" || !localStorage.articleRead) {
-			localStorage.articleRead = '';
-		}
-		tab = localStorage.articleRead.split('<>');
-		for(i in tab) {
-			this.isView[tab[i]]=true;
-		}
+	getState: function(dataid) {
+		return Nemo.get('articleState')[dataid];
 	},
 
-	setView: function(dataID, value) {
-		this.isView[dataID] = value;
-		if(typeof localStorage.articleRead == "undefined" || !localStorage.articleRead) {
-			localStorage.articleRead = '';
+	setState: function(dataid, value) {
+		var keys = Object.keys( Nemo.get('articleState') );
+		if(!value) {
+			delete Nemo.Storage['articleState'][dataid];
+		}else{
+			Nemo.Storage['articleState'][dataid] = value
 		}
-		localStorage.articleRead = localStorage.articleRead.replace(new RegExp(dataID+'<>', 'g'),'');
-		if(value == true) {
-			localStorage.articleRead = dataID + '<>' + localStorage.articleRead;
-			if(localStorage.articleRead.split('<>').length > 3000) {
-				localStorage.articleRead = localStorage.articleRead.substring(0, localStorage.articleRead.lastIndexOf('<>')+1);
-			}
-		}
-
-		for(ind in this.value) {
-			if (this.value[ind].Data.DataID == dataID) {
-				this.value[ind].Read = value;
-				break;
-			}
-		}
+		if(keys.length > 5000) delete Nemo.Storage['articleState'][keys[0]];
+		localStorage['articleState'] = JSON.stringify(Nemo.Storage['articleState']);
 	},
 
 	tree: function(dataidArticle) {
-		
 		var childs = {"/":[]};
-		var index = [];
 		var tree = [];
 		var ind = 1;
 		var level = 1;
 
-		// Indexation des dataID
-		for(var i in this.value) {
-			index[this.value[i].Data.DataID] = true;
-		}
-
 		var numberOfElement = 0;
-
 		// On parcourt la liste des articles
 		for(var i in this.value) {
 			numberOfElement++;
@@ -422,7 +397,7 @@ Thread:{
 			}
 			// On balaye les références de l'articles depuis la fin pour détecter si une référence a été indexée
 			for(var j = this.value[i].Data.References.length - 1; j >= 0; j--) {
-				if(index[this.value[i].Data.References[j]]) {
+				if(this.indexDataID[this.value[i].Data.References[j]]) {
 					bool = true;
 					break;
 				}
@@ -445,7 +420,6 @@ Thread:{
 		article.level = level;
 		var dataID = article.Data.DataID;
 		tree.push(article);
-
 
 		while(tree.length < numberOfElement + 1) {
 
@@ -480,9 +454,7 @@ Thread:{
 			dataID = tree[ind].Data.DataID;
 			level = tree[ind].level;
 		}
-
 		tree.shift();
-
 		// Renvoie seulement la branche contenant dataID
 		if(arguments.length == 1) {
 			branch = [];
@@ -511,28 +483,28 @@ Thread:{
 Favoris: {
 	store: function(favoris){
 		if(typeof favoris != "undefined"){
-			Nemo.Tools.storeVar('favoris', favoris);
+			Nemo.set('favoris', favoris);
 		}else{
-			Nemo.Tools.storeVar('favoris', Nemo.Tools.getVar('favoris'));
+			Nemo.set('favoris', Nemo.get('favoris'));
 		}
 	},
 
 	sort: function(){
 		var favoris = [];
 		var favoris2 = {};
-		for(i in Nemo.Tools.getVar('favoris')) {
+		for(i in Nemo.get('favoris')) {
 		    favoris.push(i);
 		}
 		favoris.sort();
 		for(i in favoris){
-		    favoris2[favoris[i]] = Nemo.Tools.getVar('favoris')[favoris[i]];
+		    favoris2[favoris[i]] = Nemo.get('favoris')[favoris[i]];
 		};
 
 		this.store(favoris2);
 	},
 
 	add: function(groupName, rwm) {
-		if(typeof Nemo.Tools.getVar('favoris')[groupName] == 'undefined') {
+		if(typeof Nemo.get('favoris')[groupName] == 'undefined') {
 			Nemo.Storage.favoris[groupName] = rwm;
 		}
 		this.store(Nemo.Storage.favoris);
@@ -545,36 +517,25 @@ Favoris: {
 },
 
 Blacklist: {
-	list: [],
-	load: function() {
-		if(typeof localStorage.blacklist == "undefined" || !localStorage.blacklist) {
-			localStorage.blacklist = JSON.stringify( [] );
-		}
-		try {
-			this.list = JSON.parse( localStorage.blacklist );
-		} catch (exception) {
-			console.log(exception);
-		}
-	},
 	set: function(name) {
 		if(name == '') return;
-		delete this.list[this.list.indexOf(name)];
-		this.list.push(name);
-		localStorage.blacklist = JSON.stringify( this.list );
+		delete Nemo.Storage['blacklist'][Nemo.Storage['blacklist'].indexOf(name)];
+		Nemo.Storage['blacklist'].push(name);
+		localStorage['blacklist'] = JSON.stringify(Nemo.Storage['blacklist']);
 	},
 	del: function(name) {
-		delete this.list[this.list.indexOf(name)];
+		delete Nemo.Storage['blacklist'][Nemo.Storage['blacklist'].indexOf(name)];
 		var newlist = [];
-		for(i in this.list) {
-			if(typeof this.list[i] != "undefined" ) {
-				newlist.push(this.list[i]);
+		for(var i in Nemo.Storage['blacklist']) {
+			if(typeof Nemo.Storage['blacklist'][i] != "undefined" ) {
+				newlist.push(Nemo.Storage['blacklist'][i]);
 			}
 		}
-		this.list = newlist;
-		localStorage.blacklist = JSON.stringify( this.list );
+		Nemo.Storage['blacklist'] = newlist;
+		localStorage['blacklist'] = JSON.stringify(Nemo.Storage['blacklist']);
 	},
 	isInList: function(name) {
-		return ( $.inArray( name, this.list ) != -1) ? true : false;
+		return ( $.inArray( name, Nemo.Storage['blacklist'] ) != -1) ? true : false;
 	}
 }
 
@@ -605,7 +566,8 @@ Nemo.Article = function() {
 					if(this.value.DataType == 'Article') {
 						if( JNTP.Packet.isValid(j.body[0]) ){
 							this.isJNTPValid = true;
-							this.owner = (this.value.HashClient == JNTP.getHashClient(this.value,  Nemo.Tools.getVar('SecretKey')).hashClientCompute);
+							var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.HashKey : Nemo.get('secretKey');
+							this.owner = (this.value.HashClient == JNTP.getHashClient(this.value,  secretkey).hashClientCompute);
 							this.isProtected = (this.Jid == this.value.DataID);
 						}else{
 							this.isJNTPValid = false;
@@ -617,7 +579,7 @@ Nemo.Article = function() {
 					}
 
 					if(options.read) {
-						Nemo.Thread.setView(this.value.DataID, true);
+						Nemo.Thread.setState(this.value.DataID, 1);
 					}
 				break;
 
@@ -637,7 +599,8 @@ Nemo.Article = function() {
 			"Uri": JNTP.url + '/?DataID=#DataID#',
 			"UserAgent": Nemo.UserAgent
 		});
-		var article = JNTP.forgeDataArticle(this.value, Nemo.Tools.getVar('SecretKey'));
+		var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.HashKey : Nemo.get('secretKey');
+		var article = JNTP.forgeDataArticle(this.value, secretkey);
 		JNTP.execute([ "diffuse" , { "Data" : article.Data } ], function(code, j){
 			switch(code) {
 				case "200":
@@ -664,10 +627,11 @@ Nemo.Article = function() {
 	};
 
 	this.del = function(options){
+		var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.HashKey : Nemo.get('secretKey');
 		var articleToDelete = new Nemo.Article().set({
 			"DataType" : "Article",
 			"FollowupTo" : [],
-			"Control" : ["cancel", this.value.DataID, JNTP.getHashClient(this.value, Nemo.Tools.getVar('SecretKey')).hashClientSecret],
+			"Control" : ["cancel", this.value.DataID, JNTP.getHashClient(this.value, secretkey).hashClientSecret],
 			"Body" : "Article d'annulation posté via Nemo.",
 			"Subject" : "Annulation de <"+this.value.DataID+">",
 			"ThreadID": this.value.ThreadID,
@@ -704,13 +668,13 @@ Nemo.Article = function() {
 
 	this.clone = function(body) {
 		var clone = jQuery.extend(true, {}, this);
-		if(body) clone.value.Body = body;
+		if(typeof body != "undefined") clone.value.Body = body;
 		return clone;
 	};
 
 	this.addSignature = function() {
-		if(Nemo.Tools.getVar('signatureAuto') == 1) {
-			return this.clone(this.value.Body  +"\n[signature]" + Nemo.Tools.getVar('signature') + "[/signature]");
+		if(Nemo.get('signatureAuto') == 1) {
+			return this.clone(this.value.Body  +"\n[signature]" + Nemo.get('signature') + "[/signature]");
 		}else{
 			return this;
 		}
@@ -786,7 +750,7 @@ Nemo.Article = function() {
 	this.clearCitations = function(boolean){
 		var body = this.value.Body;
 		if (typeof boolean == "undefined" || boolean) {
-			var reg = new RegExp("(>>.*\n)", "g");
+			var reg = new RegExp("(> ?>.*\n)", "g");
 			if(reg.test(body)) {
 				// Supprime la première ligne citée.
 				body = body.replace(/(>.*\n)/,'').replace(reg,'');
@@ -796,7 +760,7 @@ Nemo.Article = function() {
 	};
 
 	this.clearSignature = function() {
-		var reg = /(\n?\[signature\])([\s\S]*?)(\[\/signature\])/ig;
+		var reg = /(\n*\[signature\])([\s\S]*?)(\[\/signature\])/g;
 		return this.clone(this.value.Body.replace(reg,''));
 	};
 
@@ -906,6 +870,9 @@ Nemo.Article = function() {
 			newArticle.setBody( newArticle.value.Body.replace(reg, '<embed type="application/pdf" width="95%" height="950" src="$1">') );
 
 			var reg = /\[img\]\s?(jntp:.+?)\s?\[\/img\]/g;
+			newArticle.setBody( newArticle.value.Body.replace(reg, function(s, m){return this.displayResource(m, 'img');}) );
+
+			var reg = /\[paint\]\s?(jntp:.+?)\s?\[\/paint\]/g;
 			newArticle.setBody( newArticle.value.Body.replace(reg, function(s, m){return this.displayResource(m, 'img');}) );
 
 			var reg = /\[img\]\s?(.+?)\s?\[\/img\]/g;

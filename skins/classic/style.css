@@ -649,6 +649,12 @@ tr.color{
 	color: #585858;
 }
 
+tr.favori {
+	font-size: 1em;
+	font-weight: normal !important;
+	background-color: green;
+}
+
 .visible.selected, .visible.selected .taille{
 	background-color: #0060ff !important;
 	color: white;
@@ -869,18 +875,16 @@ tr.color{
 	overflow-x: scroll;
 }
 
+#article_body img, #rendu img {
+	display: block;
+}
+
 #formulaire_body_html {
 	padding: 10px;
 	font: 14px monospace !important;
 	background-color: #EFFBFB;
 	white-space: pre-wrap;
 	overflow-x: scroll;
-}
-
-#article_body img, #rendu img {
-	display: block;
-	max-height: 100%;
-	max-width: 100%;
 }
 
 #article_deleted, #article_updated {

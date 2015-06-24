@@ -4,13 +4,13 @@
 <title>Nemo : Accès aux Newsgroups <!--Nemo::title--></title>
 <meta charset="UTF-8">
 <!--Nemo::base-->
-<link rel="icon" type="image/png" href="favicon.png" />
-<link rel="stylesheet" data-theme="general" href="skins/classic/style.css" type="text/css" media="screen" />
-<link rel="stylesheet" type="text/css" href="core/colorbox/colorbox.css" media="screen" />
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="stylesheet" data-theme="general" href="skins/classic/style.css" type="text/css" media="screen">
+<link rel="stylesheet" type="text/css" href="core/colorbox/colorbox.css" media="screen">
 
 <meta property="og:image" content="http://news.nemoweb.net/nemo.png" />
-<meta name="Description" lang="fr" content="Nemo est une application web qui permet de navigueur sur un réseau de groupe de discussions" />
-<meta name="Keywords" lang="fr" content="forums, usenet, newsgroups, protocole JNTP, NNTP" />
+<meta name="Description" lang="fr" content="Nemo est une application web qui permet de navigueur sur un réseau de groupe de discussions">
+<meta name="Keywords" lang="fr" content="forums, usenet, newsgroups, protocole JNTP, NNTP">
 <script src="core/jquery/jquery-2.1.1.min.js"></script>
 <script src="core/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script src="core/colorbox/jquery.colorbox-min.js"></script>
@@ -20,6 +20,7 @@
 <script src="core/plugins.js"></script>
 <script src="core/interface.js"></script>
 <script src="core/Tk.js"></script>
+
 </head>
 
 <body>
@@ -149,7 +150,7 @@
 			<div id="article_deleted" style="display:none">Article supprimé</div>
 			<div id="article_updated" style="display:none">Article modifié</div>
 			<div id="article_body"><!--Nemo::article--></div>
-			<div id="attach_file" style="display:none"><span id="number_attach_file"></span> pièces jointes</div>
+			<div id="attach_file" style="display:none"></div>
 		</div>
 	</div><!--/panneau_principal-->
 
@@ -277,9 +278,9 @@
 		<button class="icon" id="insert_u" value="u" data-info="Souligner &lt;u&gt;le texte sélectionné&lt;/u&gt;">
 			<img class="icon_img" src="skins/classic/icones/souligne.png" alt=""></button>
 		<button class="icon" id="insert_s" value="s" data-info="Barrer le &lt;strike&gt;texte sélectionné&lt;strike&gt;">
-			<img class="icon_img" src="skins/classic/icones/barre.png" alt=""></button>	
+			<img class="icon_img" src="skins/classic/icones/barre.png" alt=""></button>
 		<button class="icon" id="insert_spoil" value="spoil" data-info="Cacher le texte sélectionné">
-			<img class="icon_img" src="skins/classic/icones/spoil.png" alt=""></button>
+			<img class="icon_img" src="skins/classic/icones/spoil.png" alt=""></button>	
 		<button class="icon" id="insert_a" value="a" data-info="Insérer une adresse url">
 			<img class="icon_img" src="skins/classic/icones/url.png" alt=""></button>
 		<button class="icon" id="insert_img" value="img" data-info="Insérer une image">
@@ -294,7 +295,7 @@
 			<img class="icon_img" src="skins/classic/icones/file.png" alt=""></button>
 		<button class="icon" id="insert_pdf" value="pdf" data-info="Insérer un fichier pdf">
 			<img class="icon_img" src="skins/classic/icones/pdf.png" alt=""></button>
-		<button class="icon" id="insert_tex" value="tex" data-info="Insérer des formules scientifiques">
+		<button class="icon" id="insert_tex" value="tex" data-info="Insérer du LaTeX">
 			<img class="icon_img" src="skins/classic/icones/tex.png" alt=""></button>
 		<button class="icon" id="insert_code" value="code" data-info="Insérer du code informatique">
 			<img class="icon_img" src="skins/classic/icones/code.png" alt=""></button>
@@ -306,9 +307,11 @@
 			<img class="icon_img" src="skins/classic/icones/map.png" alt=""></button>
 		<button class="icon" id="insert_c" value="c" data-info="Table des caractères">
 			<img class="icon_img" src="skins/classic/icones/char.png" alt=""></button>
+		<button class="icon" id="insert_paint" value="paint" data-info="Insérer un dessin">
+			Paint</button>
 		<button class="icon" id="insert_signature" value="signature" data-info="Insérer une signature">
 			<img class="icon_img" src="skins/classic/icones/signature.png" alt=""></button>
-		
+
 	<select id="insert_other" class="button">
 		<option id="insert_default" value="">Plus ...</option>
 		<option id="insert_table" title="Insérer une table" value="table">table</option>
@@ -421,11 +424,10 @@
 	<button class="button" style="float:right" id="generate_secret_key">Générer une nouvelle clé</button>
 	<span>Cette clé permet de générer une empreinte sur vos articles pour authentifier les suppressions et les modifications futures.</span>
 	<p>
-	<span>SecretKey : <input type="text" id="secret_key"></span>
+	<span>Clé secrète = <input type="text" id="secret_key"></span><span id="plus_hashkey"> + hashKey</span>
 	</div>
-	<div><input type="checkbox" id="use_hasheky" value="1"><label for="use_hasheky">&nbsp;Ne pas utiliser la hashKey </label></div>
+	<div><input type="checkbox" id="use_hashkey" value="1"><label for="use_hashkey">&nbsp;Utiliser la hashKey </label></div>
 	<hr>
-
 	<p>
 	<div><input type="checkbox" id="confirm_send_article" value="1" checked><label for="confirm_send_article">&nbsp;Confirmer l'envoi d'un message </label></div>
 	<p>
@@ -489,8 +491,6 @@
 	</div>
 
 </div>
-
-<button class="button" id="valid_config">Quitter</button>
 </div><!--/config_nemo-->
 
 
@@ -525,6 +525,7 @@ Inscrivez votre email<input id="email_recup_password" type="text" size="50" valu
 
 <div id="contextMenu" data-ID="" style="display:none">
 	<hr>
+	<div data-menu="mark_favori"> <span style="font-style: italic; text-decoration:underline; ">article(s)</span> : marquer <span style="font-style: italic; text-decoration:underline; "> en favori</span> </div>
 	<div data-menu="mark_lu"> <span style="font-style: italic; text-decoration:underline; ">article(s)</span> : marquer <span style="font-style: italic; text-decoration:underline; "> lu</span> </div>
 	<div data-menu="mark_nonlu"> <span style="font-style: italic; text-decoration:underline; ">article(s)</span> : marquer <span style="font-style: italic; text-decoration:underline; "> non lu</span> </div>
 	<div data-menu="mark_nonlu_tous"> Toute la <span style="font-style: italic; text-decoration:underline; ">hiérarchie</span> : marquer <span style="font-style: italic; text-decoration:underline; ">non‌ lue</span> </div>

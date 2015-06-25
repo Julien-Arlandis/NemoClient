@@ -351,11 +351,11 @@ displayThread: function(){
 	$('#fil_info').hide();
 	$('#fil').html('');
 	var line = 0;
-	for(ind in liste) {
+	for(var ind in liste) {
 
 		var date_article = Nemo.Tools.date2String(liste[ind].Data.InjectionDate);
 		var lu = '';
-		switch(liste[ind].Read) {
+		switch( this.getState(liste[ind].Data.DataID) ) {
 			case 1:
 			lu = ' lu';
 			break;
@@ -363,6 +363,7 @@ displayThread: function(){
 			lu = ' favori';
 			break;
 		}
+
 		var attach = (liste[ind].Meta.Size.length > 1) ? 'trombone' : 'none';
 		var fromName = (liste[ind].Data.FromName != "") ? liste[ind].Data.FromName : liste[ind].Data.FromMail;
 		var decal = '';
@@ -1360,6 +1361,15 @@ init: function() {
 			$('#formulaire_fu2').val(Interface.articleToRead.value.FollowupTo.join(', '));
 			win.Nemo.Media.copy( Interface.articleToRead.value.DataID, win.Interface.displayMediaInfos);
 			win.Interface.setBody( win.Interface.articleToWrite.value.Body );
+
+
+		},function() {
+			var $=win.$; var document=win.document;
+			// positionne le curseur à la fin
+			var val = $('#'+Interface.bodyInputID).val();
+			$('#'+Interface.bodyInputID).focus().val('').val(val);
+			var objDiv = document.getElementById(win.Interface.bodyInputID);
+			objDiv.scrollTop = objDiv.scrollHeight;
 		});
 	});
 

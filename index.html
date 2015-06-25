@@ -377,24 +377,30 @@
 
 	<div id="rendu"></div><!--/rendu-->
 
-	<div style="display: block;" id="paint_window">
+	<div id="paint_window">
 		<div id="menu_dessin">
 			<div id="icones_dessin">
-			<button data-info="Couleur" value="color" id="draw_button" class="icon">
-				<img alt="" src="skins/classic/icones/dessin_couleur.png" class="icon_img"></button>
-			<button data-info="Noirceur" value="color" id="draw_button" class="icon">
-				<img alt="" src="skins/classic/icones/dessin_noirceur.png" class="icon_img"></button>
-			<button data-info="Epaisseur" value="color" id="draw_button" class="icon">
-				<img alt="" src="skins/classic/icones/dessin_epaisseur.png" class="icon_img"></button>
-			<button data-info="Gomme" value="color" id="draw_button" class="icon">
-				<img alt="" src="skins/classic/icones/dessin_gomme.png" class="icon_img"></button>
-			<button data-info="infobulle" value="color" id="draw_button" class="icon">
-				<img alt="" src="skins/classic/icones/spoil.png" class="icon_img"></button>
+			<button id="paint-button-color" data-info="Couleur" class="icon">
+				<img alt="" src="../../skins/classic/icones/dessin_couleur.png" class="icon_img"></button>
+			<button id="paint-button-noirceur" data-info="Noirceur" value="noirceur" class="icon">
+				<img alt="" src="../../skins/classic/icones/dessin_noirceur.png" class="icon_img"></button>
+			<button id="paint-button-thickness" data-info="Epaisseur" value="thickness" class="icon">
+				<img alt="" src="../../skins/classic/icones/dessin_epaisseur.png" class="icon_img"></button>
+			<button id="paint-button-erase" data-info="Gomme" value="erase" class="icon">
+				<img alt="" src="../../skins/classic/icones/dessin_gomme.png" class="icon_img"></button>
 			</div>
 			<div id="outils_dessin">
-			Couleur : <input type="color" value="#000000" id="mycolor"><p></p>
-			Noirceur :<input type="range" id="noirceur" min="0" max="1" step="0.002" value="0.25" style="width: 100px"><p></p>
-			Epaisseur :<input type="range" id="thickness" min="0" max="130" step="2" value="40" style="width: 100px"><p></p>
+				<div class="menu-paint" data-menu="color">
+					<input type="color" value="#000000" id="mycolor">
+				</div>
+				<div class="menu-paint" data-menu="noirceur">
+					<input type="range" id="noirceur" min="0" max="1" step="0.002" value="0.25" style="width: 100px">
+				</div>
+				<div class="menu-paint" data-menu="thickness">
+					<input type="range" id="thickness" min="0" max="130" step="2" value="40" style="width: 100px">
+				</div>
+				<div class="menu-paint" data-menu="erase">
+				</div>
 			</div>
 		</div>
 		<div id="cadre_dessin">

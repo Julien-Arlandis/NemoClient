@@ -74,7 +74,8 @@ $(document).ready(function() {
 	Nemo.plugins.module.paint = {
 		load: function(params) {
 			$.getScript(JNTP.url+"/plugins/paint/paint.js").done(function(script, textStatus) {
-				paint();
+				var painting = new Paint();
+				painting.initInterface();
 			})
 		}
 	};

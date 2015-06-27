@@ -380,26 +380,41 @@
 	<div id="paint_window">
 		<div id="menu_dessin">
 			<div id="icones_dessin">
-			<button id="paint-button-color" data-info="Couleur" class="icon">
-				<img alt="" src="../../skins/classic/icones/dessin_couleur.png" class="icon_img"></button>
-			<button id="paint-button-noirceur" data-info="Noirceur" value="noirceur" class="icon">
-				<img alt="" src="../../skins/classic/icones/dessin_noirceur.png" class="icon_img"></button>
-			<button id="paint-button-thickness" data-info="Epaisseur" value="thickness" class="icon">
-				<img alt="" src="../../skins/classic/icones/dessin_epaisseur.png" class="icon_img"></button>
-			<button id="paint-button-erase" data-info="Gomme" value="erase" class="icon">
-				<img alt="" src="../../skins/classic/icones/dessin_gomme.png" class="icon_img"></button>
+				<p class="textes_dessin">Sélectionner un outil</p>
+				<hr>
+			<button id="paint-button-color" data-info="Couleur" class="icon paint_icon">
+				<img alt="" src="skins/classic/icones/dessin_couleur.png" class="icon_img"></button>
+			<button id="paint-button-noirceur" data-info="Intensité" value="noirceur" class="icon paint_icon">
+				<img alt="" src="skins/classic/icones/dessin_noirceur.png" class="icon_img"></button>
+			<button id="paint-button-thickness" data-info="Epaisseur" value="thickness" class="icon paint_icon">
+				<img alt="" src="skins/classic/icones/dessin_epaisseur.png" class="icon_img"></button>
+			<button id="paint-button-erase" data-info="Gomme" value="erase" class="icon paint_icon">
+				<img alt="" src="skins/classic/icones/dessin_gomme.png" class="icon_img"></button>
+			<button id="paint-button-erase" data-info="Gomme" value="erase" class="icon paint_icon">
+				<img alt="" src="skins/classic/icones/dessin_gomme.png" class="icon_img"></button>
+			<button id="paint-button-erase" data-info="Gomme" value="erase" class="icon paint_icon">
+				<img alt="" src="skins/classic/icones/dessin_gomme.png" class="icon_img"></button>
 			</div>
 			<div id="outils_dessin">
 				<div class="menu-paint" data-menu="color">
+					<p class="textes_dessin">Sélectionner la couleur du tracé</p>
+					<hr>
 					<input type="color" value="#000000" id="mycolor">
 				</div>
 				<div class="menu-paint" data-menu="noirceur">
-					<input type="range" id="noirceur" min="0" max="1" step="0.002" value="0.25" style="width: 100px">
+					<p class="textes_dessin">Ajuster l'intensité de la couleur</p>
+					<hr>
+					<input type="range" id="noirceur" min="0" max="1" step="0.002" value="0.25">
 				</div>
 				<div class="menu-paint" data-menu="thickness">
-					<input type="range" id="thickness" min="0" max="130" step="2" value="40" style="width: 100px">
+					<p class="textes_dessin">Ajuster l'épaisseur du tracé</p>
+					<hr>
+					<input type="range" id="thickness" min="0" max="130" step="2" value="40">
 				</div>
 				<div class="menu-paint" data-menu="erase">
+					<p class="textes_dessin">Outil Gomme</p>
+					<hr>
+					<p>Pour revenir au dessin, sélectionner un autre outil dans le cadre ci-dessus</p>
 				</div>
 			</div>
 		</div>

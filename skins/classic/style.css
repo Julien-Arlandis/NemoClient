@@ -1,7 +1,7 @@
-﻿@import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
+@import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.998g - 2015-06-26
+	Interface Classic - Mise à jour Nemo/0.998g - 2015-06-28
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -1363,17 +1363,34 @@ fieldset {
 }
 
 #icones_dessin {
+    background-color: #fcfcfc;
     border: 2px solid;
     height: 235px;
     margin-top: 34px;
     padding: 0 10px;
 }
 
+#icones_dessin button.selected {							/*A vérifier !*/
+    background-color: white;
+}
+
 .paint_icon {
-    margin: 0 3px 8px 0;
+    background: linear-gradient(to bottom, #f2f2f2 0%, #e5e5e5 100%);
+    border: 1px solid gray;
+    border-radius: 5px;
+    height: 28px;
+	margin: 0 3px 8px 0;
+    padding: 2px 3px;
+    width: 28px;
+}
+
+.paint_icon:hover {
+    background: linear-gradient(to bottom, #e5e5e5 0%, #f2f2f2 100%);
+    cursor: pointer;
 }
 
 #outils_dessin {
+    background-color: #fcfcfc;
     border: 2px solid;
     height: 201px;
     margin-top: 10px;

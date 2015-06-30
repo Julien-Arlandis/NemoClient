@@ -19,40 +19,28 @@ var Paint = function() {
 		$('#paint-button-color').click(function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=color]').show();
-			if( $(this).hasClass("selected") ) {
 				$('.paint_icon').removeClass("selected");
-			}else{
 				$(this).addClass("selected");
-			}
 		})
 
 		$('#paint-button-noirceur').click(function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=noirceur]').show();
-			if( $(this).hasClass("selected") ) {
 				$('.paint_icon').removeClass("selected");
-			}else{
 				$(this).addClass("selected");
-			}
 		})
 
 		$('#paint-button-thickness').click(function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=thickness]').show();
-			if( $(this).hasClass("selected") ) {
 				$('.paint_icon').removeClass("selected");
-			}else{
 				$(this).addClass("selected");
-			}
 		})
 
 		$('#paint-button-erase').click(function() {
 			$('.menu-paint').hide();
-			if( $(this).hasClass("selected") ) {
 				$('.paint_icon').removeClass("selected");
-			}else{
 				$(this).addClass("selected");
-			}
 		})
 
 		$('#mycolor').change(function() {

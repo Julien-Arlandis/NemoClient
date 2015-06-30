@@ -1370,8 +1370,8 @@ fieldset {
     padding: 0 10px;
 }
 
-#icones_dessin button.selected {							/*A vérifier !*/
-    background: white;
+#icones_dessin button.selected {
+    background: #e2fff7;
 }
 
 .paint_icon {

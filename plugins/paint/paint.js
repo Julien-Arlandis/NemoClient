@@ -20,7 +20,7 @@ var Paint = function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=color]').show();
 			if( $(this).hasClass("selected") ) {
-				$(this).removeClass("selected"); 
+				$('.paint_icon').removeClass("selected");
 			}else{
 				$(this).addClass("selected");
 			}
@@ -30,7 +30,7 @@ var Paint = function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=noirceur]').show();
 			if( $(this).hasClass("selected") ) {
-				$(this).removeClass("selected"); 
+				$('.paint_icon').removeClass("selected");
 			}else{
 				$(this).addClass("selected");
 			}
@@ -40,7 +40,7 @@ var Paint = function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=thickness]').show();
 			if( $(this).hasClass("selected") ) {
-				$(this).removeClass("selected"); 
+				$('.paint_icon').removeClass("selected");
 			}else{
 				$(this).addClass("selected");
 			}
@@ -49,7 +49,7 @@ var Paint = function() {
 		$('#paint-button-erase').click(function() {
 			$('.menu-paint').hide();
 			if( $(this).hasClass("selected") ) {
-				$(this).removeClass("selected"); 
+				$('.paint_icon').removeClass("selected");
 			}else{
 				$(this).addClass("selected");
 			}

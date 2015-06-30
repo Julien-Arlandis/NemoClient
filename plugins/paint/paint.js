@@ -19,22 +19,8 @@ var Paint = function() {
 		$('#paint-button-color').click(function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=color]').show();
-<<<<<<< HEAD
-			if( $(this).hasClass("selected") ) {
-<<<<<<< HEAD
-console.log('not selected');
-				$(this).removeClass("selected"); 
-=======
-				$('.paint_icon').removeClass("selected");
->>>>>>> 414088b8d163d3993b5551b8b79fc8f13956196c
-			}else{
-				$(this).addClass("selected");
-console.log('selected');
-			}
-=======
 				$('.paint_icon').removeClass("selected");
 				$(this).addClass("selected");
->>>>>>> 07e675e669fd07acc604bcd8a369c3c4ccab5bc7
 		})
 
 		$('#paint-button-noirceur').click(function() {

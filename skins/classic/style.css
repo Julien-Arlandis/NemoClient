@@ -1,7 +1,7 @@
 @import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.998g - 2015-06-28
+	Interface Classic - Mise à jour Nemo/0.998g - 2015-06-30
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -1371,7 +1371,7 @@ fieldset {
 }
 
 #icones_dessin button.selected {							/*A vérifier !*/
-    background-color: white;
+    background: white;
 }
 
 .paint_icon {

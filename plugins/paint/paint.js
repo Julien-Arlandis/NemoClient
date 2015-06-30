@@ -20,8 +20,12 @@ var Paint = function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=color]').show();
 			if( $(this).hasClass("selected") ) {
+<<<<<<< HEAD
 console.log('not selected');
 				$(this).removeClass("selected"); 
+=======
+				$('.paint_icon').removeClass("selected");
+>>>>>>> 414088b8d163d3993b5551b8b79fc8f13956196c
 			}else{
 				$(this).addClass("selected");
 console.log('selected');
@@ -32,7 +36,7 @@ console.log('selected');
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=noirceur]').show();
 			if( $(this).hasClass("selected") ) {
-				$(this).removeClass("selected"); 
+				$('.paint_icon').removeClass("selected");
 			}else{
 				$(this).addClass("selected");
 			}
@@ -42,7 +46,7 @@ console.log('selected');
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=thickness]').show();
 			if( $(this).hasClass("selected") ) {
-				$(this).removeClass("selected"); 
+				$('.paint_icon').removeClass("selected");
 			}else{
 				$(this).addClass("selected");
 			}
@@ -51,7 +55,7 @@ console.log('selected');
 		$('#paint-button-erase').click(function() {
 			$('.menu-paint').hide();
 			if( $(this).hasClass("selected") ) {
-				$(this).removeClass("selected"); 
+				$('.paint_icon').removeClass("selected");
 			}else{
 				$(this).addClass("selected");
 			}

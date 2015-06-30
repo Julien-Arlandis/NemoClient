@@ -18,7 +18,7 @@ xhr: {},
 
 Storage: {
 	HashKey: '',
-	Session: false,
+	Session: '',
 	UserID: '',
 	FromName: '',
 	FromMail: '',

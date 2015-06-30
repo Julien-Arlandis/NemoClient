@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998g',
+UserAgent: 'Nemo/0.998h',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -299,7 +299,7 @@ Thread:{
 				this.clean();
 			}
 			if(j.body.length) {
-				for(ind in j.body) {
+				for(var ind in j.body) {
 					ID = j.body[ind].ID;
 					maxID = (ID > maxID) ? ID : maxID;
 					if(!j.body[ind].Data.Control){
@@ -308,7 +308,6 @@ Thread:{
 							this.value.push(j.body[ind]);
 							this.indexDataID[j.body[ind].Data.DataID] = true;
 						}
-
 					}else{
 						if(j.body[ind].Data.Control[0] == 'cancelUser' || j.body[ind].Data.Control[0] == 'cancelServer') {
 							this.del(j.body[ind].Data.Control[1]);
@@ -316,12 +315,11 @@ Thread:{
 					}
 				}
 
-				i=this.value.length;
-				do
-				   i--;
-				while (typeof this.value[i] == "undefined" && i>0);
-				if(typeof this.value[i] != "undefined") {
-					res.firstID = this.value[i].ID;
+				for(var i in this.value) {
+					if(typeof this.value[i] != "undefined") {
+						res.firstID = this.value[i].ID;
+						break;
+					}
 				}
 			}
 			if(maxID == 0) {

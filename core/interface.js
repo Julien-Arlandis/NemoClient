@@ -583,7 +583,6 @@ inscription: function(){
 displayNewsgroupsCategory: function() {
 	JNTP.execute(["getNewsgroup", {"category":true}], function(code, j){switch(code) {
 		case "200":
-console.log(j.body);
 		$('#newsgroupsL1').empty();
 		var cat = [];
 		// set categories

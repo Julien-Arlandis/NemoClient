@@ -20,9 +20,11 @@ var Paint = function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=color]').show();
 			if( $(this).hasClass("selected") ) {
+console.log('not selected');
 				$(this).removeClass("selected"); 
 			}else{
 				$(this).addClass("selected");
+console.log('selected');
 			}
 		})
 

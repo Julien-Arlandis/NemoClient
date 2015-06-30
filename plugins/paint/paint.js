@@ -19,6 +19,7 @@ var Paint = function() {
 		$('#paint-button-color').click(function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=color]').show();
+<<<<<<< HEAD
 			if( $(this).hasClass("selected") ) {
 <<<<<<< HEAD
 console.log('not selected');
@@ -30,35 +31,30 @@ console.log('not selected');
 				$(this).addClass("selected");
 console.log('selected');
 			}
+=======
+				$('.paint_icon').removeClass("selected");
+				$(this).addClass("selected");
+>>>>>>> 07e675e669fd07acc604bcd8a369c3c4ccab5bc7
 		})
 
 		$('#paint-button-noirceur').click(function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=noirceur]').show();
-			if( $(this).hasClass("selected") ) {
 				$('.paint_icon').removeClass("selected");
-			}else{
 				$(this).addClass("selected");
-			}
 		})
 
 		$('#paint-button-thickness').click(function() {
 			$('.menu-paint').hide();
 			$('.menu-paint[data-menu=thickness]').show();
-			if( $(this).hasClass("selected") ) {
 				$('.paint_icon').removeClass("selected");
-			}else{
 				$(this).addClass("selected");
-			}
 		})
 
 		$('#paint-button-erase').click(function() {
 			$('.menu-paint').hide();
-			if( $(this).hasClass("selected") ) {
 				$('.paint_icon').removeClass("selected");
-			}else{
 				$(this).addClass("selected");
-			}
 		})
 
 		$('#mycolor').change(function() {

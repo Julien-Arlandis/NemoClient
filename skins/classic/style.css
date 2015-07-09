@@ -1,7 +1,7 @@
 @import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.998g - 2015-06-30
+	Interface Classic - Mise à jour Nemo/0.998h - 2015-07-09
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -154,8 +154,8 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	position: absolute;
 	z-index: 500;
 	border: 1px solid gray;
-	border-radius: 4px;										/*MOD*/
-	padding: 1px 4px 1px 4px;								/*MOD*/
+	border-radius: 4px;
+	padding: 1px 4px 1px 4px;
 	margin-left: -80px;
 }
 
@@ -192,12 +192,14 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 }
 
 #txt_localStorage {
-	height: 85px;
-	width: 650px;
+    height: 90px;
+    width: 650px;
+    resize: vertical;
 }
 
 #delete_localStorage {
-	float: right;
+    float: right;
+    margin: 10px 5px 10px 0px;
 }
 
 /* -----------------------
@@ -210,7 +212,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	padding: 0px 10px 0px 10px;
 	border-left: 1px solid #808080;
 	border-right: 1px solid #808080;
-	overflow-y: scroll;										/*MOD - New*/
+	overflow-y: scroll;
 }
 
 #accueil .content {
@@ -241,7 +243,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	display:inline-block;
 	position: absolute;
 	margin:5px 0px 5px 8px;
-	width: 440px;									/*MOD - Was 390px*/
+	width: 440px;
 	overflow: hidden;
 }
 
@@ -291,13 +293,13 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 
 #logo {
 	opacity: 0.85;
-	width: 80px;										/*MOD - Was 100px*/
+	width: 80px;
 	float:right;
 	background-image: url(img/nemo.png);
 	background-repeat:no-repeat;
-	background-size: 80px;								/*MOD - Was 100px*/
+	background-size: 80px;
 	background-position: right;
-	height: 35px;										/*MOD - New*/
+	height: 35px;
 }
 
 #logo:hover {
@@ -336,73 +338,73 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	float: right;
 	margin-left: 10px;
 	font-weight: bold;
-	line-height: 35px;										/*MOD - New*/
-	height: 35px;											/*MOD - New*/
+	line-height: 35px;
+	height: 35px;
 }
 
-#recup_password {									/*NEW - Pop-in MDP*/
+#recup_password {
     font-weight: bold;
     text-align: center;
 }
 
-#email_recup_password {								/*NEW - Aligner input*/
+#email_recup_password {
     margin: 10px 0px;
     position: relative;
 }
 
-#config_recherche, #recup_password {					/*NEW - Pop-in Recherche + MDP*/
+#config_recherche, #recup_password {
 	border: 1px solid gray;
 	border-radius: 4px;
 	font-weight: bold;
 	padding-top: 10px;
 }
 
-#jid_value, #newsgroups_value, #article_value1, #dataid_value {		/*NEW - Aligner input*/
+#jid_value, #newsgroups_value, #article_value1, #dataid_value {
 	left: 130px;
 	position: absolute;
 	width: 520px;
 }
 
-#article_filter1 {									/*NEW - Bouton liste déroulante*/
+#article_filter1 {
 	background: linear-gradient(to bottom, #e5e5e5 0%, #f2f2f2 100%);
 	border: 1px solid grey;
 	box-shadow: 0 1px 0 0 lightgray inset;
 	text-shadow: 1px 1px 1px white;
 }
 
-#recherche_article_jid, #recherche_article_go, #change_email, #change_password, #valid_recup_password, #recherche_article_dataid {								/*NEW - Centrer boutons*/
+#recherche_article_jid, #recherche_article_go, #change_email, #change_password, #valid_recup_password, #recherche_article_dataid {
     display: block;
     margin: auto;
 }
 
-#article_filter1:hover {								/*NEW - Bouton liste déroulante*/
+#article_filter1:hover {
     background: linear-gradient(to bottom, #f2f2f2 0%, #e5e5e5 100%);
 }
 
-#config_nemo {										/*NEW - Pop-in Préférences*/
+#config_nemo {
 	border: 1px solid gray;
 	border-radius: 4px;
 }
 
-#ui-accordion-1-panel-0 {							/*NEW - Paramètres serveur*/
+#ui-accordion-1-panel-0 {							/*Paramètres serveur*/
 	font-weight: bold;
 }
 
-#host_jntp, #fromname, #frommail, #replyto, #signature {			/*NEW - Aligner input*/
+#host_jntp, #fromname, #frommail, #replyto, #signature {			/*Aligner input*/
 	left: 5px;
 	margin-bottom: 5px;
 	position: relative;
 }
 
-#ui-accordion-1-panel-1 {							/*NEW - Configuration du client*/
+#ui-accordion-1-panel-1 {							/*Configuration du client*/
     font-weight: bold;
 }
 
-#ui-accordion-1-panel-2 {							/*NEW - Mon compte*/
+#ui-accordion-1-panel-2 {							/*Mon compte*/
     font-weight: bold;
 }
 
-#oldPassword {										/*NEW - Aligner input*/
+#oldPassword {										/*Aligner input*/
 	left: 11px;
 	margin-bottom: 5px;
 	position: relative;
@@ -423,12 +425,12 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 }
 
 #FromName, .FromName {
-	width: 25%;									/*MOD - Was 20%*/
+	width: 25%;
 	cursor: pointer;
 }
 
 #InjectionDate {
-	width: 145px;								/*MOD - Was 21%*/
+	width: 145px;
 	cursor: pointer;
 }
 
@@ -441,16 +443,16 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 }
 
 .taille {
-	width: 65px;								/*MOD - Was 50px*/
+	width: 65px;
 }
 
 .day {
-	text-align: center;							/*MOD - New*/
-	width: 100px;								/*MOD - Was 16%*/
+	text-align: center;
+	width: 100px;
 }
 
 .time {
-	width: 45px;								/*MOD - Was 5%*/
+	width: 45px;
 }
 
 /* -----------------------
@@ -725,7 +727,7 @@ tr.favori {
 }
  
 #button_formulaire_fu2 {
-    background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #e5e5e5 0%, #f2f2f2 100%) repeat scroll 0 0;
+    background: linear-gradient(to bottom, #e5e5e5 0%, #f2f2f2 100%);
     border: 1px solid grey;
     box-shadow: none;
     color: darkgreen;
@@ -921,12 +923,12 @@ tr.favori {
 	Boutons
 -------------------------- */
 
-#supprimer_article, #ban_article, #delete_localStorage {						/*MOD*/
+#supprimer_article, #ban_article, #delete_localStorage {
 	background: #ffec64; /* Old browsers */
 	background: linear-gradient(to bottom, #ffec64 5%,#ff0000 100%); /* W3C */
 }
 
-#supprimer_article:hover, #ban_article:hover, #delete_localStorage:hover {	/*MOD*/
+#supprimer_article:hover, #ban_article:hover, #delete_localStorage:hover {
 	cursor: pointer;
 	background: #ffab23; /* Old browsers */
 	background: linear-gradient(to bottom, #ffab23 5%,#ffec64 100%); /* W3C */
@@ -1100,7 +1102,7 @@ fieldset {
 
 .label {
     float: left;
-    font-weight: bold;									/*MOD*/
+    font-weight: bold;
     line-height: 22px;
     margin-right: 8px;
     text-align: right;
@@ -1241,10 +1243,10 @@ fieldset {
 	border: 1px solid gray;
 	font: 14px monospace;
 	margin: 0;
-	width: -moz-calc(100% - 55px);					/*MOD - Was calc(100% - 60px)*/
+	width: -moz-calc(100% - 55px);
 	width: -webkit-calc(100% - 55px);
 	width: calc(100% - 55px);
-	height: -moz-calc(100% - 180px);				/*MOD - Was calc(100% - 160px)*/
+	height: -moz-calc(100% - 180px);
 	height: -webkit-calc(100% - 180px);
 	height: calc(100% - 180px);
 	resize: none;
@@ -1295,7 +1297,7 @@ fieldset {
 	opacity: 1;
 }
 
-.insert_c {										/*NEW - Table de caractères*/
+.insert_c {
     background: linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
     display: inline-flex;
     width: 98%;
@@ -1453,7 +1455,7 @@ fieldset {
 	border-bottom: 1px solid gray;
 	border-left: 1px solid gray;
 	border-right: 1px solid gray;
-	border-radius: 4px;							/*MOD*/
+	border-radius: 4px;
 	margin-top: 10px;
 	overflow-x: hidden;
 }
@@ -1676,6 +1678,7 @@ h1>img {
 FAQ - End
 --------------------------
 */
+
 
 /*
 --------------------------

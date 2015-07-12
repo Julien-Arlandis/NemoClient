@@ -1,7 +1,7 @@
 @import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.998h - 2015-07-09
+	Interface Classic - Mise à jour Nemo/0.998h - 2015-07-11
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -1160,21 +1160,21 @@ fieldset {
 }
 
 #barre_boutons {
-	width: -moz-calc(100% - 40px);		
-	width: -webkit-calc(100% - 40px);
-	width: calc(100% - 40px);
+	background: #ededed; /* Old browsers */
+	background: linear-gradient(to bottom, #ededed 0%,#dfdfdf 100%); /* W3C */
 	border-left: 1px solid gray;
 	border-right: 1px solid gray;
 	border-top: 1px solid gray;
 	margin-top: 5px;
 	padding: 1px 4px 1px 1px;
-	background: #c4c4c4; /* Old browsers */
-	background: linear-gradient(to bottom,  #c4c4c4 0%,#eaeaea 100%); /* W3C */
+	width: -moz-calc(100% - 40px);
+	width: -webkit-calc(100% - 40px);
+	width: calc(100% - 40px);
 }
  
 .icon {
 	background: #f2f2f2; /* Old browsers */
-	background: linear-gradient(to bottom,  #f2f2f2 0%,#e5e5e5 100%); /* W3C */
+	background: linear-gradient(to bottom, #f2f2f2 0%,#e5e5e5 100%); /* W3C */
 	border: 1px solid gray;
 	border-radius:5px;
 	display: inline-flex;
@@ -1182,23 +1182,23 @@ fieldset {
 	margin-right: -1.5px;				/*Modifier en fonction du nb d'icônes*/
 	padding: 2px 3px 2px 3px;			/*Chrome & IE11*/
 	height: 28px;						/*FF*/
-	width: 28px;						/*FF*/
+	width: 30px;						/*FF*/
 }
  
 .icon:hover {
 	background: #e5e5e5; /* Old browsers */
-	background: linear-gradient(to bottom,  #e5e5e5 0%,#f2f2f2 100%); /* W3C */
+	background: linear-gradient(to bottom, #e5e5e5 0%,#f2f2f2 100%); /* W3C */
 	cursor: pointer;
 }
 
 .icon_img {
 	height: 20px;
-	width: 20px;
+	width: 22px;
 }
 
 #insert_other {
 	background: #e5e5e5; /* Old browsers */
-	background: linear-gradient(to bottom,  #e5e5e5 0%,#f2f2f2 100%); /* W3C */
+	background: linear-gradient(to bottom, #e5e5e5 0%,#f2f2f2 100%); /* W3C */
 	border: 1px solid grey;
 	box-shadow: none;
 	height: 28px;
@@ -1208,7 +1208,7 @@ fieldset {
 
 #insert_other:hover {
 	background: #f2f2f2; /* Old browsers */
-	background: linear-gradient(to bottom,  #f2f2f2 0%,#e5e5e5 100%);
+	background: linear-gradient(to bottom, #f2f2f2 0%,#e5e5e5 100%);
 }
 
 #rendu {

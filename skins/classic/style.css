@@ -1,7 +1,7 @@
 @import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.998h - 2015-07-11
+	Interface Classic - Mise à jour Nemo/0.998h - 2015-07-14
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -1284,17 +1284,13 @@ fieldset {
 	cursor: pointer;
 }
 
-#mode_html {
-	opacity: 0.3;
-	float:right;
-}
-
-#mode_html:hover {
-	opacity: 1;
-}
-
-#mode_html.activated {
-	opacity: 1;
+#mode_html, #mode_html.activated {
+	background: linear-gradient(to bottom, #fcecda 0%, #ffffee 100%)0;
+	border: 1px solid gray;
+	border-radius: 4px;
+	float: right;
+	font-weight: bold;
+	height: 28px;
 }
 
 .insert_c {

@@ -1,7 +1,7 @@
 @import url(ui-lightness/jquery-ui-1.10.2.custom.min.css);
 
 /*---------------------------------------------------------------------------------
-	Interface Amazonie - Mise à jour Nemo/0.998h - 2015-07-10
+	Interface Amazonie - Mise à jour Nemo/0.998h - 2015-07-16
 ---------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -901,11 +901,10 @@ tr.favori {														/*NEW*/
 }
 
 #formulaire_body_html {
-	padding: 10px;
+	background-color: #effbfb;
 	font: 14px monospace !important;
-	background-color: #EFFBFB;
-	white-space: pre-wrap;
 	overflow-x: scroll;
+	white-space: pre-wrap;
 }
 
 #article_deleted, #article_updated {									/*MOD*/
@@ -1310,17 +1309,17 @@ fieldset {
 	cursor: pointer;
 }
 
-#mode_html {
-	opacity: 0.3;
-	float:right;
+#mode_html, #mode_html.activated {
+    background: linear-gradient(to bottom, #fff8e8 5%, #f4d786 100%);
+    border: 1px solid #a88146;
+    border-radius: 4px;
+    float: right;
+    font-weight: bold;
+    height: 34px;
 }
 
-#mode_html:hover {
-	opacity: 1;
-}
-
-#mode_html.actif {
-	opacity: 1;
+#mode_html:hover, #mode_html.activated:hover {
+    background: linear-gradient(to bottom, #f4d786 0%, #fff8e8 95%);
 }
 
 .insert_c {										/*Table de caractères*/

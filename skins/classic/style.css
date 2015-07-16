@@ -1,7 +1,7 @@
 @import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.998h - 2015-07-14
+	Interface Classic - Mise à jour Nemo/0.998h - 2015-07-16
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -1241,6 +1241,7 @@ fieldset {
 	display: block;
 	padding: 10px;
 	border: 1px solid gray;
+	border-radius: 0px;
 	font: 14px monospace;
 	margin: 0;
 	width: -moz-calc(100% - 55px);

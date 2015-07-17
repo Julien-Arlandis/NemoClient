@@ -1262,6 +1262,7 @@ fieldset {
 	display: block;
 	padding: 10px;
 	border: 1px solid #472E00;
+	border-radius: 0px;
 	background-color: white;
 	font: 14px monospace;
 	margin: 0;

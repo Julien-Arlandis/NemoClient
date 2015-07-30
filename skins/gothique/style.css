@@ -1433,6 +1433,11 @@ fieldset {
     cursor: pointer;
 }
 
+.paint_icon_img {
+    height: 20px;
+    width: 20px;
+}
+
 #outils_dessin {
     background-color: #fcfcfc;
     border: 2px solid;

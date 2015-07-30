@@ -1,7 +1,7 @@
 @import url(ui-lightness/jquery-ui-1.10.2.custom.min.css);
 
 /*---------------------------------------------------------------------------------
-	Interface Amazonie - Mise à jour Nemo/0.998h - 2015-07-16
+	Interface Amazonie - Mise à jour Nemo/0.998h - 2015-07-30
 ---------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -901,7 +901,7 @@ tr.favori {														/*NEW*/
 }
 
 #formulaire_body_html {
-	background-color: #effbfb;
+	/*background: #effbfb!important;*/
 	font: 14px monospace !important;
 	overflow-x: scroll;
 	white-space: pre-wrap;
@@ -1412,6 +1412,11 @@ fieldset {
 .paint_icon:hover {
     background: linear-gradient(to bottom, #e5e5e5 0%, #f2f2f2 100%);
     cursor: pointer;
+}
+
+.paint_icon_img {
+    height: 20px;
+    width: 20px;
 }
 
 #outils_dessin {

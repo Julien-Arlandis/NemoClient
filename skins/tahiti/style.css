@@ -1,7 +1,7 @@
 ﻿@import url(ui-lightness/jquery-ui-1.10.2.custom.min.css);
 
 /* ----------------------------------------------------------------------------------
-	Interface Tahiti - Mise à jour Nemo/0.996e - 2015-04-13
+	Interface Tahiti - Mise à jour Nemo/0.998h - 2015-08-01
 ----------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -18,7 +18,7 @@ body {
 	color: #00252B;										/*Couleur polices globale*/
 	font-size: 13px;
 	background-color: #eafaff;
-	height :100%;												/*MOD*/
+	height :100%;
 }
 
 #rightnav noscript {
@@ -43,7 +43,7 @@ a.link, .newsgroup.link, div.link {
 }
 
 a.link:hover, .newsgroup.link:hover, div.link:hover {
-	background: #fce4a9;										/*MOD*/
+	background: #ffe6ad;
 	color: #009900 !important;
 	cursor: pointer;
 	background-image: url(img/link.png);
@@ -104,25 +104,28 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	margin-left: 8px;
 }
 
-#footer {															/*MOD*/
+#footer {
 	clear: both;
 	margin: 0;
 	/*color: black;*/
 	background: #009600; /* Old browsers */
 	background: linear-gradient(to bottom, #009600 0%,#9ddb9d 83%,#9ddb9d 100%);
-	border: 1px solid #00505E;										/*MOD*/
+	border: 1px solid #00505E;
 	border-radius: 0px 0px 4px 4px;
 }
 
 #contextMenu {
 	cursor: pointer;
 	background-color: #FFFFEE;
-	width: 270px;													/*MOD*/
+	width: 270px;
 	position: absolute;
 	z-index: 600;
-	border: 1px solid #00505E;										/*MOD*/
+	border: 1px solid #00505E;/
 	border-radius:4px;
-	padding: 4px 0px 4px 0px;										/*MOD*/
+	padding: 4px 0px 4px 0px;
+	-webkit-touch-callout: none;								/*NEW*/
+	-webkit-user-select: none;
+	-khtml-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
@@ -131,14 +134,14 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 #contextMenu div{
 	color: #808080;
 	font-weight: bold;
-	padding: 2px 10px 2px 10px;										/*MOD*/
+	padding: 2px 10px 2px 10px;
 }
 
-#contextMenu .select {												/*MOD*/
+#contextMenu .select {
 	color: #00252b;
 }
 
-#contextMenu .select:hover, #contextMenuNewsgroup .select:hover {		/*NEW*/		
+#contextMenu .select:hover, #contextMenuNewsgroup .select:hover {
 	background-color: #edfcff;
 	cursor: pointer;
 }
@@ -147,23 +150,68 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	background-color: #ffe;
 	position: absolute;
 	z-index: 500;
-	border: 1px solid #00505E;										/*MOD*/
+	border: 1px solid #00505E;
 	border-radius: 4px;
 	padding: 1px 4px 1px 4px;
 	margin-left: -80px;
 }
 
-#dialog-alert {														/*MOD*/
+#dialog-alert {
 	color: #00252b;
 	font-weight: bold;
 	text-align: center;
+}
+
+/* Config */
+
+.ui-state-default {
+    background-color: #f6f6f6;
+    color: #1c94c4;
+}
+
+#blacklist {
+	color: #00252b;
+	list-style-type: none;
+}
+ 
+#blacklist li {
+    margin-bottom: 2px;
+    background-image: url("img/croix_suppr.png");
+    background-position: 0 center;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    background-size: 10px;
+}
+
+#blacklist li:hover {
+    background-color: #ffe6ad;
+    cursor: pointer;
+}
+
+/* localStorage*/
+
+#ui-accordion-1-panel-4 {
+	color: #00252b;
+	font-family: Verdana;
+	font-size: 0.9em;
+}
+
+#txt_localStorage {
+	height: 90px;
+	resize: vertical;
+	width: 650px;
+}
+
+#delete_localStorage {
+	float: right;
+	margin: 10px 5px 10px 0;
 }
 
 /* -----------------------
 	Panneau accueil
 -------------------------- */
 #accueil {
-	background-color: #E1ECEF;										/*MOD*/
+	background-color: #E1ECEF;
 	margin-top: 0px;
 	font-family: Verdana;
 	font-size: 100%;
@@ -183,14 +231,14 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 
 #top {
 	margin-top: 10px;
-	border: 1px solid #00505E;										/*MOD*/
+	border: 1px solid #00505E;
 	height: 35px;
 	line-height:35px;
 	padding-left: 10px;
 	padding-right: 10px;
-	background-image: url(img/Tahiti_palmiers.png);		/*MOD - Remplace le gradient*/
+	background-image: url(img/Tahiti_palmiers.png);		/*Remplace le gradient*/
 	border-radius: 4px 4px 0px 0px;
-	background-color: #E1ECEF;				/*MOD - Pour image transparente*/
+	background-color: #E1ECEF;							/*Pour image transparente*/
 }
 
 #menu_bouton_top {
@@ -209,7 +257,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	background-position: left;
 }
 
-#chargement2 {												/*NEW*/
+#chargement2 {
 	line-height: 300px;
 	background-image: url(img/loader.gif);
 	background-repeat: no-repeat;
@@ -242,14 +290,14 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	font-weight: bold;
 }
 
-.logo_footer {											/*NEW*/
+.logo_footer {
 	text-align: center;
 }
 
-#logo {														/*MOD - Dimensions*/
-	width:85px;
+#logo {
+	width:85px;														/*MOD*/
 	float:right;
-	background-image: url(img/Tahiti_nemo.png);				/*MOD*/
+	background-image: url(img/Tahiti_nemo.png);
 	background-repeat:no-repeat;
 	background-size: 80px;
 	background-position: center;
@@ -265,7 +313,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	background-size: 25px;
 	background-position: left;
 	padding-left: 20px;
-	opacity: 0.9;											/*MOD - Plus clair*/
+	opacity: 0.9;
 }
 
 #active_console:hover {
@@ -279,7 +327,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	background-size: 24px;
 	background-position: left;
 	padding-left: 20px;
-	opacity: 0.9;											/*Modifié 0.7 à 0.9*/
+	opacity: 0.9;
 }
 
 #deconnect:hover {
@@ -295,17 +343,18 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	height: 35px;
 }
 
-#recup_password {									/*NEW - Pop-in MDP*/
+#recup_password {
     font-weight: bold;
     text-align: center;
 }
 
-#email_recup_password {								/*NEW - Aligner input*/
+#email_recup_password {
     margin: 10px 0px;
     position: relative;
+	width: 370px;												/*NEW*/
 }
 
-#config_recherche, #recup_password {					/*NEW - Pop-in Recherche + MDP*/
+#config_recherche, #recup_password {
 	background-color: #e1ecef;
 	border: 1px solid #00505e;
 	border-radius: 4px;
@@ -313,68 +362,64 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	padding-top: 10px;
 }
 
-#jid_value, #newsgroups_value, #article_value1 {		/*NEW - Aligner input*/
+#jid_value, #newsgroups_value, #article_value1, #dataid_value {	/*MOD*/
 	left: 130px;
 	position: absolute;
 	width: 520px;
 }
 
-#article_filter1 {									/*NEW - Bouton liste déroulante*/
+#article_filter1 {
 	background: linear-gradient(to bottom, #c6f3ff 5%, #59e0ff 100%);
-    border: 1px solid gray;
-    box-shadow: none;
+	border: 1px solid gray;
+	box-shadow: none;
 	color: #00252b;
 	text-shadow: 1px 1px 1px white;
 }
 
-#recherche_article_jid, #recherche_article_go, #change_email, #change_password, #valid_recup_password {								/*NEW - Centrer boutons*/
+#recherche_article_jid, #recherche_article_go, #change_email, #change_password, #valid_recup_password, #recherche_article_dataid {					/*MOD*/
     display: block;
     margin: auto;
 }
 
-#article_filter1:hover {								/*NEW - Bouton liste déroulante*/
+#article_filter1:hover {
     background: linear-gradient(to bottom, #00d0ff 0%, #aaeeff 95%);
 }
 
-#config_nemo {										/*MOD - Pop-in Préférences*/
-	background-color: #E1ECEF;						/*Fond*/
+#config_nemo {
+	background-color: #E1ECEF;
 	border: 1px solid #00505E;
 	border-radius: 4px;
 	/*color: #00252b;*/
 }
 
-#ui-accordion-1-panel-0 {							/*NEW - Paramètres serveur*/
+#ui-accordion-1-panel-0 {
 	font-weight: bold;
 }
 
-#host_jntp, #fromname, #frommail, #replyto {			/*NEW - Aligner input*/
+#host_jntp, #fromname, #frommail, #replyto, #signature {					/*MOD*/
 	left: 5px;
 	margin-bottom: 5px;
 	position: relative;
 }
 
 #signature {
+	border: 1px solid #00505e;						/*NEW*/
     color: #00252b;
+	padding-left: 5px;
 }
 
-#ui-accordion-1-panel-1 {							/*NEW - Configuration du client*/
+#ui-accordion-1-panel-1 {							/*Configuration du client*/
     font-weight: bold;
 }
 
-#ui-accordion-1-panel-2 {							/*NEW - Mon compte*/
+#ui-accordion-1-panel-2 {							/*Mon compte*/
     font-weight: bold;
 }
 
-#oldPassword {										/*NEW - Aligner input*/
+#oldPassword {
 	left: 11px;
 	margin-bottom: 5px;
 	position: relative;
-}
-
-#blacklist {
-    border-color: #00505E;
-    border-radius: 4px;
-	color: #00252b;
 }
 
 /* -----------------------
@@ -426,7 +471,7 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 	Propriétés du fil
 -------------------------- */
 
-#fil_info {											/*NEW*/
+#fil_info {
 	margin-top: 40px;
 	text-align: center;
 	font-weight: bold;
@@ -435,9 +480,9 @@ a.link:hover, .newsgroup.link:hover, div.link:hover {
 table {
 	table-layout: fixed;
 	border-collapse: collapse;
-	background-color: #fafafa;									/*MOD*/
+	background-color: #fafafa;
 	width: 100%;
-	webkit-touch-callout: none;					/*NEW*/
+	webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: none;
@@ -446,9 +491,9 @@ table {
 }
 
 #scrollFil {
-	background-color: #fafafa !important;						/*MOD*/
-	border-left: 1px solid #00505E;								/*MOD*/
-	border-right: 1px solid #00505E;							/*MOD*/
+	background-color: #fafafa !important;
+	border-left: 1px solid #00505E;
+	border-right: 1px solid #00505E;
 	cursor: pointer;
 	overflow-y: scroll;
 	height: 323px;
@@ -484,9 +529,9 @@ thead th.desc:hover {
 }
 
 thead th {	
-	border-left: 1px solid #00505E;								/*MOD*/
-	border-right: 1px solid #00505E;							/*MOD*/
-	border-bottom: 1px solid #00505E;							/*MOD*/
+	border-left: 1px solid #00505E;
+	border-right: 1px solid #00505E;
+	border-bottom: 1px solid #00505E;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -504,8 +549,8 @@ th:hover {
 }
 
 #tree.arbo{
-	background-color: #16ff22;									/*MOD*/
-	background-image: url("img/tree.gif");						/*MOD*/
+	background-color: #16ff22;
+	background-image: url("img/tree.gif");
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 20px auto;
@@ -513,8 +558,8 @@ th:hover {
 }
 
 #tree.liste{
-	background-color: #16ff22;									/*MOD*/
-	background-image: url("img/liste.gif");						/*MOD*/
+	background-color: #16ff22;
+	background-image: url("img/liste.gif");
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 20px auto;
@@ -522,7 +567,7 @@ th:hover {
 }
 
 #tree:hover {
-	background-color: #10BC16;									/*MOD*/
+	background-color: #10BC16;
 }
 
 #taille {
@@ -560,8 +605,8 @@ th:hover {
 }
 
 #fil tr {
-	border-right: 1px solid #00505E;								/*MOD*/
-	/*color: #FF4500;*/			/*MOD - Couleur police "non lu" si pas hérité de body*/
+	border-right: 1px solid #00505E;
+	/*color: #00252b;*/			/*MOD - Couleur police "non lu" si pas hérité de body*/
 	font-size: 1em;
 	font-weight: bold;
 	resize: none;
@@ -569,11 +614,11 @@ th:hover {
 }
 
 #fil tr:hover {
-	background-color: #DAFFC6;										/*MOD*/
+	background-color: #DAFFC6;
 }
 
 tr.color{
-	background-color: #DBF9FF;						/*MOD - Fond lignes paires*/
+	background-color: #DBF9FF;						/*Fond lignes paires*/
 }
 
 
@@ -617,12 +662,18 @@ tr.color{
 .visible.lu {
 	font-size: 1em;
 	font-weight: normal !important;
-	color: #007582 !important;						/*MOD - Couleur police "lu"*/
+	color: #007582 !important;						/*Couleur police "lu"*/
+}
+
+tr.favori {														/*NEW*/
+	font-size: 1em;
+	font-weight: normal !important;
+	background-color: yellow;
 }
 
 .visible.selected, .visible.selected .taille{
-	background-color: #007784 !important;						/*MOD*/
-	color: white !important;									/*MOD*/
+	background-color: #007784 !important;
+	color: white !important;
 }
 
 .invisible {
@@ -660,8 +711,8 @@ tr.color{
 
 .separateur {
 	height: 2px;
-	background-color: #F2F2F2;									/*MOD*/
-	border: 1px solid #000000;									/*MOD*/
+	background-color: #F2F2F2;
+	border: 1px solid #000000;
 }
 
 /* -----------------------
@@ -670,9 +721,9 @@ tr.color{
 
 #article {
 	height: 30%;
-	border-left: 1px solid #00505E;								/*MOD*/
-	border-right: 1px solid #00505E;							/*MOD*/
-	background-color: #FFFFFF;									/*MOD*/
+	border-left: 1px solid #00505E;
+	border-right: 1px solid #00505E;
+	background-color: #FFFFFF;
 }
 
 #article_header {											/*Image en-tête article*/
@@ -680,14 +731,31 @@ tr.color{
 	background:url(img/Tahiti_sunset.jpg);
 	background-size:100% 100%;
 	background-repeat:no-repeat;
-	border-bottom: 1px solid 00505E;								/*MOD*/
+	border-bottom: 1px solid 00505E;
 	line-height: 18px;
 	padding-bottom: 3px;
 	padding-top: 3px;
 }
 
+#formulaire_newsgroup {												/*NEW*/
+	width: 517px;
+}
+
+#button_formulaire_fu2 {												/*NEW*/
+	background: linear-gradient(to bottom, #e5e5e5 0%, #f2f2f2 100%);
+	border: 1px solid grey;
+	box-shadow: none;
+	color: darkgreen;
+	text-shadow: 1px 1px 1px white;
+	vertical-align: top;
+}
+
+#button_formulaire_fu2:hover {										/*NEW*/
+	background: linear-gradient(to bottom, #f2f2f2 0%, #e5e5e5 100%);
+}
+
 #voir_references, #delete_citations, #revoir_citations, #voir_allThread, #retour {	
-	color: #00FF08;												/*MOD*/
+	color: #00FF08;
 	cursor: pointer;
 	font-weight: bold;
 	margin-left: 10px;
@@ -698,20 +766,20 @@ tr.color{
 }
 
 #voir_references:hover, #delete_citations:hover, #revoir_citations:hover, #voir_allThread:hover, #retour:hover, a:hover {
-	background-color: #184B70;									/*MOD*/
+	background-color: #184B70;
 	border-radius: 4px;
-	color: #15fd21;												/*MOD*/
+	color: #15fd21;
 }
 
 #references {
 	margin-top: 10px;
 	cursor: pointer;
 	margin-left: 30px;
-	color: yellow;												/*MOD*/
+	color: yellow;
 }
 
 #references div span:hover{
-	background-color: #184B70;									/*MOD*/
+	background-color: #184B70;
 }
 
 #article_header .supersede {
@@ -726,7 +794,7 @@ tr.color{
 
 #article_header .champ_article {
 	width: 100px;
-	color: #FCD25F;												/*MOD*/
+	color: #FCD25F;
 	padding-left: 10px;
 	padding-right: 10px;
 	font-family: "Times New Roman", serif;
@@ -735,28 +803,60 @@ tr.color{
 
 #article_header .champ_value {
 	font-weight: bold;
-	color: #FCD25F !important;									/*MOD*/
+	color: #FCD25F !important;
 	font-family: "Times New Roman", serif;
 	font-size: 14px;
 }
 
-#article_header .newsgroup {									/*NEW*/
+#article_header .newsgroup {
 	color: yellow;
 	text-shadow: 0 0 5px black;
 }
 
-#article_header .newsgroup:hover {							/*NEW*/
+#article_header .newsgroup:hover, #article_header .replyto:hover {	/*NEW*/
 	background-color: #f0c300;
 	color: black;
 	padding: 0px 5px 0px 5px;
 	text-shadow: none;
 }
 
-#like {														/*NEW*/
+.not_jntp {														/*NEW*/
+    background-image: url("img/not_jntp.gif");
+    background-position: left top;
+    background-repeat: no-repeat;
+    background-size: 100px auto;
+    height: 100px;
+    position: absolute;
+    right: 0;
+    top: 45px;
+    width: 320px;
+}
+
+.is_protected {													/*NEW*/
+    background-image: url("img/jntp_protected.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 21px auto;
+    height: 29px;
+    position: absolute;
+    right: 95px;
+    top: 45px;
+    width: 28px;
+}
+
+.is_not_protected {												/*NEW*/
+    height: 29px;
+    position: absolute;
+    right: 95px;
+    top: 45px;
+    width: 28px;
+}
+
+#like {
     background-image: url("img/like_bouton.png");
     background-position: left center;
     background-repeat: no-repeat;
-    background-size: 29px 29px;
+    background-size: 22px 22px;									/*MOD*/
     cursor: pointer;
     display: inline;
     height: 29px;
@@ -766,7 +866,7 @@ tr.color{
     width: 29px;
 }
 
-#compteur_like {												/*NEW*/
+#compteur_like {
     color: yellow;
     font-family: arial;
     font-size: 16px;
@@ -775,7 +875,7 @@ tr.color{
     vertical-align: -7px;
 }
 
-.icon_favori {												/*NEW*/
+.icon_favori {
 	float: left;
     height: 12px;
     margin-left: 2px;
@@ -783,7 +883,7 @@ tr.color{
     width: 8px;
 }
 
-.add_favori {												/*NEW*/
+.add_favori {
 	background-image: url(img/add_button.png);
 	background-repeat: no-repeat;
 	background-size: 8px;
@@ -791,7 +891,7 @@ tr.color{
 	cursor: pointer;
 }
 
-.del_favori {												/*NEW*/
+.del_favori {
 	background-image: url(img/del_button.png);
 	background-repeat: no-repeat;
 	background-size: 10px;
@@ -799,39 +899,15 @@ tr.color{
 	cursor: pointer;
 }
 
-#article_certification.jntp_valid {
-	background-image: url("img/jntp_logo.png");
-	background-position: center center;
-	background-repeat: no-repeat;
-	background-size: 29px auto;
-	height: 29px;
-	position: absolute;
-	right: 95px;
-	top: 45px;
-	width: 28px;
-}
-
-#article_certification.jntp_invalid {
-	position: absolute;
-	top:38px;
-	right:10px;
-	height:30px;
-	width:70px;
-	background-image:url(img/not_jntp.gif);						/*MOD*/
-	background-size: 70px;
-	background-repeat:no-repeat;
-	background-position:center center;
-}
-
 #article_body {
 	min-height: 300px;
-	background: url(img/Tahiti_art_bkgrnd.jpg);					/*MOD*/
+	background: url(img/Tahiti_art_bkgrnd.jpg);
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
-	color: #00252B;												/*MOD*/
+	color: #00252B;
 }
 
-#article_body, #rendu, #formulaire_body_html {
+#article_body, #rendu {											/*MOD*/
 	padding: 10px;
 	font: 14px monospace !important;
 	white-space: pre-wrap;
@@ -845,11 +921,17 @@ tr.color{
 	display: block;
 }
 
-#article_deleted {
-	color: red;													/*MOD*/
+#formulaire_body_html {
+	/*background: #effbfb!important;*/
+	font: 14px monospace !important;
+	overflow-x: scroll;
+	white-space: pre-wrap;
+}
+
+#article_deleted, #article_updated {									/*MOD*/
+	color: red;
 	font-weight:bold;
 	text-align:center;
-	text-shadow: 0 0 5px black;
 }
 
 #repondre, #repondre_popup, #view_source, #hide_source, #check_jid, #supprimer_article, #modifier_article, #ban_article {
@@ -880,7 +962,7 @@ tr.color{
 	Boutons
 -------------------------- */
 
-#supprimer_article, #ban_article {
+#supprimer_article, #ban_article, #delete_localStorage {						/*MOD*/
 	background: #ffec64; /* Old browsers */
 	background: linear-gradient(to bottom, #ffec64 5%, #ff0000 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
     border: 1px solid #ffaa22;
@@ -889,7 +971,7 @@ tr.color{
     text-shadow: 1px 1px 0 maroon;
 }
 
-#supprimer_article:hover, #ban_article:hover {
+#supprimer_article:hover, #ban_article:hover, #delete_localStorage:hover {	/*MOD*/
 	cursor: pointer;
 	background: #ffab23; /* Old browsers */
 	background: linear-gradient(to bottom, #ff0000 0%, #ffec64 95%); /* W3C */
@@ -897,7 +979,7 @@ tr.color{
 
 .button {
 	background: #ffec64; /* Old browsers */
-	background: linear-gradient(to bottom, #00d0ff 5%, #00869e 100%);
+	background: linear-gradient(to bottom, #00d0ff 0%, #00a2bf 100%);
 	border: 1px solid #00505e;
 	border-radius: 5px;
 	box-shadow: 0 1px 0 0 #00d0ff inset;
@@ -918,18 +1000,18 @@ tr.color{
 
 .button:hover {
 	background: #ffab23; /* Old browsers */
-	background: linear-gradient(to bottom, #00869e 0%, #00d0ff 95%);
+	background: linear-gradient(to bottom, #00a2bf 0%,#00d0ff 100%);
 	cursor: pointer;
 }
 
 #new_sujet:disabled, #repondre:disabled, #modifier_article:disabled {
-    color: #a4d9de;
+    color: #bcf9ff;
     text-shadow: none;
 }
 
 option {
-	text-shadow: none;					/*Listes déroulantes - Supprime le brouillage*/
-	background-color: #f4ffff;									/*MOD*/
+	text-shadow: none;
+	background-color: #f4ffff;
 	color: #00252b;
 }
 
@@ -1066,30 +1148,30 @@ fieldset {
 	min-width:750px;
 }
 
-label {												/*Titres champs Rédaction*/
+.label {												/*Titres champs Rédaction*/
 	line-height: 22px;
-	font-weight: bold;									/*NEW*/
+	font-weight: bold;
 	float: left;
-	width: 110px;										/*MOD*/
+	width: 110px;
 	white-space: nowrap;
-	margin-right: 8px;									/*MOD*/
+	margin-right: 8px;
 	text-align: right;
-	color: #00252b;										/*MOD*/
+	color: #00252b;
  }
 
 #send_form {
-	background-color: #E1ECEF;							/*MOD*/
+	background-color: #E1ECEF;
 	padding: 0px 0px 0px 10px;
 	border: 1px solid #00505E;
 	border-radius: 4px;
-	color: #00252b;										/*MOD*/
-	height: 100%;										/*MOD*/
+	color: #00252b;
+	height: 100%;
 }
 
 #redaction {
 	overflow-x: hidden;
     overflow-y: auto;
-	background-color: #E1ECEF;							/*MOD*/
+	background-color: #E1ECEF;
 	height: -moz-calc(100% - 40px);
 	height: -webkit-calc(100% - 40px);
 	height: calc(100% - 40px);
@@ -1132,9 +1214,9 @@ label {												/*Titres champs Rédaction*/
 	width: -moz-calc(100% - 40px);
 	width: -webkit-calc(100% - 40px);
 	width: calc(100% - 40px);
-	border-left: 1px solid #000000;							/*MOD*/
-	border-right: 1px solid #000000;						/*MOD*/
-	border-top: 1px solid #000000;							/*MOD*/
+	border-left: 1px solid #00505e;							/*MOD*/
+	border-right: 1px solid #00505e;						/*MOD*/
+	border-top: 1px solid #00505e;							/*MOD*/
 	margin-top: 5px;
 	padding: 2px 3px 2px 2px;		/*IE OK*/
 	background: #ffde93; /* Old browsers */
@@ -1143,34 +1225,27 @@ label {												/*Titres champs Rédaction*/
 
 .icon {
 	background: #f4ffff; /* Old browsers */
-	background: linear-gradient(to bottom, #f4ffff 7%,#b4e1ea 100%); /* W3C */
+	background: linear-gradient(to bottom, #f4ffff 0%,#b4e1ea 100%); /* W3C */
 	border: 1px solid gray;
-	border-radius:5px;
+	border-radius:4px;
 	display: inline-flex;
 	display: -webkit-inline-flex;
-	margin-right: -3px;				/*Modifier en fonction du nb d'icônes*/
+	margin-right: -3.5px;				/*Modifier en fonction du nb d'icônes*/
 	padding: 2px 3px 2px 3px;			/*Chrome & IE11*/
-	height: 34px;						/*FF*/
-	width: 34px;						/*FF*/
+	height: 32px;						/*FF*/
+	width: 32px;						/*FF*/
 }
 
 .icon:hover {
 	background: #c4f5ff; /* Old browsers */
-	background: linear-gradient(to bottom, #c4f5ff 0%,#f4ffff 93%); /* W3C */
+	background: linear-gradient(to bottom, #b4e1ea 0%,#f4ffff 100%); /* W3C */
 	cursor: pointer;
 }
 
 .icon_img {
-	height: 26px;
-	width: 26px;
+	height: 24px;
+	width: 24px;
 }
-
-/*#insert_b {
-    background-image: url("icones/cafe.png"), linear-gradient(to bottom, #f4ffff 7%, #b4e1ea 100%);
-    background-position: center center;
-    background-repeat: no-repeat;
-    vertical-align: top;
-}*/
 
 #insert_other {
 	background: #e5e5e5; /* Old browsers */
@@ -1178,7 +1253,7 @@ label {												/*Titres champs Rédaction*/
 	border: 1px solid grey;
 	box-shadow: none;
 	color: #00252b;
-	height: 34px;
+	height: 32px;
 	text-shadow: 1px 1px 1px white;
 	vertical-align: top;
 }
@@ -1198,30 +1273,29 @@ label {												/*Titres champs Rédaction*/
 	width: calc(100% - 30px);
 	overflow: auto;
 	border: 1px solid #00505e;
-	background:url(img/Tahiti_art_bkgrnd.jpg);				/*MOD*/
+	background:url(img/Tahiti_art_bkgrnd.jpg);
 	background-size:100% 100%;
 	background-repeat:no-repeat;
-	color: #00252B;											/*MOD*/
+	color: #00252B;
 }
 
 #formulaire_from {
 	margin: 0px;
-	padding: 0px;
+	padding: 0px 0px 0px 5px;
 	width: 298px;
-	padding-left: 5px;
 }
 
 #formulaire_email {
 	margin: 0px;
-	padding: 0px;
-	width: 298px;
-	padding-left: 5px;
+	padding: 0px 0px 0px 5px;
+	width: 299px;											/*MOD*/
 }
 
 #formulaire_body, #formulaire_body_html {
-	display: block;									/*NEW*/
+	display: block;
 	padding: 10px;
-	border: 1px solid #00505E;								/*MOD*/
+	border: 1px solid #00505E;
+	border-radius: 0px;										/*MOD*/
 	background-color: white;
 	font: 14px monospace;
 	margin: 0;
@@ -1235,22 +1309,22 @@ label {												/*Titres champs Rédaction*/
 	background-image:url(img/Tahiti_art_bkgrnd.jpg)!important;	/*MOD*/
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
-	color: #00252B;											/*MOD*/
+	color: #00252B;
 }
 
-#formulaire_subject, #formulaire_newsgroup {
+#formulaire_subject{										/*MOD*/
 	width: 608px;
 }
 
 #formulaire_fu2 {
-	width: 265px;
+	width: 298px;											/*MOD*/
 }
 
 #formulaire_xpostmail {
-	width: 265px;
+	width: 299px;											/*MOD*/
 }
 
-.insert_media {												/*MOD*/
+.insert_media {
 	padding-left: 5px;
 	width: 98%;
 }
@@ -1269,17 +1343,17 @@ label {												/*Titres champs Rédaction*/
 	cursor: pointer;
 }
 
-#mode_html {
-	opacity: 0.3;
-	float:right;
+#mode_html, #mode_html.activated {
+    background: linear-gradient(to bottom, #f4ffff 0%,#b4e1ea 100%);
+    border: 1px solid #a88146;
+    border-radius: 4px;
+    float: right;
+    font-weight: bold;
+    height: 32px;										/*MOD*/
 }
 
-#mode_html:hover {
-	opacity: 1;
-}
-
-#mode_html.actif {
-	opacity: 1;
+#mode_html:hover, #mode_html.activated:hover {
+    background: linear-gradient(to bottom, #b4e1ea 0%,#f4ffff 100%);
 }
 
 .insert_c {										/*Table de caractères*/
@@ -1325,6 +1399,92 @@ label {												/*Titres champs Rédaction*/
     font-weight: bold;
 }
 
+/*Onglet Dessin*/
+
+#paint_window {												/*NEW*/
+    display: block;
+    height: 90%;
+}
+
+
+#menu_dessin {
+    font-family: Verdana;
+    font-size: 0.9em;
+    margin-left: 10px;
+    width: 200px;
+}
+
+.textes_dessin {
+    color: blue;
+    margin: 5px 0px;
+    text-align: center;
+}
+
+#icones_dessin {
+    background-color: #fcfcfc;
+    border: 2px solid;
+    height: 235px;
+    margin-top: 34px;
+    padding: 0 10px;
+}
+
+#icones_dessin button.selected {
+    background: #e2fff7;
+}
+
+.paint_icon {
+    background: linear-gradient(to bottom, #f2f2f2 0%, #e5e5e5 100%);
+    border: 1px solid gray;
+    border-radius: 5px;
+    height: 28px;
+	margin: 0 3px 8px 0;
+    padding: 2px 3px;
+    width: 28px;
+}
+
+.paint_icon:hover {
+    background: linear-gradient(to bottom, #e5e5e5 0%, #f2f2f2 100%);
+    cursor: pointer;
+}
+
+.paint_icon_img {
+    height: 20px;
+    width: 20px;
+}
+
+#outils_dessin {
+    background-color: #fcfcfc;
+    border: 2px solid;
+    height: 201px;
+    margin-top: 10px;
+    padding: 0 10px;
+}
+
+#outils_dessin input {
+    cursor: pointer;
+    margin-left: 28px;
+    margin-top: 5px;
+    width: 120px;
+}
+
+#cadre_dessin {
+    background-color: #ffffff;
+    border: 2px solid;
+    cursor: crosshair;
+    height: 450px;
+    left: 230px;
+    position: absolute;
+    top: 52px;
+    width: 640px;
+}
+
+#clear_dessin, #capture_dessin {
+    float: right;
+    margin-right: 27px;
+    position: relative;
+    top: 20px;
+}
+
 /* -----------------------
   Left Nav
 -------------------------- */
@@ -1354,7 +1514,7 @@ label {												/*Titres champs Rédaction*/
 	margin: 10px 0px 10px 10px;
 }
 
-#forget_password {									/*NEW*/
+#forget_password {									/*???*/
 	margin: 10px 0px 10px 0px;
 }
 
@@ -1366,9 +1526,9 @@ label {												/*Titres champs Rédaction*/
 	background: #a3d9e0; /* Old browsers */
 	background: linear-gradient(to right, #a3d9e0 0%,#ffdf87 100%); /* W3C */
 	background-position: top left;
-	border-bottom: 1px solid #00505E;							/*MOD*/
-	border-left: 1px solid  #00505E;							/*MOD*/
-	border-right: 1px solid  #00505E;							/*MOD*/
+	border-bottom: 1px solid #00505E;
+	border-left: 1px solid  #00505E;
+	border-right: 1px solid  #00505E;
 	border-radius: 4px 4px 4px 4px;
 	margin-top: 10px;
 	overflow-x: hidden;
@@ -1379,28 +1539,28 @@ label {												/*Titres champs Rédaction*/
 	background-repeat: no-repeat;
 	position: absolute;
 	top: 230px;
-	left: 240px;									/*MOD - position de l'image*/
-	height: 240px;								/*MOD - hauteur réelle de l'image*/
-	width: 45px;								/*MOD - largeur réelle de l'image*/
+	left: 240px;
+	height: 240px;								/*Hauteur réelle de l'image*/
+	width: 45px;								/*Largeur réelle de l'image*/
 	z-index: 2;							/*Pour ne pas l'afficher dans la console*/
 }
 
-#leftnav .title{									/*Gradient titres cadre gauche*/
+#leftnav .title{
 	text-align: center;
 	font-weight:bold;
 	line-height: 22px;
-	border-top: 1px solid #00505E;								/*MOD*/
-	border-bottom: 1px solid #00505E;							/*MOD*/
-	/*color: #F0C300;*/											/*MOD*/
+	border-top: 1px solid #00505E;
+	border-bottom: 1px solid #00505E;
+	/*color: #F0C300;*/
 	background: #16ff22; /* Old browsers */
 	background: linear-gradient(to right, #10bc16 0%,#16ff22 25%,#16ff22 75%,#10bc16 100%);
 }
 
-input {
+input, textarea {											/*NEW*/
 	border-radius: 4px 4px 4px 4px;
 }
 
-#voir_hierarchies {									/*NEW*/
+#voir_hierarchies {
 	display: block;
 	margin : auto;
 }
@@ -1430,7 +1590,7 @@ input {
 	padding-left: 5px;
 }
 
-#articles_send.actif, #articles_draft.actif, #articles_response.actif {		/*NEW*/
+#articles_send.actif, #articles_draft.actif, #articles_response.actif {
 	background-color: #bbe8ea;							/*MOD*/
 	border-radius: 4px;
 	box-shadow: 2px 1px 1px #88aacc;
@@ -1438,7 +1598,7 @@ input {
 }
 
 #articles_send:hover, #articles_draft:hover, #articles_response:hover {
-	background-color: #bbe8ea;							/*MOD*/
+	background-color: #bbe8ea;
 	border-radius: 4px;	
 }
 
@@ -1449,12 +1609,12 @@ hr {														/*Favoris & Accueil*/
 	background: linear-gradient(to right, rgba(0,0,0,0) 0%,rgba(0,0,0,0.75) 50%,rgba(0,0,0,0) 100%); /* W3C */
 }
 
-.groupe:active {										/*NEW*/
+.groupe:active {
 	background-color: #e1ecef;
 }
 
-.w:hover, .r:hover, .h:hover, .newsgroup:hover {		/*NEW*/
-	background-color: #bbe8ea;								/*MOD*/
+.w:hover, .r:hover, .h:hover, .newsgroup:hover {
+	background-color: #bbe8ea;
 	border-radius: 4px;
 }
 
@@ -1493,10 +1653,10 @@ hr {														/*Favoris & Accueil*/
 	color: red;
 }
 
-#liste_hierarchies {												/*MOD*/
-	background: linear-gradient(to right, #a3d9e0 0%,#ffdf87 100%); /* W3C */
+#liste_hierarchies {
+	background: linear-gradient(to right, #a3d9e0 0%,#ffdf87 100%);
 	border-radius: 4px;
-	border: 1px solid #472e00;
+	border: 1px solid #00505e;
 	font-size: 13px;
 }
 
@@ -1508,9 +1668,9 @@ hr {														/*Favoris & Accueil*/
 }
 
 .newsgroup.actif {
-	background-color: #bbe8ea;									/*MOD*/
+	background-color: #bbe8ea;
 	border-radius: 4px;
-    box-shadow: 2px 1px 1px #88aacc;				/*NEW*/
+    box-shadow: 2px 1px 1px #88aacc;
 	margin: 2px 15px 2px 0px;
 }
 

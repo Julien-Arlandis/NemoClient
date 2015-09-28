@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998h',
+UserAgent: 'Nemo/0.998i',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -240,6 +240,7 @@ Thread:{
 	viewlu: 'all', // à mettre dans l'interface
 	indexDataID: [],
 	value: [],
+	listen: 0,
 	display: function() {},
 
 	clean: function() {
@@ -269,10 +270,7 @@ Thread:{
 	get: function(params) {
 
 		this.filter["Data.DataType"] = "Article";
-
-		if(typeof params.listen == "undefined") {
-			params.listen = 0;
-		}
+		this.listen = (typeof params.listen != "undefined" && params.listen) ? 1 : 0;
 
 		if(params.IDstart) {
 			this.filter["ID"] = [params.IDstart, 'min'];
@@ -287,7 +285,7 @@ Thread:{
 			"select":["Data.DataID","Data.Subject","Data.FromName","Data.FromMail","Data.InjectionDate","Data.ThreadID","Data.Control","@2References","Meta.Size"],
 			"limit": Nemo.get('totalArticle'),
 			"filter": this.filter,
-			"listen": params.listen
+			"listen": this.listen
 			}
 		];
 
@@ -325,7 +323,7 @@ Thread:{
 			if(maxID == 0) {
 				maxID = params.IDstart;
 			}
-			if(params.listen || params.listenNext) {
+			if(this.listen || params.listenNext) {
 				JNTP.xhrAbortAll();
 				this.get({"listen":1,"notclean":true,"IDstart":maxID});
 			}

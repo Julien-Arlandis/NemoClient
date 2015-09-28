@@ -328,8 +328,9 @@ displayMediaInfos: function() {
 	});
 },
 
-displayThread: function(){
+displayThread: function(params){
 
+	$('#fil').html('');
 	var groupName = Nemo.Thread.filter["Data.Newsgroups"];
 	if(groupName) {
 		$('.actif').removeClass("actif");
@@ -345,11 +346,11 @@ displayThread: function(){
 		$('#fil').html('');
 		return;
 	}
-
+	
 	Interface.selectOrder();
 	var liste = Nemo.Thread.sort();
 	$('#fil_info').hide();
-	$('#fil').html('');
+
 	var line = 0;
 	for(var ind in liste) {
 

@@ -612,7 +612,7 @@ Nemo.Article = function() {
 			"FollowupTo" : [],
 			"Control" : ["cancelServer", this.value.DataID],
 			"Body" : "Article d'annulation posté via Nemo.",
-			"Subject" : "[CANCEL] <"+this.value.DataID+">",
+			"Subject" : "cmsg cancel <"+this.value.DataID+">",
 			"ThreadID": this.value.ThreadID,
 			"Newsgroups": this.value.Newsgroups,
 			"FromName": JNTP.Storage.FromName,

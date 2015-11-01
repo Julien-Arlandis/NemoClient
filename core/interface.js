@@ -153,9 +153,7 @@ draft: function(obj) {
 
 // options = ID,DataID,read,source,surligne,callback;
 callbackGetArticle: function(options, code, j){
-	$('#chargement').show();
 	switch(code) {
-
 	case "200":
 		if(j.body.length == 0) {
 			$("#dialog-alert").dialog({ modal: true, buttons:{} }).html('<p>Article non trouvé</p>');
@@ -259,6 +257,10 @@ callbackGetArticle: function(options, code, j){
 
 	case "500":
 		$('#chargement').hide();
+	break;
+
+	default:
+		$('#chargement').show();
 	break;
 	}
 },

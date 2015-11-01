@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998j',
+UserAgent: 'Nemo/0.998k',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -546,6 +546,7 @@ Nemo.Article = function() {
 	// options = ID,DataID,read,source,surligne,callback;
 	this.get = function(options){
 		this.owner = false;
+		options.graphicRefresh(options);
 		if(options.ID) {
 			cmd = ["get",{"filter":{"Data.DataType":"Article","ID":options.ID}}];
 		}else if(options.DataID) {

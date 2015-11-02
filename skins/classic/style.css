@@ -654,7 +654,7 @@ tr.color{
 tr.favori {
 	font-size: 1em;
 	font-weight: normal !important;
-	background-color: green;
+	background-color: green !important;
 }
 
 .visible.selected, .visible.selected .taille{

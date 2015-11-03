@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998i',
+UserAgent: 'Nemo/0.998m',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -362,10 +362,15 @@ Thread:{
 
 	setState: function(dataid, value) {
 		var keys = Object.keys( Nemo.get('articleState') );
-		if(!value) {
+		if(!value && typeof Nemo.Storage['articleState'][dataid] == "undefined") {
 			delete Nemo.Storage['articleState'][dataid];
 		}else{
-			Nemo.Storage['articleState'][dataid] = value
+			Nemo.Storage['articleState'][dataid] = (typeof Nemo.Storage['articleState'][dataid] != "undefined") ? Nemo.Storage['articleState'][dataid] : 0;
+			var d1 = Math.floor(Nemo.Storage['articleState'][dataid]/10); //status = 0, 1, 2, 3...
+			var u1 = Nemo.Storage['articleState'][dataid]%10; // read = 0, 1
+			var d2 = Math.floor(value/10);
+			var u2 = value%10;
+			Nemo.Storage['articleState'][dataid] = (d2 > 0) ? 10*d2+u2 : 10*d1+u2;
 		}
 		if(keys.length > 5000) delete Nemo.Storage['articleState'][keys[0]];
 		localStorage['articleState'] = JSON.stringify(Nemo.Storage['articleState']);
@@ -486,7 +491,7 @@ Favoris: {
 
 	sort: function(){
 		var favoris = [];
-		var favoris2 = {};
+		var setStafavoris2 = {};
 		for(i in Nemo.get('favoris')) {
 		    favoris.push(i);
 		}
@@ -546,6 +551,7 @@ Nemo.Article = function() {
 	// options = ID,DataID,read,source,surligne,callback;
 	this.get = function(options){
 		this.owner = false;
+		options.graphicRefresh(options);
 		if(options.ID) {
 			cmd = ["get",{"filter":{"Data.DataType":"Article","ID":options.ID}}];
 		}else if(options.DataID) {
@@ -556,25 +562,27 @@ Nemo.Article = function() {
 		JNTP.execute(cmd, function(code, j, callback){
 			switch(code) {
 				case "200":
-					this.value = j.body[0].Data;
-					this.Jid = j.body[0].Jid;
-					if(this.value.DataType == 'Article') {
-						if( JNTP.Packet.isValid(j.body[0]) ){
-							this.isJNTPValid = true;
-							var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.HashKey : Nemo.get('secretKey');
-							this.owner = (this.value.HashClient == JNTP.getHashClient(this.value,  secretkey).hashClientCompute);
-							this.isProtected = (this.Jid == this.value.DataID);
-						}else{
-							this.isJNTPValid = false;
+					if(j.body.length) {
+						this.value = j.body[0].Data;
+						this.Jid = j.body[0].Jid;
+						if(this.value.DataType == 'Article') {
+							if( JNTP.Packet.isValid(j.body[0]) ){
+								this.isJNTPValid = true;
+								var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.HashKey : Nemo.get('secretKey');
+								this.owner = (this.value.HashClient == JNTP.getHashClient(this.value,  secretkey).hashClientCompute);
+								this.isProtected = (this.Jid == this.value.DataID);
+							}else{
+								this.isJNTPValid = false;
+							}
 						}
-					}
 
-					if(options.callback) { 
-						options.callback(options);
-					}
+						if(options.callback) { 
+							options.callback(options);
+						}
 
-					if(options.read) {
-						Nemo.Thread.setState(this.value.DataID, 1);
+						if(options.read) {
+							Nemo.Thread.setState(this.value.DataID, 1);
+						}
 					}
 				break;
 
@@ -612,7 +620,7 @@ Nemo.Article = function() {
 			"FollowupTo" : [],
 			"Control" : ["cancelServer", this.value.DataID],
 			"Body" : "Article d'annulation posté via Nemo.",
-			"Subject" : "[CANCEL] <"+this.value.DataID+">",
+			"Subject" : "cmsg cancel <"+this.value.DataID+">",
 			"ThreadID": this.value.ThreadID,
 			"Newsgroups": this.value.Newsgroups,
 			"FromName": JNTP.Storage.FromName,
@@ -732,7 +740,7 @@ Nemo.Article = function() {
 	this.setTemplateVar = function() {
 		var body = this.value.Body;
 		var reg = /\[spoil\]([\s\S]*?)\[\/spoil\]/ig;
-		body = body.replace(reg, function(s, m){return '[spoil]'+Nemo.Tools.rot13(Nemo.Tools.rot13(m).replace(/#DataID#/g, this.value.DataID))+'[/spoil]';});
+		body = body.replace(reg, function(s, m){return '[spoil]'+Nemo.Tools.rot13(Nemo.Tools.rot13(m).replace(/#DataID#/g, this.value.DataID))+'[/spoil]';}.bind(this));
 
 		var reg = /\[var=([#@a-zA-Z0-9\/:]+)\]/g;
 		if(this.value.DataID) {

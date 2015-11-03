@@ -153,9 +153,7 @@ draft: function(obj) {
 
 // options = ID,DataID,read,source,surligne,callback;
 callbackGetArticle: function(options, code, j){
-	$('#chargement').show();
 	switch(code) {
-
 	case "200":
 		if(j.body.length == 0) {
 			$("#dialog-alert").dialog({ modal: true, buttons:{} }).html('<p>Article non trouvé</p>');
@@ -260,6 +258,10 @@ callbackGetArticle: function(options, code, j){
 	case "500":
 		$('#chargement').hide();
 	break;
+
+	default:
+		$('#chargement').show();
+	break;
 	}
 },
 
@@ -356,14 +358,10 @@ displayThread: function(params){
 
 		var date_article = Nemo.Tools.date2String(liste[ind].Data.InjectionDate);
 		var lu = '';
-		switch( this.getState(liste[ind].Data.DataID) ) {
-			case 1:
-			lu = ' lu';
-			break;
-			case 2:
-			lu = ' favori';
-			break;
-		}
+		var x = this.getState(liste[ind].Data.DataID);
+		if( x%10 == 1) lu = ' lu';
+		if(Math.floor(x/10) == 1 ) lu += ' favori';
+
 
 		var attach = (liste[ind].Meta.Size.length > 1) ? 'trombone' : 'none';
 		var fromName = (liste[ind].Data.FromName != "") ? liste[ind].Data.FromName : liste[ind].Data.FromMail;
@@ -788,7 +786,7 @@ reloadEvent: function() {
 				break;
 			case "mark_favori":
 				$('#fil .selected').each(function() {
-					Nemo.Thread.setState($(this).attr('data-DataID'), 2);
+					Nemo.Thread.setState($(this).attr('data-DataID'), 10);
 					$('#fil [data-DataID="'+$(this).attr('data-DataID')+'"]').addClass("favori");
 				})
 				break;	
@@ -881,7 +879,9 @@ refreshBlackList: function() {
 		$('#blacklist').append('<li>'+Nemo.Storage.blacklist[i]+'</li>');
 	}
 	if( Nemo.Storage.blacklist.length == 0) {
-		$('#blacklist').append('Aucun utilisateur dans la liste noire');
+		$('#blacklist').append('<i>Aucun utilisateur dans la liste noire</i>');
+	}else{
+		$('#blacklist').prepend("<i>Cliquez sur un auteur pour le retirer de la liste noire</i><p>");
 	}
 
 	$('#blacklist li').click(function() {

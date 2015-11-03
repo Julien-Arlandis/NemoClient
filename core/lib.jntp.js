@@ -180,6 +180,7 @@ forgeDataArticle: function(art, secretKey) {
 
 uniqueJSON: function(json, isrecursiv) {
 	if (typeof json == 'object' && !(json instanceof Array)) {
+		if (json == null) return null;
 		var tmp_array = [];
 		for (var key in json) {
 			tmp_array.push(key);
@@ -211,6 +212,7 @@ uniqueJSON: function(json, isrecursiv) {
 
 sortJSON: function(json, isrecursiv) {
 	if (typeof json == 'object' && !(json instanceof Array)) {
+		if (json == null) return null;
 		var tmp_array = [];
 		for (var key in json) {
 			tmp_array.push(key);

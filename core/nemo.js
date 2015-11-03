@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998l',
+UserAgent: 'Nemo/0.998m',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -362,7 +362,7 @@ Thread:{
 
 	setState: function(dataid, value) {
 		var keys = Object.keys( Nemo.get('articleState') );
-		if(!value) {
+		if(!value && typeof Nemo.Storage['articleState'][dataid] == "undefined") {
 			delete Nemo.Storage['articleState'][dataid];
 		}else{
 			Nemo.Storage['articleState'][dataid] = (typeof Nemo.Storage['articleState'][dataid] != "undefined") ? Nemo.Storage['articleState'][dataid] : 0;

@@ -360,7 +360,7 @@ displayThread: function(params){
 		var lu = '';
 		var x = this.getState(liste[ind].Data.DataID);
 		if( x%10 == 1) lu = ' lu';
-		if(Math.floor(x/10) == 1 ) lu = ' favori';
+		if(Math.floor(x/10) == 1 ) lu += ' favori';
 
 
 		var attach = (liste[ind].Meta.Size.length > 1) ? 'trombone' : 'none';

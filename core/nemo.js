@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998m',
+UserAgent: 'Nemo/0.998n',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -283,7 +283,7 @@ Thread:{
 
 		cmd = ["get", {
 			"select":["Data.DataID","Data.Subject","Data.FromName","Data.FromMail","Data.InjectionDate","Data.ThreadID","Data.Control","@2References","Meta.Size"],
-			"limit": Nemo.get('totalArticle'),
+			"limit": params.limit || Nemo.get('totalArticle'),
 			"filter": this.filter,
 			"listen": this.listen
 			}
@@ -307,7 +307,7 @@ Thread:{
 							this.indexDataID[j.body[ind].Data.DataID] = true;
 						}
 					}else{
-						if(j.body[ind].Data.Control[0] == 'cancelUser' || j.body[ind].Data.Control[0] == 'cancelServer') {
+						if(j.body[ind].Data.Control[0] == 'cancelUser' || j.body[ind].Data.Control[0] == 'cancelServer' || j.body[ind].Data.Control[0] == 'cancel') { // Supprimer cancel
 							this.del(j.body[ind].Data.Control[1]);
 						}
 					}

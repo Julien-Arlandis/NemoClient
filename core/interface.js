@@ -1654,7 +1654,7 @@ init: function() {
 		Nemo.Thread.filterOld = Nemo.Thread.filter;
 		Nemo.Thread.filter = {"Data.ThreadID":Interface.articleToRead.value.ThreadID};
 		Nemo.Thread.oldTri = [Nemo.Thread.tri.field, Nemo.Thread.tri.order, Nemo.Thread.tri.tree];
-		Nemo.Thread.get({"listenNext":1});
+		Nemo.Thread.get({"listenNext":1, "limit":1000});
 		Interface.selectOrder("InjectionDate", "desc", 1);
 	});
 

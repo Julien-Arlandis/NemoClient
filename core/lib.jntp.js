@@ -5,7 +5,7 @@
 
 var JNTP = {
 
-version: '1.0',
+version: '0.20.1',
 log: false,
 logServeur: true,
 logClient: true,
@@ -44,10 +44,10 @@ Packet: {
 			JNTP.Packet.val(pack);
 		}
 		var copyArticle = jQuery.extend(true, {},JNTP.Packet.value.Data);
-		if(copyArticle.DataID == JNTP.Packet.value.Jid) {
-			copyArticle.DataID = "";
+		if(copyArticle.DataID.substring(0,27) == JNTP.Packet.value.Jid) {
+			copyArticle.DataID = copyArticle.DataID.substring(27);
 		}
-		return ( JNTP.hashString( JNTP.uniqueJSON( copyArticle ) ) == JNTP.Packet.value.Jid.split('@')[0] && copyArticle.OriginServer == JNTP.Packet.value.Jid.split('@')[1] );
+		return ( JNTP.hashString( JNTP.uniqueJSON( copyArticle ) ) == JNTP.Packet.value.Jid );
 	}
 },
 

@@ -157,6 +157,7 @@ callbackGetArticle: function(options, code, j){
 	case "200":
 		if(j.body.length == 0) {
 			$("#dialog-alert").dialog({ modal: true, buttons:{} }).html('<p>Article non trouvé</p>');
+			$('#chargement').hide();
 			return;
 		}
 
@@ -1084,6 +1085,12 @@ initRedaction:function() {
 		$('#add_img_url').val('');
 	});
 
+	$('#submit_audio_url').click(function() {
+		Interface.insertBaliseAtSelection('audio', $('#add_audio_url').val());
+		$('.insert_audio').hide();
+		$('#add_audio_url').val('');
+	});
+
 	$('#submit_pdf_url').click(function() {
 		Interface.insertBaliseAtSelection('pdf', $('#add_pdf_url').val());
 		$('.insert_pdf').hide();
@@ -1121,7 +1128,7 @@ initRedaction:function() {
 		}
 	});
 
-	$('#insert_a, #insert_b, #insert_i, #insert_u, #insert_s, #insert_tex, #insert_code, #insert_cite, #insert_youtube, #insert_dailymotion, #insert_map, #insert_abc, #insert_audio').click(function() {
+	$('#insert_a, #insert_b, #insert_i, #insert_u, #insert_s, #insert_tex, #insert_code, #insert_cite, #insert_youtube, #insert_dailymotion, #insert_map, #insert_abc').click(function() {
 		Interface.insertBaliseAtSelection($(this).val(), Interface.getTextAtSelection() );
 	});
 
@@ -1137,6 +1144,16 @@ initRedaction:function() {
 	$('#insert_other').change(function() {
 		Interface.insertBaliseAtSelection($(this).val(), Interface.getTextAtSelection());
 		$('#insert_other').val('');
+	});
+
+	$('#insert_audio').click(function() {
+		if($('.'+$(this).attr('id')).is(':hidden')){
+			$('.insert_media').hide();
+			$('.'+$(this).attr('id')).show();
+			$('#add_audio_url').val( Interface.getTextAtSelection() );
+		}else{
+			$('.insert_media').hide();
+		}
 	});
 
 	$('#insert_img').click(function() {

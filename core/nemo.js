@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998n',
+UserAgent: 'Nemo/0.998o',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -570,7 +570,7 @@ Nemo.Article = function() {
 								this.isJNTPValid = true;
 								var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.HashKey : Nemo.get('secretKey');
 								this.owner = (this.value.HashClient == JNTP.getHashClient(this.value,  secretkey).hashClientCompute);
-								this.isProtected = (this.Jid == this.value.DataID);
+								this.isProtected = (this.Jid == this.value.DataID.substring(0,27));
 							}else{
 								this.isJNTPValid = false;
 							}

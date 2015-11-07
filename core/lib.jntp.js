@@ -27,7 +27,7 @@ Storage: {
 
 setUrl: function(url) {
 	JNTP.url = url;
-	JNTP.uri = JNTP.url + '/jntp/';
+	JNTP.uri = JNTP.url + '/jntp?';
 },
 
 Packet: {

@@ -1,5 +1,0 @@
-Options +FollowSymLinks
-RewriteEngine On
-RewriteBase /
-RewriteRule ^jntp/(.*)$ 	NemoServer/index.php?resource=$1	[L]
-RewriteRule ^([a-z0-9.\-]+\.[a-z0-9.\-]*\*?),?([0-9]*)/([0-9]*),?.*$ /SEO/generator.php?group=$1&cursor=$2&ID=$3	[L]

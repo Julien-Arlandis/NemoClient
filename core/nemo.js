@@ -334,7 +334,7 @@ Thread:{
 				params.callback(res);
 			}
 
-			if(typeof params.notclean == "undefined" || this.value.length) {
+			if(typeof params.notclean == "undefined" || j.body.length) {
 				this.display();
 			}
 		break;

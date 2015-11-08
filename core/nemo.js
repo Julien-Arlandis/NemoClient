@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998o',
+UserAgent: 'Nemo/0.998p',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -307,7 +307,7 @@ Thread:{
 							this.indexDataID[j.body[ind].Data.DataID] = true;
 						}
 					}else{
-						if(j.body[ind].Data.Control[0] == 'cancelUser' || j.body[ind].Data.Control[0] == 'cancelServer' || j.body[ind].Data.Control[0] == 'cancel') { // Supprimer cancel
+						if(j.body[ind].Data.Control[0] == 'cancelUser' || j.body[ind].Data.Control[0] == 'cancelServer') {
 							this.del(j.body[ind].Data.Control[1]);
 						}
 					}
@@ -333,7 +333,10 @@ Thread:{
 			if(params.callback) {
 				params.callback(res);
 			}
-			this.display();
+
+			if(typeof params.notclean == "undefined" || this.value.length) {
+				this.display();
+			}
 		break;
 		}}.bind(this), true);
 	},

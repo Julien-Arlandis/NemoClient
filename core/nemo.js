@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998p',
+UserAgent: 'Nemo/0.998q',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -281,7 +281,7 @@ Thread:{
 			delete this.filter["ID"];
 		}
 
-		cmd = ["get", {
+		var cmd = ["get", {
 			"select":["Data.DataID","Data.Subject","Data.FromName","Data.FromMail","Data.InjectionDate","Data.ThreadID","Data.Control","@2References","Meta.Size"],
 			"limit": params.limit || Nemo.get('totalArticle'),
 			"filter": this.filter,
@@ -300,14 +300,14 @@ Thread:{
 				for(var ind in j.body) {
 					ID = j.body[ind].ID;
 					maxID = (ID > maxID) ? ID : maxID;
-					if(!j.body[ind].Data.Control){
+					if(!j.body[ind].Data.Control || typeof Nemo.Thread.filter['Data.Control:1'] != "undefined"){
 						j.body[ind].Data.InjectionDate = (typeof j.body[ind].Data.InjectionDate) ? j.body[ind].Data.InjectionDate.replace("T", " ").replace("Z",""): '';
 						if( !this.indexDataID[j.body[ind].Data.DataID]) {
 							this.value.push(j.body[ind]);
 							this.indexDataID[j.body[ind].Data.DataID] = true;
 						}
 					}else{
-						if(j.body[ind].Data.Control[0] == 'cancelUser' || j.body[ind].Data.Control[0] == 'cancelServer') {
+						if(j.body[ind].Data.Control[0] == 'cancelUser' || j.body[ind].Data.Control[0] == 'cancelServer'){
 							this.del(j.body[ind].Data.Control[1]);
 						}
 					}

@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998o',
+UserAgent: 'Nemo/0.998p',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -307,7 +307,7 @@ Thread:{
 							this.indexDataID[j.body[ind].Data.DataID] = true;
 						}
 					}else{
-						if(j.body[ind].Data.Control[0] == 'cancelUser' || j.body[ind].Data.Control[0] == 'cancelServer' || j.body[ind].Data.Control[0] == 'cancel') { // Supprimer cancel
+						if(j.body[ind].Data.Control[0] == 'cancelUser' || j.body[ind].Data.Control[0] == 'cancelServer') {
 							this.del(j.body[ind].Data.Control[1]);
 						}
 					}
@@ -333,7 +333,10 @@ Thread:{
 			if(params.callback) {
 				params.callback(res);
 			}
-			this.display();
+
+			if(typeof params.notclean == "undefined" || j.body.length) {
+				this.display();
+			}
 		break;
 		}}.bind(this), true);
 	},
@@ -568,7 +571,7 @@ Nemo.Article = function() {
 						if(this.value.DataType == 'Article') {
 							if( JNTP.Packet.isValid(j.body[0]) ){
 								this.isJNTPValid = true;
-								var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.HashKey : Nemo.get('secretKey');
+								var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.hashkey : Nemo.get('secretKey');
 								this.owner = (this.value.HashClient == JNTP.getHashClient(this.value,  secretkey).hashClientCompute);
 								this.isProtected = (this.Jid == this.value.DataID.substring(0,27));
 							}else{
@@ -602,7 +605,7 @@ Nemo.Article = function() {
 			"Uri": JNTP.url + '/?DataID=#DataID#',
 			"UserAgent": Nemo.UserAgent
 		});
-		var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.HashKey : Nemo.get('secretKey');
+		var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.hashkey : Nemo.get('secretKey');
 		var article = JNTP.forgeDataArticle(this.value, secretkey);
 		JNTP.execute([ "diffuse" , { "Data" : article.Data } ], function(code, j){
 			switch(code) {
@@ -630,7 +633,7 @@ Nemo.Article = function() {
 	};
 
 	this.del = function(options){
-		var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.HashKey : Nemo.get('secretKey');
+		var secretkey = (Nemo.get('useHashKey')) ? Nemo.get('secretKey') + JNTP.Storage.hashkey : Nemo.get('secretKey');
 		var articleToDelete = new Nemo.Article().set({
 			"DataType" : "Article",
 			"FollowupTo" : [],

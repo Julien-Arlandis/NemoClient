@@ -17,7 +17,7 @@ xhrPool: [],
 xhr: {},
 
 Storage: {
-	HashKey: '',
+	hashkey: '',
 	Session: '',
 	UserID: '',
 	FromName: '',
@@ -114,7 +114,7 @@ xhrAbortAll : function() {
 
 initSession: function(cmd, code, j){switch(code) {
 	case "200":
-		JNTP.Storage.HashKey = j.body.HashKey;
+		JNTP.Storage.hashkey = j.body.hashkey;
 		JNTP.Storage.Session = j.body.Session;
 		JNTP.Storage.UserID = j.body.UserID;
         	JNTP.Storage.FromName = j.body.FromName;
@@ -132,7 +132,7 @@ initSession: function(cmd, code, j){switch(code) {
 
 closeSession: function(cmd, code, j){switch(code) {
 	case "200":
-		JNTP.Storage.HashKey = '';
+		JNTP.Storage.hashkey = '';
 		JNTP.Storage.Session = false;
 		JNTP.authentified = false;
 	break;

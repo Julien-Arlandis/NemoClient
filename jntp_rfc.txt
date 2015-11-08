@@ -1,0 +1,813 @@
+Différences par rapport à la version 0.21.1 :
+
+*) URL = "http://" host "/jntp/?" Data.DataID "/" chemin
+remplace
+URL = "http://" host "/jntp/" Jid "/" chemin
+
+Statut du présent mémoire
+
+Ce document définit un nouveau protocole pour la diffusion de
+données sur un réseau décentralisé sur internet, et appelle à
+discussion et suggestions en vue de son amélioration. Il est
+distribué comme une RFC pour rendre ces informations facilement
+accessibles aux internautes. La distribution de ce document est
+illimitée.
+
+Résumé
+
+Le protocole JNTP « JSON News Transfer Protocol » définit un
+format d'échange de données en vue de créer un réseau décentralisé
+et standardisé de contenus sur internet, il permet aux différents
+serveurs qui constituent les nœuds de ce réseau d'échanger des
+données et d'en assurer la gestion. À l'origine le protocole JNTP
+a été créé pour les besoins du projet Nemo qui propose une interface
+opérationnelle pour assurer l’interopérabilité des différents
+réseaux et logiciels de discussion, dans toute leur diversité :
+webforums, newsgroups, réseaux sociaux, groupes JNTP, etc. Le
+projet Nemo s’articule autour d’un ensemble de technologies et de
+protocoles dont le protocole JNTP.
+
+1. Introduction
+
+Le protocole définit les règles de distribution de contenu sur un
+ensemble de serveurs, qui forment collectivement un réseau JNTP. Le
+protocole JNTP permet de transporter des messages au format texte,
+mais il peut également transporter tous types de médias : sons,
+fichiers, images, vidéos...
+Le protocole JNTP s'appuie sur un mécanisme transactionnel par le
+biais de requêtes. Une requête JNTP ainsi que sa réponse sont toutes
+deux constituées d'une chaîne de caractères définie par le format de
+données JSON. Le protocole JNTP suppose un protocole de requêtes de
+la couche applicative pour encapsuler la requête JNTP et sa réponse,
+il s'agira généralement de HTTP. Lorsque JNTP est transporté par
+HTTP la requête JNTP doit être adressée en méthode POST à l'url
+http://serveur/jntp/ où serveur désigne le FQDN du serveur JNTP.
+Toutes les commandes transmises par les clients et les serveurs JNTP
+sont des objets JSON. Le protocole JNTP est sensible à la casse.
+
+1.1. Conventions Used in This Document
+
+Les mots clés "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", et "OPTIONAL" de ce
+document doivent être interprétés comme il est décrit dans [RFC2119].
+
+Les règles grammaticales de ce document doivent être interprétées
+comme il est décrit dans [RFC5234]. Par ailleurs les règles définies
+dans [RFC7159] qui ne sont pas redéfinies dans ce document sont
+implicitement incluses dans ce document.
+
+Dans les exemples qui parsèment ce document, une ligne terminée
+par le caractère \ doit être considérée comme se continuant sur
+la ligne suivante. Par exemple, le texte :
+"content" : "This i\
+s an example of wra\
+pped line"
+doit être lu comme :
+"content" : "This is an example of wrapped line"
+
+1.2. Définitions
+
+* Un nœud JNTP ou serveur JNTP désigne un logiciel servant des
+requêtes qui respectent le protocole JNTP. Le logiciel doit
+s'exécuter sur une machine physique qui dispose d'au moins une
+adresse IP, d'un nom de domaine reconnu de manière globale, et
+d'au moins une paire de clés asymétriques. [norme X.509, protocole
+NTP ?]
+
+* Un lecteur JNTP désigne un logiciel conçu pour se connecter sur
+un serveur JNTP et qui permet de diffuser et d'interpréter les
+données qui y sont transportées.
+
+* Une Data désigne une information destinée à être transportée et
+diffusée sur un réseau JNTP.
+
+* Un DataType désigne un format de données qui structure une Data.
+
+* Un paquet JNTP désigne l'objet JSON qui encapsule une Data.
+
+* Le Jid désigne l'identifiant unique d'un paquet sur un réseau JNTP.
+
+* Une passerelle désigne un logiciel qui permet de dialoguer d'un
+côté avec un serveur JNTP, de l'autre avec un serveur de transport
+de données (distinct de JNTP).
+
+2. Grammaire JNTP
+
+Toutes les données échangées et manipulées par le protocole JNTP
+sont représentées en utilisant la syntaxe Javascript Object
+Notation (JSON) [RFC7159].
+
+Plus précisément, un sous-ensemble de JSON est utilisé, car des
+restrictions sont apportées aux types 'object' et 'number'.
+
+Nous définirons également quelques termes de vocabulaire et des
+transformations de valeurs JNTP.
+
+2.1. Restrictions sur le type 'object'
+
+Dans la section 4 de JSON [RFC7159], la structure 'object' est
+définie comme un ensemble de membres qui sont des paires nom/valeur,
+le nom étant de type 'string' sans aucune restriction.
+
+Dans JNTP, le 'nom' de chaque paire nom/valeur, que l'on désignera
+par le terme 'clé' dans le reste de ce document, ne peut contenir
+que des lettres, des chiffres, ou des caractères "-" ou "_",
+éventuellement précédés par un "#".
+
+object = begin-object [ member *( value-separator member ) ]
+end-object
+
+member = key name-separator value
+
+key = quotation-mark [ directive ] key-name quotation-mark
+
+directive = "#"
+
+key-name = 1*key-char
+
+key-char = ALPHA / DIGIT / "-" / "_"
+
+La partie optionnelle 'directive' est expliquée dans la section
+suivante de ce document.
+
+La partie 'key-name' DOIT contenir au moins 1 caractère et DEVRAIT
+contenir au maximum 20 caractères. Les clés "" et "#" sont donc
+interdites en JNTP alors qu'elles sont autorisées en JSON.
+
+Par ailleurs, alors que JSON demandait seulement par un SHOULD que
+les noms soient uniques au sein d'un même objet, dans JNTP cette
+contrainte est un MUST, et elle concerne la partie 'key-name' de
+la clé, indépendamment de la présence ou de l'absence d'une
+directive. Ainsi, une seule des deux clés "content" ou "#content"
+peut se trouver dans un objet donné.
+
+2.2 Directive "#"
+
+JNTP offre aux serveurs la possibilité de distribuer aux clients
+des paquets allégés, en substituant aux valeurs volumineuses de
+simples hashs SHA-1 encodés en base64url (séquences de 27 caractères, plus 2 pour les
+guillemets). En effet, les 160 bits du hash SHA-1 deviennent 26 * 6 + 4 bits, 
+ce qui fait une chaine de 28 caractères terminée par le caractère "=" en base64url. 
+Le dernier caractère "=" est supprimé pour se ramener à une longueur fixe de 27 caractères.
+Les clients peuvent ensuite récupérer les valeurs manquantes quand ils en ont besoin.
+
+Pour ce faire, lorsque la partie 'valeur' d'un couple 'clé/valeur'
+est une chaîne de caractères qui risque de devenir volumineuse,
+on peut (et dans certains cas on doit) préfixer la clé par la
+directive "#" et en même temps remplacer la valeur de la chaîne
+par son hash SHA-1 encodé en base64url [RFC3548].
+
+Lorsqu'une clé commence par "#", la valeur est alors forcément
+de type string, et outre les guillemets de début et de fin elle
+DOIT contenir exactement 27 caractères pris parmi les caractères 
+"-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".
+
+
+hash = quotation-mark 40hexdig quotation-mark
+
+hexdig = DIGIT / %x61-66 ; 0-9 or lowercase a-f
+
+2.3. Restrictions sur le type 'number'
+
+Dans la section 6 de JSON [RFC7159], les nombres sont définis
+par leur représentation décimale à l'exclusion de toute autre
+représentation, sans imposer de limites de grandeur ou de
+précision. Néanmoins cette spécification autorise les
+implémentations à fixer de telles limites, et rappelle que
+le format IEEE 754-2008 binary64 (double precision) [IEEE754]
+est généralement disponible et largement utilisé.
+
+Afin de limiter au maximum les problèmes d'interopérabilité,
+JNTP impose aux nombres les limites suivantes, compatibles
+avec le format IEEE 754-2008 binary64.
+
+a) Le nombre de chiffres significatifs (du premier au dernier
+chiffres non nuls, quelles que soient la position d'un
+éventuel point décimal et la valeur d'un éventuel exposant)
+ne peut pas dépasser 15 chiffres.
+
+b) En dehors des valeurs nulles (-0 et 0), les nombres doivent
+être compris entre -9.99999999999999e+307 et -1e-307
+inclusivement pour les nombres négatifs, entre 1e-307 et
+9.99999999999999e+307 inclusivement pour les nombres positifs.
+
+Un nombre comportant plus de 15 chiffres significatifs sera
+arrondi au nombre à 15 chiffres significatifs le plus proche, vers
+zéro si le 16e chiffre est compris entre 0 et 4, vers l'infini si
+le 16e chiffre est compris entre 5 et 9.
+
+Cela signifie que les entiers de 0 à 999999999999999 (10^15-1)
+sont représentables sans problème dans JNTP, mais qu'au delà il
+y aura perte d'information. Par exemple, les cinq nombres de
+1000000000000000 (10^15) à 1000000000000004 (10^15+4) seront
+tous représentés par le premier d'entre eux.
+
+Après un éventuel arrondi à 15 chiffres significatifs, le nombre
+sera remplacé par -0 s'il est compris entre -1e-307 et -0, par 0
+s'il est compris entre 0 et 1e-307. Mais si sa valeur absolue est
+supérieure à 9.99999999999999e+307, il sera remplacé par la valeur
+null, puisque JSON ne connaît pas d'Infinity ni de NaN.
+
+2.4. Valeur propre et représentation
+
+Le format JNTP, tout comme le format JSON, définit une représentation
+sous la forme de chaînes de caractères imprimables des différentes
+valeurs possibles.
+
+Par exemple, l'entier 125 est représenté par les trois caractères
+"1", "2" et "5". On dit que la chaîne de trois caractères 125 est
+une représentation de la valeur propre 125.
+
+De la même manière, la chaîne de treize caractères "\tHello\r\n"
+(avec les guillemets) est la représentation d'une chaîne de huit
+caractères : une tabulation, les caractères "H", "e", "l", "l",
+"o", un retour chariot, et un saut de ligne. C'est cette chaîne
+de huit caractères que nous appelons la valeur propre de la
+représentation "\tHello\r\n".
+
+Une représentation n'est généralement pas unique. Par exemple,
+les chaînes de caractères suivantes sont trois représentations
+différentes de la même valeur propre de type 'string' :
+"\tHello\r\n"
+"\u0009Hello\u000d\u000a"
+"\u0009\u0048\u0065\u006c\u006c\u006f\u000d\u000a"
+
+De même, les caractères blancs et l'ordre des clés n'étant pas
+significatifs dans un objet, voici deux représentations
+différentes de la même valeur propre de type 'object' :
+{
+   "one" : 1,
+   "two" : 2,
+   "three" : 3
+}
+{"one":1,"three":3,"two":2}
+
+2.5. Représentation canonique
+
+Parmi les différentes représentations possibles d'une valeur propre,
+on en choisit une et une seule que l'on appelle la représentation
+canonique. Pour qu'une représentation soit dite canonique, elle DOIT
+respecter toutes les règles des sections 2.5.1 à 2.5.5.
+
+2.5.1. Représentation canonique d'une des trois valeurs littérales
+
+Dans la section 3 de JSON [RFC7159] sont définies trois valeurs
+littérales :
+
+false null true
+
+Ces trois représentations sont canoniques puisque chacune est unique.
+
+2.5.2. Représentation canonique d'une chaîne de caractères
+
+La représentation des chaînes est définie dans la section 7 de
+JSON [RFC7159]. Il y est précisé que tout caractère Unicode peut
+être placé à l'intérieur des guillemets, sauf ceux qui doivent
+être echappés : le guillemet, la barre oblique inversée, et les
+caractères de commande (U+000 à U+001F). Sont aussi indiquées une
+séquence d'échappement courte pour les caractères spéciaux les plus
+fréquents, et la séquence d'échappement générale valable pour tous
+les caractères.
+
+Dans le but de choisir la représentation la plus lisible et la plus
+courte possible, voici le choix qui est fait pour chaque caractère
+lors de la mise d'une chaîne sous forme canonique. Noter que ce
+choix correspond au résultat de la fonction JSON.stringify telle
+que définie dans [ECMA-262].
+
+a) Les caractères qui DOIVENT être échappés le sont avec la
+séquence d'échappement courte s'ils en ont une. Il s'agit des
+sept caractères suivants.
+
+%x5C.22 ; \" quotation mark U+0022
+%x5C.5C ; \\ reverse solidus U+005C
+%x5C.62 ; \b backspace U+0008
+%x5C.66 ; \f form feed U+000C
+%x5C.6E ; \n line feed U+000A
+%x5C.72 ; \r carriage return U+000D
+%x5C.74 ; \t tab U+0009
+
+Noter que la barre oblique / (U+002F) n'en fait pas partie bien
+qu'elle possède une séquence d'échappement courte \/, puisqu'elle
+ne fait pas partie des caractères que l'on DOIT échapper.
+
+b) Les caractères qui DOIVENT être échappés, et qui n'ont pas de
+séquence d'échappement courte, le sont avec la séquence
+d'échappement générale. Lorsqu'un chiffre hexadécimal est une
+lettre de A à F celle-ci DOIT être mise en minuscule (a à f).
+
+%x5C.75 4hexdig ; \uxxxx U+XXXX
+
+Cette syntaxe concerne tous les caractères de commande entre
+U+0000 et U+001F qui ne sont pas déjà traités dans la partie (a)
+ci-dessus.
+
+c) Dans tous les autres cas, les caractères sont placés directement
+entre les guillemets sans être échappés.
+
+Noter que ceci ne tient absolument pas compte des équivalences de
+caractères Unicode. Deux représentations Unicode différentes d'un
+même caractère, par exemple l'un en forme précomposée et un autre
+en forme décomposée, donneront deux valeurs JNTP différentes, même
+sous forme canonique.
+
+2.5.3. Représentation canonique d'un nombre
+
+Un nombre mis sous forme canonique, s'il n'est pas 0 ou -0 (qui sont
+les formes canoniques respectives des deux valeurs nulles), commence
+par un chiffre non nul.
+
+S'il y a une partie fractionnaire, celle-ci comporte au minimum un
+chiffre mais au maximum 14 chiffres, et le dernier chiffre est
+forcément non nul.
+
+S'il y a une partie exposant, celle-ci est forcément non nulle. La
+lettre "e" doit être en minuscule, suivie d'un signe "+" ou "-".
+L'entier positif qui suit doit s'écrire avec le plus petit nombre
+possible de chiffres, donc sans 0 initial. Cet entier est compris
+entre 1 et 307.
+
+Un nombre sous forme canonique respecte la grammaire suivante.
+
+number = [ minus ] ( zero / non-zero )
+
+decimal-point = %x2E ; .
+
+digit1-9 = %x31-39 ; 1-9
+
+e = %x65 ; lowercase e
+
+exp = e [ minus / plus ] digit1-9 *2DIGIT
+
+frac = decimal-point *13DIGIT digit1-9
+
+minus = %x2D ; -
+
+non-zero = digit1-9 [ frac ] [ exp ]
+
+plus = %x2B ; +
+
+zero = %x30 ; 0
+
+Contrairement aux chaînes de caractères où la représentation
+canonique sera généralement au moins aussi lisible que toute
+autre représentation, la représentation canonique d'un nombre
+risque d'être moins lisible que celle fournie par défaut, en
+particulier pour les entiers (par exemple 1.25e+2 au lieu de
+125). Pour cette raison, il n'est à priori pas conseillé de
+remplacer sans raison un paquet JNTP par sa représentation
+canonique.
+
+2.5.4. Représentation canonique d'un tableau
+
+La mise d'un tableau sous forme canonique se fait en deux étapes.
+
+a) Mise sous forme canonique de chaque élément du tableau.
+
+b) Suppression de tous les caractères blancs non significatifs
+(espaces, tabs, sauts de ligne et retours chariot) autour des
+caractères "[", "]" et "," encadrant ou séparant les valeurs
+du tableau.
+
+Bien entendu, cette décomposition en deux étapes n'est qu'une
+manière de présenter les choses et nullement une contrainte
+d'implémentation. Il est tout à fait possible de mener les deux
+étapes en parallèle pourvu que le résultat n'en soit pas changé.
+
+De même que pour les nombres, mettre un tableau sous forme
+canonique n'est pas conseillé car cela supprime toute
+possibilité d'indentation des valeurs.
+
+2.5.5. Représentation canonique d'un objet
+
+La mise d'un objet sous forme canonique se fait en trois étapes.
+
+a) Mise sous forme canonique de chaque clé et de chaque valeur
+de l'objet.
+
+b) Suppression de tous les caractères blancs non significatifs
+(espaces, tabs, sauts de ligne et retours chariot) autour des
+caractères "{", "}", ":" et "," encadrant ou séparant les clés
+et les valeurs de l'objet.
+
+c) Tri des clés selon l'ordre lexicographique. Du fait que les
+caractères autorisés dans une clé pour un objet JNTP sont
+limités à un sous-ensemble de US-ASCII [RFC20], il ne sera
+généralement pas nécessaire de se soucier du charset utilisé.
+En effet, le tri donnera le même résultat avec UTF-8, UTF-16 BE
+ou LE (big endian ou little endian), ou avec tous les jeux 8-bits
+compatibles avec US-ASCII.
+
+Pour mémoire, voici l'ordre des caractères que l'on peut trouver dans
+une clé :
+#-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz
+
+Bien entendu, cette décomposition en trois étapes n'est qu'une
+manière de présenter les choses et nullement une contrainte
+d'implémentation. Par exemple, il est tout à fait possible de
+mener les étapes (a) et (b) en parallèle pourvu que le résultat
+n'en soit pas changé.
+
+De même que pour les nombres et les tableaux, mettre un objet sous
+forme canonique n'est pas conseillé car cela supprime toute
+possibilité d'indentation des clés et des valeurs.
+
+3. Format d'un paquet JNTP
+
+packet =
+{
+   "Jid": String,
+   "Route": Array,
+   "ID": Number,
+   "ServerSign": String,
+   "Data": Object,
+   "Meta": Object
+}
+
+L'ordre des clés d'un paquet JNTP n'a aucune importance.
+Une clé d'un paquet JNTP est une chaîne de caractères qui contient
+les caractères
+"#-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+dans la limite de 20 caractères. Le caractère "#" ne peut figurer
+que dans le premier caractère de la clé et lorsque c'est le cas ce
+caractère définit la directive de la clé.
+
+On définit le chemin d'une valeur contenue dans un objet JSON par
+une chaîne de caractères qui contient la hiérarchie de toutes les
+clés parentes séparées entre elles par le caractère ".". Lorsque
+la valeur est incluse dans un tableau, le chemin est suffixé du
+caractère ":" suivi d'un entier qui identifie la position de la
+valeur dans le tableau, le premier élément étant indicé à 1.
+
+Exemple avec l'objet JSON:
+{
+   "Name" : "Julien Arlandis",
+   "ProjetRFC" : {
+      "name" : "Nemo",
+      "contributeurs" : ["Joe", "Jim", "Jack"],
+      "content" : "Ce document définit un nouveau protoc\
+ole pour la diffusion de données sur un réseau déc\
+entralisé sur internet"
+   }
+}
+
+"Name" désigne "Julien Arlandis",
+"ProjetRFC" désigne
+{
+   "name" : "Nemo",
+   "contributeurs" : ["Joe", "Jim", "Jack"] ,
+   "content" : "Ce document définit un nouveau protoc\
+ole pour la diffusion de données sur un réseau déc\
+entralisé sur internet"
+},
+"ProjetRFC.name" désigne "Nemo",
+"ProjetRFC.contributeurs" désigne ["Joe", "Jim", "Jack"],
+"ProjetRFC.contributeurs:1" désigne "Joe",
+"ProjetRFC.contributeurs:2" désigne "Jim",
+"ProjetRFC.contributeurs:3" désigne "Jack".
+"ProjetRFC.content" désigne "Ce document déf\
+init un nouveau protocole pour la diffusion de don\
+nées sur un réseau décentralisé sur internet".
+
+3.1. Jid (String, obligatoire)
+
+Jid est la chaîne de caractères qui identifie un paquet sur le
+réseau.
+Jid = base64url(SHA-1(minifyPacket(Data)))
+SHA-1 = fonction qui retourne l'empreinte numérique d'une chaîne de
+caractères passée en paramètres.
+[Note de l'auteur : expliquer le passage des caractères aux octets
+(voire aux bits) utilisés par le mécanisme SHA-1.]
+
+* Algorithme de la fonction minifyPacket
+
+La fonction minifyPacket offre une représentation compacte et unique
+d'un objet JSON, voici l'algorithme de cette fonction :
+-on « minifie » le tout, c'est-à-dire que l'on supprime les blancs
+et sauts de ligne inutiles et que l'on simplifie l'écriture (par
+exemple "\n" au lieu de "\u000a" et "é" au lieu de "\u00e9").
+-si la clé "Data.DataID" est présente et si la chaine constituée 
+par les 27 premiers caractères de sa valeur est identique à la valeur 
+du Jid, alors les 27 premiers caractères doivent être remplacés par la 
+chaîne vide "".
+-Pour toutes les clés autres que "Data.DataID" qui ne commencent pas par 
+la directive "#", et dont la valeur correspondante est une string d'au 
+moins 28 caractères, la directive "#" est insérée au début de la clé 
+et la valeur est remplacée par une empreinte SHA-1 de la valeur encodée 
+en base64url.
+Cette transformation offre la possibilité aux serveurs de distribuer à 
+leurs clients des paquets allégés tout en leur garantissant la 
+possibilité de vérifier l'intégrité du paquet en calculant le Jid.
+JNTP offre ainsi la possibilité aux clients de récupérer de manière
+asynchrone les valeurs du paquet.
+-dans les objets, on trie les éléments par ordre lexicographique des
+clés.
+
+Exemple :
+
+Data = {
+   "Name" : "Julien Arlandis",
+   "ProjetRFC" : {
+      "name" : "Nemo",
+      "contributeurs" : ["Joe", "Jim", "Jack"],
+      "content" : "Ce document définit un nouveau protoc\
+ole pour la diffusion de données sur un réseau déc\
+entralisé sur internet"
+   }
+}
+
+minifyPacket(Data) = '{"Name":"Julien Arlandis","ProjetRFC":
+\{"#content":"45er6-yuDFGHu6ty56VgH8Yabg8","cont\
+ributeurs":["Joe","Jim","Jack"],"name":"Nemo"}}'
+
+Le Jid est calculé par le serveur.
+
+3.2. Route (Array, obligatoire)
+
+La route liste dans un tableau les différents nœuds empruntés par un
+paquet, dans l'ordre (le plus ancien en premier, le plus récent en
+dernier). La Route est calculée par le serveur.
+
+"Route": ["nemo.example.org", "news.example.net"] signifie que le
+paquet est passé successivement par le serveur nemo.example.org
+puis news.example.net.
+
+3.3. ID (String, obligatoire)
+
+L'ID permet d'identifier localement un paquet sur un serveur donné,
+il est principalement utilisé comme un moyen de pointer les paquets.
+L'ordre lexicographique croissant des ID doit respecter la chronologie (à la seconde près) 
+des paquets telle qu'indiquée dans le champ Data.InjectionDate. 
+
+Exemple d'une succession d'ID :
+
+2015-02-28T17:20:43Z1
+2015-02-28T17:20:43Z10
+2015-02-28T17:20:43Z11
+2015-02-28T17:20:43Z12
+2015-02-28T17:20:44Z1
+2015-02-28T17:20:46Z1
+2015-02-28T17:20:46Z10
+2015-02-28T17:20:47Z1
+
+Pour gagner de l'espace on pourrait supprimer les caractères "-", "T", ":" et "Z"
+qui ne sont nullement nécessaires à l'objectif à atteindre.
+
+3.4. Data (Object, obligatoire)
+
+La Data est l'objet qui contient toutes les informations relatives
+au contenu publié.
+Data = {
+   "DataType" : String,
+   "DataID" : String,
+   "InjectionDate" : String
+(...)
+}
+
+3.4.1. Data.DataType (String, obligatoire)
+
+Identifie le format de données de la Data.
+La structure de la Data à l'exception des clés Data.DataID et
+Data.InjectionDate est entièrement définie par le format de 
+données désigné par Data.DataType qui fera l'objet d'une 
+spécification séparée.
+Le DataType "ProtoData" définit une Data qui ne fait l'objet
+d'aucune spécification, et dont le format de données n'obéit qu'aux
+seules règles définies dans le présent document.
+
+3.4.2. Data.DataID (String, facultative)
+
+Cette clé permet de désigner des objets identiques qui ne peuvent
+pas être identifiés par un même Jid faute d'une représentation
+unique de la Data. Par exemple il peut arriver que des données
+générées en dehors de JNTP soient appelées à être injectées sur JNTP
+sous des formes différentes et par des passerelles différentes sans
+qu'il ne soit possible d'assurer l'unicité du Jid pour ces objets.
+La clé Data.DataID permet à la fois de les identifier et d'empêcher
+leur redondance au sein d'un réseau JNTP.
+La valeur de Data.DataID doit être unique sur l'ensemble du réseau
+pour un DataType bien déterminé. La clé Data.DataID peut par
+construction du Jid (voir la fonction minifyPacket) contenir la même
+valeur que le Jid du paquet.
+
+3.4.3. Data.InjectionDate (String, obligatoire)
+
+Contient la date au format UTC à laquelle le paquet a été émis sur
+le réseau JNTP.
+Data/InjectionDate = AAAA"-" MM "-" JJ "T" HH ":" MM ":" SS "Z"
+Ce champ est renseigné par le serveur.
+
+3.4. Meta (Object, facultatif)
+
+Cet objet contient les informations annexes à un paquet, il s'agit
+de valeurs précalculées qui ont pour objectif de fournir des
+informations utiles aux clients ou aux autres serveurs.
+Cet objet est susceptible de contenir des clés dont la description
+est fournie par le DataType du paquet.
+
+3.4.1 Meta.ServerSign (String, obligatoire)
+
+Ce champ constitue la signature numérique qui garantit que le paquet
+a bien été émis par le serveur mentionné dans la partie droite du
+Jid réservé au nom de domaine du serveur.
+ServerSign = chiffrementAsymétrique(Jid, PrivateKey) où PrivateKey
+désigne la clé privée du serveur.
+On peut donc vérifier que Jid = chiffrementAsymétrique(ServerSign,
+PublicKey).
+Ce champ est calculé par le serveur.
+
+3.4.2. Meta.ServerPublicKey (Object, obligatoire)
+
+Contient la clé publique du serveur correspondant à la clé privée
+qui a servi à signer le paquet. Contient également des informations
+spécifiques comme les dates de validité.
+[Note de l'auteur : partie à détailler]
+
+4. Accès aux ressources
+
+Toute valeur d’un paquet JNTP est identifiée par une ressource au
+format URI.
+URI = "jntp:" Jid "/" chemin
+Jid = Jid d'un paquet
+chemin = chemin de la valeur tel que défini dans la présente RFC.
+
+Exemple :
+"<http://news2.example.net/jntp/678IOD6dkJfj4Nns9jsGtG-HGdd@jntp/Data.Subject>" 
+pointe vers le champs Subject de l'article ayant pour Jid
+"678IOD6dkJfj4Nns9jsGtG-HGdd@jntp".
+
+Pour accéder physiquement à la ressource sur un serveur JNTP donné
+on utilise l'URL
+URL = "http://" host "/jntp/?" Data.DataID "/" chemin.
+
+où host est le nom de domaine d'un serveur JNTP.
+
+Exemple :
+http://news.example.net/jntp/?678IOD6dkJfj4Nns9jsGtG-HGdd\
+@news2.example.net/Data.Subject
+
+5. Les commandes du protocole JNTP
+
+Syntaxe générale d'une commande JNTP :
+
+commande = [name, query]
+name = chaîne de caractère qui désigne le nom de la commande.
+query = objet JSON.
+
+5.1. La commande get
+
+Récupère un ou plusieurs paquets.
+
+["get", {
+   "select": ArraySelect,
+   "filter": ObjectFilter, 
+   "limit": numberLimit,
+}]
+
+
+select contient dans un tableau la liste des champs à retourner dans la requête.
+filterest un objet qui permet d'effectuer des filtres sélectifs dans l'ensemble des paquets.
+limit indique le nombre maximal de résultats à retourner.
+
+Exemple :
+
+[
+    "get",
+    {
+	"limit": 250,
+        "select": [
+            "Data.DataID",
+            "Data.Subject",
+            "Data.FromName",
+            "Data.FromMail",
+            "Data.InjectionDate",
+        ],
+        "filter": {
+            "Data.Newsgroups": "fr.comp.reseaux.jntp",
+            "Data.DataType": "Article"
+        }
+    }
+]
+
+5.2. La commande diffuse
+
+Permet de diffuser ou de demander la diffusion d'un paquet ou une
+Data sur le réseau.
+
+Il faut distinguer deux modes de diffusion, la diffusion d'une Data
+et la diffusion d'un paquet.
+
+5.2.1. Diffusion d'une Data.
+
+Il s'agit du mode de diffusion utilisé par les clients JNTP, n'étant
+pas en mesure de forger eux même un paquet complet, ils transmettent
+à leur serveur les champs obligatoires de la Data requis par le
+DataType mentionné :
+
+["diffuse", {"Data": ObjectJson}]
+
+où ObjectJson = {
+   "DataType": datatype,
+   (...)
+}
+
+5.2.2. Diffusion d'un paquet.
+
+Il s'agit du mode de diffusion utilisé par les serveurs JNTP pour
+s'échanger les paquets :
+
+["diffuse", {"Packet": paquet, "From": from}]
+
+où paquet désigne un paquet JNTP,
+from le FQDN du serveur qui exécute la requête.
+
+5.2.3. Demande de diffusion d'un paquet.
+
+Permet à un serveur d'informer un autre serveur de la nature du
+paquet qu'il s'apprête à lui transmettre.
+
+["diffuse", {"Propose": partialPacket, "From": from}]
+
+où partialPacket est un objet JSON qui contient au minimum :
+
+-Le Jid de l'article + d'autres champs facultatifs susceptibles
+d'apporter une information tangible pour aider le serveur à refuser
+ou à accepter l'article.
+
+Exemple :
+partialPacket = {
+   "Jid": Jid,
+   "Meta": {
+      "Size":[16000000]
+   }
+}
+indique un paquet qui contient 16MO de données.
+
+-La clé Data.DataID et le DataType du paquet + d'autres champs
+facultatifs.
+
+Exemple :
+partialPacket = {
+   "Data": {
+      "DataID": "m4lcm7$1ehd$1@cabale.usenet-fr.net",
+      "DataType": "Article"
+   }
+}
+
+5.3. La commande auth
+
+Permet de s'authentifier sur un serveur JNTP.
+
+5.4. La commande whoami
+
+Renvoie les informations relatives à la connexion (login,
+session...).
+
+5.5. La commande quit
+
+Permet de fermer la connexion avec le serveur JNTP.
+
+X. References
+
+X.1. Normative References
+
+[RFC20] Cerf, V., "ASCII format for network interchange", RFC 20,
+October 1969, <http://www.rfc-editor.org/info/rfc20>.
+
+[IEEE754] IEEE, "IEEE Standard for Floating-Point Arithmetic", IEEE
+Standard 754, August 2008,
+<http://grouper.ieee.org/groups/754/>.
+
+[RFC2119] Bradner, S., "Key words for use in RFCs to Indicate
+Requirement Levels", BCP 14, RFC 2119, March 1997,
+<http://www.rfc-editor.org/info/bcp14>.
+
+[RFC5234] Crocker, D. and P. Overell, "Augmented BNF for Syntax
+Specifications: ABNF", STD 68, RFC 5234, January 2008,
+<http://www.rfc-editor.org/info/std68>.
+
+[RFC7159] Bray T., Ed., "The JavaScript Object Notation (JSON) Data
+Interchange Format", March 2014,
+<http://www.rfc-editor.org/info/rfc7159>.
+
+[UNICODE] The Unicode Consortium, "The Unicode Standard",
+<http://www.unicode.org/versions/latest/>.
+
+[RFC3548] The Base16, Base32, and Base64 Data Encodings
+October 2006, <http://tools.ietf.org/html/rfc4648>.
+
+X.2. Informative References
+
+[ECMA-262] Ecma International, "ECMAScript Language Specification
+Edition 5.1", Standard ECMA-262, June 2011,
+<http://www.ecma-international.org/publications/standards/
+Ecma-262.htm>.
+
+[ECMA-404] Ecma International, "The JSON Data Interchange Format",
+Standard ECMA-404, October 2013,
+<http://www.ecma-international.org/publications/standards/
+Ecma-404.htm>.
+
+[Err3607] RFC Errata, Errata ID 3607, RFC 3607,
+<http://www.rfc-editor.org>.
+

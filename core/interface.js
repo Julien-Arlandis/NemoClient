@@ -332,7 +332,6 @@ displayMediaInfos: function() {
 },
 
 displayThread: function(params){
-
 	$('#fil').html('');
 	var groupName = Nemo.Thread.filter["Data.Newsgroups"];
 	if(groupName) {

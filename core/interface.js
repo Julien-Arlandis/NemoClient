@@ -1856,6 +1856,15 @@ init: function() {
 
 	$("#host_jntp").on('change', function(){
 		JNTP.setUrl( $('#host_jntp').val() );
+		JNTP.Storage.hashkey = '';
+		JNTP.Storage.Session = false;
+		JNTP.authentified = false;
+		$("#authentification").show();
+		$('#email').val('');
+		$("#deconnexion, #historique, #ban_article").hide();
+		if(typeof Interface.articleToRead.value.DataID  != "undefined" ) {
+			Interface.articleToRead.get({"DataID":Interface.articleToRead.value.DataID, "graphicRefresh":Interface.callbackGetArticle});
+		}
 		Interface.startConnexion();
 	});
 

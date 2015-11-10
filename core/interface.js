@@ -1442,11 +1442,12 @@ init: function() {
 	$('#articles_draft').click(function() {
 		Interface.openRedactionWindow(function(){
 			var Interface=win.Interface; var $=win.$; var document=win.document;
-
 			var art = Interface.draft();
+
 			Interface.articleToWrite = new win.Nemo.Article().set({
 					"ReferenceUserID": (typeof art.ReferenceUserID != "undefined") ? art.ReferenceUserID : false,
 					"ThreadID": art.ThreadID,
+					"References": art.References
 				})
 
 			Interface.initRedaction();

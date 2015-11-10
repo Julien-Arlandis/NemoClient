@@ -501,7 +501,7 @@ startConnexion: function() {
 		$('#deconnect').attr('data-info','Se déconnecter du compte ' + j.body.email);
 		$('#identity').html(j.body.FromName);
 		$('#email').val(j.body.email);
-		if(j.body.privilege == 'admin') {
+		if(j.body.privilege == 'admin' || j.body.privilege == 'moderator') {
 			$("#ban_article").show();
 		}
 		$('#box_inscription').html('<strong>Vous êtes actuellement connectés sous votre identifiant ' + j.body.email+'</strong>');
@@ -527,7 +527,7 @@ authentification: function() {
 			Interface.articleToRead.get({"DataID":Interface.articleToRead.value.DataID, "graphicRefresh":Interface.callbackGetArticle});
 		}
 
-		if(j.body.privilege == 'admin') {
+		if(j.body.privilege == 'admin' || j.body.privilege == 'moderator') {
 			$("#ban_article").show();
 		}
 		$('#box_inscription').html('<strong>Bienvenue sur Nemo, vous êtes actuellement connectés avec ' + j.body.email+'</strong>');

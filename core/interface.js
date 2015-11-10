@@ -620,6 +620,7 @@ getNewsgroups: function(params){
 		for(ind in j.body) {
 			var groupName = j.body[ind].name;
 			var rwm = (groupName.indexOf('.*') == -1) ? ((j.body[ind].rules['w'] == 1) ? 'w' : 'r') : 'h';
+			rwm = (j.body[ind].rules['m'] == 1) ? 'm' : rwm;
 			var description = (typeof j.body[ind].description != "undefined") ? j.body[ind].description : '';
 			$('#newsgroups').append('<div class="icon_favori" data-name="'+groupName+'" data-rwm="'+rwm+'"></div><div class="newsgroup '+rwm+'" data-name="'+groupName+'" data-info="'+description+'" data-rwm="'+rwm+'">'+groupName+'</div>');
 		}

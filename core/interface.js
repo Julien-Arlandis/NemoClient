@@ -501,7 +501,7 @@ startConnexion: function() {
 		$('#deconnect').attr('data-info','Se déconnecter du compte ' + j.body.email);
 		$('#identity').html(j.body.FromName);
 		$('#email').val(j.body.email);
-		if(j.body.privilege == 'admin') {
+		if(j.body.privilege == 'admin' || j.body.privilege == 'moderator') {
 			$("#ban_article").show();
 		}
 		$('#box_inscription').html('<strong>Vous êtes actuellement connectés sous votre identifiant ' + j.body.email+'</strong>');
@@ -527,7 +527,7 @@ authentification: function() {
 			Interface.articleToRead.get({"DataID":Interface.articleToRead.value.DataID, "graphicRefresh":Interface.callbackGetArticle});
 		}
 
-		if(j.body.privilege == 'admin') {
+		if(j.body.privilege == 'admin' || j.body.privilege == 'moderator') {
 			$("#ban_article").show();
 		}
 		$('#box_inscription').html('<strong>Bienvenue sur Nemo, vous êtes actuellement connectés avec ' + j.body.email+'</strong>');
@@ -620,6 +620,7 @@ getNewsgroups: function(params){
 		for(ind in j.body) {
 			var groupName = j.body[ind].name;
 			var rwm = (groupName.indexOf('.*') == -1) ? ((j.body[ind].rules['w'] == 1) ? 'w' : 'r') : 'h';
+			rwm = (j.body[ind].rules['m'] == 1) ? 'm' : rwm;
 			var description = (typeof j.body[ind].description != "undefined") ? j.body[ind].description : '';
 			$('#newsgroups').append('<div class="icon_favori" data-name="'+groupName+'" data-rwm="'+rwm+'"></div><div class="newsgroup '+rwm+'" data-name="'+groupName+'" data-info="'+description+'" data-rwm="'+rwm+'">'+groupName+'</div>');
 		}
@@ -1441,11 +1442,12 @@ init: function() {
 	$('#articles_draft').click(function() {
 		Interface.openRedactionWindow(function(){
 			var Interface=win.Interface; var $=win.$; var document=win.document;
-
 			var art = Interface.draft();
+
 			Interface.articleToWrite = new win.Nemo.Article().set({
 					"ReferenceUserID": (typeof art.ReferenceUserID != "undefined") ? art.ReferenceUserID : false,
 					"ThreadID": art.ThreadID,
+					"References": art.References
 				})
 
 			Interface.initRedaction();

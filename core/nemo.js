@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998r',
+UserAgent: 'Nemo/0.998s',
 plugins:{balise:[], module:[]},
 
 Storage: {

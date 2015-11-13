@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998s',
+UserAgent: 'Nemo/0.998u',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -187,9 +187,7 @@ Media: {
 			case "200":
 				this.value = j.body[0].Data.Media;
 				callback();
-				break;
-			case "500":
-				break;
+			break;
 		}}.bind(this));
 	},
 
@@ -587,9 +585,6 @@ Nemo.Article = function() {
 							Nemo.Thread.setState(this.value.DataID, 1);
 						}
 					}
-				break;
-
-				case "500":
 				break;
 			}
 			options.graphicRefresh(options, code, j);

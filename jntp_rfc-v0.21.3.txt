@@ -1,8 +1,6 @@
-Différences par rapport à la version 0.21.1 :
+Différences par rapport à la version 0.21.2 :
 
-*) URL = "http://" host "/jntp/?" Data.DataID "/" chemin
-remplace
-URL = "http://" host "/jntp/" Jid "/" chemin
+*) Spécification des codes de statut
 
 Statut du présent mémoire
 
@@ -654,20 +652,38 @@ commande = [name, query]
 name = chaîne de caractère qui désigne le nom de la commande.
 query = objet JSON.
 
+Syntaxe générale d'une réponse JNTP :
+reponse = {
+   "code" : statusCode,
+   "info" : infoTxt,
+   "body" : reponse
+}
+
+statusCode (obligatoire) est une chaine de caractères contenant 
+3 digits :
+"2xx" - Commande exécutée avec succès.
+"3xx" - Command exécutée correctement jusqu'à présent, continuer.
+"4xx" - Commande syntaxiquement correcte mais erreur de traitement.
+"5xx" - Commande incorrecte, non supportée, erreur de syntaxe.
+
+infoTxt (facultatif) est une chaîne de caractères (ou un tableau) visant à 
+fournir un texte informatif sur le résultat de la requête.
+
+reponse (facultatif) est un objet qui contient le résultat de la requête.
+
 5.1. La commande get
 
 Récupère un ou plusieurs paquets.
 
 ["get", {
-   "select": ArraySelect,
-   "filter": ObjectFilter, 
+   "select": arraySelect,
+   "filter": objectFilter, 
    "limit": numberLimit,
 }]
 
-
-select contient dans un tableau la liste des champs à retourner dans la requête.
-filterest un objet qui permet d'effectuer des filtres sélectifs dans l'ensemble des paquets.
-limit indique le nombre maximal de résultats à retourner.
+arraySelect contient dans un tableau la liste des champs à retourner dans la requête.
+objectFilter est un objet qui permet d'effectuer des filtres sélectifs dans l'ensemble des paquets.
+numberLimit est un nombre qui indique le nombre maximal de résultats à retourner.
 
 Exemple :
 
@@ -704,12 +720,14 @@ pas en mesure de forger eux même un paquet complet, ils transmettent
 à leur serveur les champs obligatoires de la Data requis par le
 DataType mentionné :
 
-["diffuse", {"Data": ObjectJson}]
+["diffuse", {"Data": ObjectJson, "From": from}]
 
 où ObjectJson = {
    "DataType": datatype,
    (...)
 }
+
+from est une clé facultative qui désigne le FQDN de l'émetteur.
 
 5.2.2. Diffusion d'un paquet.
 

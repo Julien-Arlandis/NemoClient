@@ -5,7 +5,7 @@
 
 var JNTP = {
 
-version: '0.20.1',
+version: '0.22.2',
 log: false,
 logServeur: true,
 logClient: true,
@@ -63,13 +63,10 @@ execute: function(cmd, callback, xhrInPool) {
 	}
 
 	var callbackSystem = false;
-	var typeOfData = 'json';
 	if(cmd[0] == 'quit') {
 		callbackSystem = JNTP.closeSession;
 	}else if(cmd[0] == 'auth' || cmd[0] == 'whoami') {
 		callbackSystem = JNTP.initSession;
-	}else if(cmd[0] == 'help') {
-		typeOfData = 'text';
 	}else if(cmd[0] == 'set' && cmd.length > 1) {
 		if(cmd[1].FromName) JNTP.Storage.FromName = cmd[1].FromName;
 		if(cmd[1].FromMail) JNTP.Storage.FromMail = cmd[1].FromMail;
@@ -85,12 +82,15 @@ execute: function(cmd, callback, xhrInPool) {
 	JNTP.xhr = $.ajax({
 		type: 'POST',
 		url: JNTP.uri,
-		dataType: typeOfData,
+		dataType: 'json',
 		data: JSON.stringify(cmd),
 		headers: { 'JNTP-Session': JNTP.Storage.Session },
 		success: function(j, textStatus, xhr) {
 			if(JNTP.log && JNTP.logServeur) {
 				JNTP.logFunction(j, 'output');
+			}
+			if(typeof j.info != "undefined") {
+				JNTP.logFunction(j.info, 'output');
 			}
 			code = (typeof(j) == 'object') ? j.code : "200";
 			code = (typeof(j) == undefined) ? "500" : code;
@@ -123,7 +123,7 @@ initSession: function(cmd, code, j){switch(code) {
 		JNTP.authentified = true;
 	break;
 
-	case "500":
+	case "400":
 		JNTP.Storage.Session = false;
 		JNTP.authentified = false;
 	break;

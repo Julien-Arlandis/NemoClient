@@ -5,7 +5,7 @@
 
 var Nemo = {
 
-UserAgent: 'Nemo/0.998u',
+UserAgent: 'Nemo/0.998v',
 plugins:{balise:[], module:[]},
 
 Storage: {
@@ -298,7 +298,7 @@ Thread:{
 				for(var ind in j.body) {
 					ID = j.body[ind].ID;
 					maxID = (ID > maxID) ? ID : maxID;
-					if(!j.body[ind].Data.Control || typeof Nemo.Thread.filter['Data.Control:1'] != "undefined"){
+					if(!j.body[ind].Data.Control || typeof Nemo.Thread.filter['Data.Control:1'] != "undefined" || typeof Nemo.Thread.filter['Data.DataID'] != "undefined"){
 						j.body[ind].Data.InjectionDate = (typeof j.body[ind].Data.InjectionDate) ? j.body[ind].Data.InjectionDate.replace("T", " ").replace("Z",""): '';
 						if( !this.indexDataID[j.body[ind].Data.DataID]) {
 							this.value.push(j.body[ind]);

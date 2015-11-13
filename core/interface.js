@@ -256,7 +256,7 @@ callbackGetArticle: function(options, code, j){
 		Interface.reloadEvent();
 	break;
 
-	case "500":
+	case "400":
 		$('#chargement').hide();
 	break;
 
@@ -507,7 +507,7 @@ startConnexion: function() {
 		$('#box_inscription').html('<strong>Vous êtes actuellement connectés sous votre identifiant ' + j.body.email+'</strong>');
 		$("#chargement").hide();
 	break;
-	case "500":
+	case "400":
 		$('#jntp_server').html('Connecté à jntp://' + JNTP.url.replace('http://',''));
 		$("#chargement").hide();
 	break;
@@ -535,17 +535,22 @@ authentification: function() {
 
 		$('#formulaire_from').val(JNTP.Storage.FromName);
 		$('#formulaire_email').val(JNTP.Storage.FromMail);
-		break;
+	break;
 
 	case "400":
 		$("#password").val('');
-		$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html("<p>Le compte n'a pas encore été validé, si vous n'avez pas reçu le mail de validation vérifiez dans votre dossier spam ou bien contactez l'administrateur du service le cas échéant.</p>");
-		break;
-
-	case "500":
-		$("#password").val('');
 		$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>Mauvaise authentification</p>');
-		break;
+	break;
+
+	case "401":
+		$("#password").val('');
+		$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html("<p>Le compte n'a pas encore été validé, si vous n'avez pas reçu le mail de validation vérifiez dans votre dossier spam ou bien contactez l'administrateur du service le cas échéant.</p>");
+	break;
+
+	case "402":
+		$("#password").val('');
+		$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>Utilisateur inexistant</p>');
+	break;
 	}});
 },
 
@@ -560,9 +565,6 @@ deconnexion: function(){
 		}
 		$('#box_inscription').html('<strong>Au revoir</strong>');
 	break;
-
-	case "500":
-	break;
 	}});
 },
 
@@ -573,8 +575,8 @@ inscription: function(){
 		$('#box_inscription').html('Un mail de validation va vous être envoyé.');
 	break;
 
-	case "500":
-		$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+	case "400":
+		$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 	break;
 	}});
 },
@@ -1025,8 +1027,8 @@ initRedaction:function() {
 								$('#article_header').hide();
 								$('#article_updated').show();
 							break;
-							case "500":
-								$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+							case "400":
+								$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 							break;
 							}}
 						});
@@ -1034,8 +1036,8 @@ initRedaction:function() {
 					Interface.closeRedactionWindow();
 				break;
 
-				case "500":
-					$("#dialog-alert").dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+				case "400":
+					$("#dialog-alert").dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 					$("#chargement, #chargement2").hide();
 					$("#send_form").show();
 				break;
@@ -1473,8 +1475,8 @@ init: function() {
 							$('#article_deleted').show();
 							$('#article_header').hide();
 						break;
-						case "500":
-							$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+						case "400":
+							$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 						break;
 						}}
 					});
@@ -1646,8 +1648,8 @@ init: function() {
 					$('#article_header').hide();
 					$('#article_deleted').show();
 				break;
-				case "500":
-					$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+				case "400":
+					$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 				break;
 				}}
 			});
@@ -1716,8 +1718,8 @@ init: function() {
 			$('#compteur_like').html(  parseInt($('#compteur_like').html()) + 1 );
 			break;
 
-		case "500":
-			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+		case "400":
+			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 			break;
 		}});
 	});
@@ -1725,11 +1727,11 @@ init: function() {
 	$('#change_email').click(function() {
 		JNTP.execute(["set", {"email":$("#email").val()}], function(code, j){switch(code) {
 		case "200":
-			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 			break;
 
-		case "500":
-			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.error+'</p>');
+		case "400":
+			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 			break;
 		}});
 	});
@@ -1737,11 +1739,11 @@ init: function() {
 	$('#change_password').click(function() {
 		JNTP.execute(["set", {"password":$("#newPassword").val(), "oldPassword":$("#oldPassword").val() }], function(code, j){switch(code) {
 		case "200":
-			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 			break;
 
-		case "500":
-			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.error+'</p>');
+		case "400":
+			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 			break;
 		}});
 		$('#oldPassword, #newPassword').val('');
@@ -1750,11 +1752,11 @@ init: function() {
 	$('#valid_recup_password').click(function() {
 		JNTP.execute(["changePassword", {"email":$("#email_recup_password").val() }], function(code, j){switch(code) {
 		case "200":
-			$( "#info_recup_password" ).html('<p>'+j.body+'</p>');
+			$( "#info_recup_password" ).html('<p>'+j.info+'</p>');
 			break;
 
-		case "500":
-			$( "#info_recup_password" ).html('<p>'+j.body+'</p>');
+		case "400":
+			$( "#info_recup_password" ).html('<p>'+j.info+'</p>');
 			break;
 		}});
 	});
@@ -1823,11 +1825,11 @@ init: function() {
 		
 		JNTP.execute(["set", {"FromName":$('#fromname').val()}], function(code, j){switch(code) {
 		case "200":
-			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 			break;
 
-		case "500":
-			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.error+'</p>');
+		case "400":
+			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 			break;
 		}});
 	});
@@ -1835,11 +1837,11 @@ init: function() {
 	$("#frommail").on('change', function(){
 		JNTP.execute(["set", {"FromMail":$('#frommail').val()}], function(code, j){switch(code) {
 		case "200":
-			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 			break;
 
-		case "500":
-			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.error+'</p>');
+		case "400":
+			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 			break;
 		}});
 	});
@@ -1847,11 +1849,11 @@ init: function() {
 	$("#replyto").on('change', function(){
 		JNTP.execute(["set", {"ReplyTo":$('#replyto').val()}], function(code, j){switch(code) {
 		case "200":
-			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.body+'</p>');
+			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 			break;
 
-		case "500":
-			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.error+'</p>');
+		case "400":
+			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');
 			break;
 		}});
 	});

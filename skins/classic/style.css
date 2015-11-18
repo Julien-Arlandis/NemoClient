@@ -1,7 +1,7 @@
 @import url(ui-lightness/jquery-ui-1.10.3.custom.min.css);
 
 /* --------------------------------------------------------------------------------
-	Interface Classic - Mise à jour Nemo/0.998h - 2015-07-30
+	Interface Classic - Mise à jour Nemo/0.998v - 2015-11-18
 --------------------------------------------------------------------------------- */
 
 /* -----------------------
@@ -879,6 +879,8 @@ tr.favori {
 
 #article_body img, #rendu img {
 	display: block;
+	max-height: 100%;
+	max-width: 100%;
 }
 
 #formulaire_body_html {

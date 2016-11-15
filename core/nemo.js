@@ -406,7 +406,7 @@ Thread:{
 
 			// Si pas de références indexées l'article est enfant de la racine / sinon l'article est enfant de sa référence.
 			if(!bool) {
-				childs["/"].push(this.value[i]); 
+				childs["/"].push(this.value[i]);
 			}else{
 				if( typeof childs[this.value[i].Data.References[j]] == "undefined" ) {
 					childs[this.value[i].Data.References[j]] = [];
@@ -538,11 +538,10 @@ Blacklist: {
 	isInList: function(name) {
 		return ( $.inArray( name, Nemo.Storage['blacklist'] ) != -1) ? true : false;
 	}
-}
+},
 
-}
 
-Nemo.Article = function() {
+Article: function() {
 	this.value = {};
 	this.Jid = '';
 	this.owner = false;
@@ -577,7 +576,7 @@ Nemo.Article = function() {
 							}
 						}
 
-						if(options.callback) { 
+						if(options.callback) {
 							options.callback(options);
 						}
 
@@ -710,7 +709,7 @@ Nemo.Article = function() {
 		}
 
 		body = body.join('');
-		reg = new RegExp(rt_alea, "g"); 
+		reg = new RegExp(rt_alea, "g");
 		body = body.replace(reg, "\n");
 		
 		return this.clone(body);
@@ -991,3 +990,6 @@ Nemo.Article = function() {
 	};
 }
 
+
+
+}

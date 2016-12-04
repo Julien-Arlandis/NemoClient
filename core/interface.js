@@ -1750,6 +1750,7 @@ init: function() {
 	});
 
 	$('#valid_recup_password').click(function() {
+		$('#valid_recup_password').attr('disabled','disabled');
 		JNTP.execute(["changePassword", {"email":$("#email_recup_password").val() }], function(code, j){switch(code) {
 		case "200":
 			$( "#info_recup_password" ).html('<p>'+j.info+'</p>');

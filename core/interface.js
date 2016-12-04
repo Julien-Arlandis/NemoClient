@@ -1737,6 +1737,7 @@ init: function() {
 	});
 
 	$('#change_password').click(function() {
+		$('#change_password').attr("disabled", "disabled");
 		JNTP.execute(["set", {"password":$("#newPassword").val(), "oldPassword":$("#oldPassword").val() }], function(code, j){switch(code) {
 		case "200":
 			$( "#dialog-alert" ).dialog({ modal: true, buttons:{} }).html('<p>'+j.info+'</p>');

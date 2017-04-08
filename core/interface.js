@@ -689,9 +689,10 @@ reloadEvent: function() {
 		Interface.setFavoriIcon(groupName, rwm);
 		if(groupName.indexOf('.*') != -1) {
 			Interface.getNewsgroups({"name":groupName,"level":1});
+			Nemo.Thread.filter = {"Meta.Hierarchy":groupName};
+		}else{
+			Nemo.Thread.filter = {"Data.Newsgroups":groupName};
 		}
-		Nemo.Thread.filter = {"Data.Newsgroups":groupName};
-
 		Nemo.Thread.get({
 			"listenNext":1, 
 			"callback": function(res) {

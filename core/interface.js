@@ -687,8 +687,8 @@ reloadEvent: function() {
 
 		var rwm = $(this).attr('data-rwm');
 		Interface.setFavoriIcon(groupName, rwm);
+		Interface.getNewsgroups({"name":groupName,"level":1});
 		if(groupName.indexOf('.*') != -1) {
-			Interface.getNewsgroups({"name":groupName,"level":1});
 			Nemo.Thread.filter = {"Meta.Hierarchy":groupName};
 		}else{
 			Nemo.Thread.filter = {"Data.Newsgroups":groupName};

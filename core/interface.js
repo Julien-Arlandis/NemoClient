@@ -2025,7 +2025,7 @@ $(document).ready(function() {
 	JNTP.logFunction = Interface.logData;
 
 	if(window.location.host.length == 0) {
-		JNTP.setUrl( 'http://devnews.nemoweb.net' );
+		JNTP.setUrl( 'http://news2.nemoweb.net' );
 	}else{
 		if ($('#host_jntp').val().length == 0) {
 			JNTP.setUrl( 'http://'+window.location.host );

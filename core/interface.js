@@ -1540,7 +1540,7 @@ init: function() {
 		if(groupName.indexOf('*') != -1 ) {
 			Nemo.Thread.filter = {"Meta.Hierarchy":groupName};
 		}else{
-			Nemo.Thread.filter = {"Data.Newsgroups":groupName};
+			if(groupName) Nemo.Thread.filter = {"Data.Newsgroups":groupName};
 		}
 		Nemo.Thread.get({
 			"callback": function(res) {

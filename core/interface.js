@@ -1538,9 +1538,9 @@ init: function() {
 		Nemo.Thread.filter["Data.Protocol"] = $('#article_protocol').val();
 		var groupName = $('#newsgroups_value').val();
 		if(groupName.indexOf('*') != -1 ) {
-			Nemo.Thread.filter = {"Meta.Hierarchy":groupName};
+			Nemo.Thread.filter["Meta.Hierarchy"] = groupName;
 		}else{
-			if(groupName) Nemo.Thread.filter = {"Data.Newsgroups":groupName};
+			if(groupName) Nemo.Thread.filter["Data.Newsgroups"] = groupName;
 		}
 		Nemo.Thread.get({
 			"callback": function(res) {

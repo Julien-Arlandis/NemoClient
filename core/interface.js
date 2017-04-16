@@ -1536,7 +1536,12 @@ init: function() {
 		Nemo.Thread.filter = {};
 		Nemo.Thread.filter[$('#article_filter1').val()] = [$('#article_value1').val(), 'contain'];
 		Nemo.Thread.filter["Data.Protocol"] = $('#article_protocol').val();
-		Nemo.Thread.filter["Data.Newsgroups"] = $('#newsgroups_value').val();
+		var groupName = $('#newsgroups_value').val();
+		if(groupName.indexOf('*') != -1 ) {
+			Nemo.Thread.filter = {"Meta.Hierarchy":groupName};
+		}else{
+			Nemo.Thread.filter = {"Data.Newsgroups":groupName};
+		}
 		Nemo.Thread.get({
 			"callback": function(res) {
 				if(res.firstID) Interface.articleToRead.get({"ID":res.firstID, "read":0, "surligne":true, "graphicRefresh":Interface.callbackGetArticle});

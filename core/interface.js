@@ -2030,11 +2030,11 @@ $(document).ready(function() {
 	JNTP.logFunction = Interface.logData;
 
 	if(window.location.host.length == 0) {
-		JNTP.setUrl( 'http://news2.nemoweb.net' );
+		JNTP.setUrl( 'http://news.nemoweb.net' );
 	}else{
 		if ($('#host_jntp').val().length == 0) {
-			JNTP.setUrl( 'http://'+window.location.host );
-		}else{
+			JNTP.setUrl( window.location.origin );
+		} else{
 			JNTP.setUrl( $('#host_jntp').val() );
 		}
 	}
